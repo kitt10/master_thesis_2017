@@ -22,22 +22,6 @@ def parse_arguments():
                         help='Dataset filename appendix')
     return parser.parse_args()
 
-
-def load_data_wrapper(data_src):
-    with open_gzip(data_src, 'rb') as f:
-        tr_d, va_d, te_d = load_cpickle(f)
-
-    the_x = dict()
-    the_y = dict()
-
-    the_x['training'] = [np.reshape(x, (784, 1)) for x in tr_d[0]]
-    the_y['training'] = tr_d[1]
-    the_x['validation'] = [np.reshape(x, (784, 1)) for x in va_d[0]]
-    the_y['validation'] = va_d[1]
-    the_x['testing'] = [np.reshape(x, (784, 1)) for x in te_d[0]]
-    the_y['testing'] = te_d[1]
-    return the_x, the_y
-
 if __name__ == '__main__':
     args = parse_arguments()
     destination = 'dataset_mnist'+args.name_appendix+'.ds'
