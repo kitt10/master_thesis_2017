@@ -6,6 +6,10 @@
 
     This script creates a SPEECH dataset for kitt_lib framework.
 
+    @arg feature_filename   : Path to the file with features
+    @arg alignment_filename : Path to the file with alignments
+    @arg border_size        : Strictness for splitting individual phonems
+    @arg context_size       : 
     @arg n_records          : number of records
     @arg name_appendix      : appendix to the destination name
 """
@@ -22,16 +26,16 @@ from numpy import array, arange
 
 
 def parse_arguments():  
-    parser = ArgumentParser(description='Creates an XOR dataset for kitt_lib.')
+    parser = ArgumentParser(description='Creates a SPEECH dataset for kitt_lib.')
     parser.add_argument('-ffn', '--feature_filename', type=str, default='../../../data/data_speech/log_fb_en_25_10_ham_norm.hdf5',
                         help='Path to the file with features')
     parser.add_argument('-afn', '--alignment_filename', type=str, default='../../../data/data_speech/data_aligned_phones.txt',
                         help='Path to the file with alignments')                        
     parser.add_argument('-bs', '--border_size', type=int, default=0,
                         help='Strict?')
-    parser.add_argument('-cs', '--context_size', type=int, default=0,
+    parser.add_argument('-cs', '--context_size', type=int, default=5,
                         help='Use context?')
-    parser.add_argument('-nr', '--n_records', type=int, default=1000,
+    parser.add_argument('-nr', '--n_records', type=int, default=15000,
                         help='Number of records')
     parser.add_argument('-ds', '--data_split', type=float, nargs=3, default=[0.8, 0.1, 0.1],
                         choices=list(arange(start=0.0, stop=1.0, step=0.01)),
@@ -110,8 +114,6 @@ def split_data():
         else:
             append_data(key=key, data_group='_test')
             
-        
-
 def get_speech_data():
     print_message(message='Reading alignments...')
     read_alignments()
@@ -154,12 +156,13 @@ if __name__ == '__main__':
     get_speech_data()
 
     print_message(message='Saving dataset...')
-    dataset = open_shelve(destination, 'c')
+    dataset = open_shelve(destination, 'c', protocol=2)
     for key, value in data.items():
         dataset[key] = value
     dataset['features'] = args.feature_filename
     dataset['alignments'] = args.alignment_filename
-    dataset['border_size'] = args.border_size
-    dataset['context_size'] = args.context_size
+    dataset['border_size'] = str(args.border_size)
+    dataset['context_size'] = str(args.context_size)
+    dataset['n_records'] = str(args.n_records)
     dataset.close()
     print_message(message='Dataset dumped as '+destination)
