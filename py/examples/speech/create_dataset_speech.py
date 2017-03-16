@@ -90,12 +90,11 @@ def append_data(key, data_group):
             if idx < 0:
                 sample.extend(features[key][0])
             elif idx > last_idx:
-                sample.extend(data[key][last_idx])
+                sample.extend(features[key][last_idx])
             else:
-                sample.extend(data[key][idx])
+                sample.extend(features[key][idx])
         data['x'+data_group].append(array(sample, ndmin=2).T)
-        print data['x'+data_group][-1].shape
-        exit()
+        data['record_keys'+data_group].append(key)
 
 def split_data():
     split_bounds = (args.n_records*args.data_split[0], args.n_records*(args.data_split[0]+args.data_split[1]))
@@ -128,6 +127,11 @@ def get_speech_data():
     
     print_message(message='Splitting data...')
     split_data()
+    print_param(description='Number of training samples', param_str=str(len(data['x'])))
+    print_param(description='Number of validation samples', param_str=str(len(data['x_val'])))
+    print_param(description='Number of testing samples', param_str=str(len(data['x_test'])))
+    print_param(description='Problem dimension', param_str=str(data['x'][0].shape[0]))
+    print_param(description='Number of classes', param_str=str(len(phonems)))
 
 if __name__ == '__main__':
     args = parse_arguments()
@@ -145,10 +149,11 @@ if __name__ == '__main__':
     mlf = dict()
     phonems = list()
     features = dict()
-    data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
+    data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list(), 
+            'record_keys': list(), 'record_keys_val': list(), 'record_keys_test': list()}
     get_speech_data()
 
-    print_message(message='Got SPEECH dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
+    print_message(message='Saving dataset...')
     dataset = open_shelve(destination, 'c')
     for key, value in data.items():
         dataset[key] = value
