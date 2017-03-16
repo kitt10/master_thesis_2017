@@ -15,6 +15,8 @@ from argparse import ArgumentParser
 from sys import stderr
 from os.path import basename
 from re import search as re_search
+from h5py import File as h5py_file
+from random import shuffle
 from shelve import open as open_shelve
 from numpy import array, arange
 
@@ -51,7 +53,7 @@ def read_alignments(htk_time2frames=100000, comment_start=('#', '#!'), encoding=
             if len(line) == 0 or line.startswith(comment_start):
                 continue
             if line[0] == '"':
-                name = basename(line.strip().strip('"')).replace('.lab', '.wav')
+                key = basename(line.strip().strip('"')).replace('.lab', '.wav')
             elif line[0] != '.':
                 line = line.decode('string_escape').decode(encoding).strip()
                 #                     cas        cas       slovo      rest
@@ -66,26 +68,66 @@ def read_alignments(htk_time2frames=100000, comment_start=('#', '#!'), encoding=
                         phonems.append(phonem)
                     if t_in >= t_out:
                         continue
-                    if name not in mlf.keys():
-                        mlf[name] = list()
+                    if key not in mlf.keys():
+                        mlf[key] = list()
 
                     for i in range(t_out-t_in):
-                        if i < args.border_size or i >= (t_out-t_in-args.border_size):
-                            mlf[name].append('%%'+phonem)       # TODO - is this needed to store?
-                        else:
-                            mlf[name].append(phonem)
+                        if i >= args.border_size and i < (t_out-t_in-args.border_size):
+                            mlf[key].append(phonem)
 
 def read_features():
-    print_message(message='Reading features...')
+    with h5py_file(args.feature_filename, 'r') as f:
+        for file_key in f.keys():
+            features[file_key] = f[file_key].value
+
+def append_data(key, data_group):
+    last_idx = len(features[key])-1
+    for i_phonem, phonem in enumerate(mlf[key]):
+        data['y'+data_group].append(phonem)
+        sample = list()
+        for i_context in range(1+2*args.context_size):
+            idx = i_phonem-args.context_size+i_context
+            if idx < 0:
+                sample.extend(features[key][0])
+            elif idx > last_idx:
+                sample.extend(data[key][last_idx])
+            else:
+                sample.extend(data[key][idx])
+        data['x'+data_group].append(array(sample, ndmin=2).T)
+        print data['x'+data_group][-1].shape
+        exit()
+
+def split_data():
     split_bounds = (args.n_records*args.data_split[0], args.n_records*(args.data_split[0]+args.data_split[1]))
+    mlf_keys = mlf.keys()
+    shuffle(mlf_keys) 
+    for i_key, key in enumerate(mlf_keys):
+        if i_key == args.n_records:
+            break
+        if i_key < split_bounds[0]:
+            append_data(key=key, data_group='')
+        elif split_bounds[0] <= i_key < split_bounds[1]:
+            append_data(key=key, data_group='_val')
+        else:
+            append_data(key=key, data_group='_test')
+            
+        
 
 def get_speech_data():
     print_message(message='Reading alignments...')
     read_alignments()
-    print_param(description='Number of loaded records', param_str=str(len(mlf.keys())))
+    print_param(description='Number of loaded records (alignments)', param_str=str(len(mlf.keys())))
+    print_param(description='Number of alignment frames', param_str=str(len(mlf[mlf.keys()[0]])))
     print_param(description='Number of found phonems', param_str=str(len(phonems)))
     print_param(description='Found phonems', param_str=str(phonems))
-    #read_features()
+    
+    print_message(message='Reading features...')
+    read_features()
+    print_param(description='Number of loaded records (features)', param_str=str(len(features.keys())))
+    print_param(description='Number of feature frames', param_str=str(len(features[features.keys()[0]])))
+    
+    print_message(message='Splitting data...')
+    split_data()
 
 if __name__ == '__main__':
     args = parse_arguments()
@@ -100,9 +142,10 @@ if __name__ == '__main__':
     print_param(description='Data split (train/val/test)', param_str=str(args.data_split))
     print_param(description='Dataset destination file name', param_str=destination)
     
-    data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     mlf = dict()
     phonems = list()
+    features = dict()
+    data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     get_speech_data()
 
     print_message(message='Got SPEECH dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
