@@ -15,8 +15,8 @@ if __name__ == '__main__':
     print_message(message='EXAMPLE: SPEECH dataset')
 
     net = FeedForwardNet(hidden=[100], tf_name='Sigmoid')
-    dataset = open_shelve('../examples/speech/dataset_speech_bs0_cs3_ds811_nr500.ds', 'c')
-    net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.3, n_epoch=100, batch_size=10)
+    dataset = open_shelve('../examples/speech/dataset_speech_bs2_cs5_ds811_nr500.ds', 'c')
+    net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.07, n_epoch=50, batch_size=1)
     res = net.evaluate(x=dataset['x_test'], y=dataset['y_test'])
     print_message(message='Evaluation on test data after training:')
     print_param(description='Accuracy:', param_str=str(res[1]))

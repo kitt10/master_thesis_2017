@@ -78,6 +78,8 @@ def read_alignments(htk_time2frames=100000, comment_start=('#', '#!'), encoding=
                     for i in range(t_out-t_in):
                         if i >= args.border_size and i < (t_out-t_in-args.border_size):
                             mlf[key].append(phonem)
+                        else:
+                            mlf[key].append('%%')
 
 def read_features():
     with h5py_file(args.feature_filename, 'r') as f:
@@ -87,6 +89,9 @@ def read_features():
 def append_data(key, data_group):
     last_idx = len(features[key])-1
     for i_phonem, phonem in enumerate(mlf[key]):
+        if phonem == '%%':
+            continue
+
         data['y'+data_group].append(phonem)
         sample = list()
         for i_context in range(1+2*args.context_size):
