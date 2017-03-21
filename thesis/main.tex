@@ -15,15 +15,18 @@
 \mainmatter 										% Begin numeric (1,2,3...) page numbering
 \pagestyle{thesis} 									% Return the page headers back to the "thesis" style
 \include{tex/chap/chap_introduction}
-\include{tex/chap/chap_chapter_01}
-\include{tex/chap/chap_chapter_02}
+\include{tex/chap/chap_methods}
+\include{tex/chap/chap_results}
+\include{tex/chap/chap_discussion}
 \include{tex/chap/chap_conclusion}
 % ------------------------------------------------------------------------------------------------------
 \input{tex/sett/bibliography}
 % ------------------------------------------------------------------------------------------------------
 \appendix 											% Cue to tell LaTeX that the following "chapters" are Appendices
 \renewcommand{\thechapter}{A\arabic{chapter}}		% Appendices A1, A2, ...
-\include{tex/appx/app_appendix_title}
+\include{tex/appx/app_structure_of_the_workspace}
+\include{tex/appx/app_implementation}
+\include{tex/appx/app_code_documentation}
 % ------------------------------------------------------------------------------------------------------
 \end{document}  
 % ------------------------------------------------------------------------------------------------------

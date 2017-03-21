@@ -1,0 +1,100 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.6 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{article:perceptron}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Rosenblatt}{R.}%
+     {Frank}{F.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{RF1}
+  \strng{fullhash}{RF1}
+  \field{labelyear}{1958}
+  \field{sortinit}{1}
+  \field{pages}{386\bibrangedash 408}
+  \field{title}{The perceptron: A probabilistic model for information storage
+  and organization in the brain}
+  \field{volume}{65}
+  \field{journaltitle}{Psychological Review}
+  \field{year}{1958}
+\endentry
+
+\entry{article:pruning_algorithms}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Reed}{R.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{RR1}
+  \strng{fullhash}{RR1}
+  \field{labelyear}{1993}
+  \field{sortinit}{1}
+  \field{abstract}{%
+  A rule of thumb for obtaining good generalization in systems trained by
+  examples is that one should use the smallest system that will fit the data.
+  Unfortunately, it usually is not obvious what size is best; a system that is
+  too small will not be able to learn the data while one that is just big
+  enough may learn very slowly and be very sensitive to initial conditions and
+  learning parameters. This paper is a survey of neural network pruning
+  algorithms. The approach taken by the methods described here is to train a
+  network that is larger than necessary and then remove the parts that are not
+  needed.%
+  }
+  \field{pages}{740\bibrangedash 747}
+  \field{title}{Pruning Algorithms - A Survey}
+  \verb{url}
+  \verb http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=248452
+  \endverb
+  \field{journaltitle}{IEEE Transactions on Neural Networks (Volume:4 , Issue:
+  5)}
+  \field{month}{09}
+  \field{year}{1993}
+\endentry
+
+\entry{online:mnist}{online}{}
+  \name{author}{2}{}{%
+    {{}%
+     {LeCun}{L.}%
+     {Yann}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cortes}{C.}%
+     {Corinna}{C.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{LYCC1}
+  \strng{fullhash}{LYCC1}
+  \field{labelyear}{1998}
+  \field{sortinit}{1}
+  \field{title}{The MNIST database of handwritten digits}
+  \verb{url}
+  \verb http://yann.lecun.com/exdb/mnist/
+  \endverb
+  \field{year}{1998}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

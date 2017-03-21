@@ -9,14 +9,15 @@
     @arg feature_filename   : Path to the file with features
     @arg alignment_filename : Path to the file with alignments
     @arg border_size        : Strictness for splitting individual phonems
-    @arg context_size       : 
+    @arg context_size       : size of phonem context (influences sample length)
+    @arg n_filters          : number of mel filters to be used
     @arg n_records          : number of records
     @arg name_appendix      : appendix to the destination name
 """
 
 from kitt_monkey import print_message, print_param
 from argparse import ArgumentParser
-from sys import stderr
+from sys import stderr, maxint
 from os.path import basename
 from re import search as re_search
 from h5py import File as h5py_file
@@ -35,8 +36,12 @@ def parse_arguments():
                         help='Strict?')
     parser.add_argument('-cs', '--context_size', type=int, default=5,
                         help='Use context?')
+    parser.add_argument('-nf', '--n_filters', type=int, default=40,
+                        help='Number of MEL filters to be used')
     parser.add_argument('-nr', '--n_records', type=int, default=15000,
                         help='Number of records')
+    parser.add_argument('-ns', '--n_samples', type=int, default=maxint,
+                        help='Number of samples per class (phonem)')
     parser.add_argument('-ds', '--data_split', type=float, nargs=3, default=[0.8, 0.1, 0.1],
                         choices=list(arange(start=0.0, stop=1.0, step=0.01)),
                         help='Training : Validation : Testing data split')
@@ -97,11 +102,12 @@ def append_data(key, data_group):
         for i_context in range(1+2*args.context_size):
             idx = i_phonem-args.context_size+i_context
             if idx < 0:
-                sample.extend(features[key][0])
+                sample.extend(features[key][0][:args.n_filters])
             elif idx > last_idx:
-                sample.extend(features[key][last_idx])
+                sample.extend(features[key][last_idx][:args.n_filters])
             else:
-                sample.extend(features[key][idx])
+                sample.extend(features[key][idx][:args.n_filters])
+
         data['x'+data_group].append(array(sample, ndmin=2).T)
         data['record_keys'+data_group].append(key)
 
@@ -142,13 +148,19 @@ def get_speech_data():
 
 if __name__ == '__main__':
     args = parse_arguments()
-    destination = 'dataset_speech'+args.name_appendix+'.ds'
+    destination = 'dataset_speech_bs'+str(args.border_size)
+    destination += '_cs'+str(args.context_size)+'_nf'+str(args.n_filters)
+    destination += '_ds'+str(args.data_split[0]*10)+str(args.data_split[1]*10)+str(args.data_split[2]*10)
+    if args.n_samples != maxint:
+        destination += '_ns'+str(args.n_samples)
+    destination += '_nr'+str(args.n_records)+args.name_appendix+'.ds'
 
     print_message(message='Processing SPEECH data...')
     print_param(description='Path to features', param_str=args.feature_filename)
     print_param(description='Path to alignments', param_str=args.alignment_filename)
     print_param(description='Border size (strictness)', param_str=str(args.border_size))
     print_param(description='Context size', param_str=str(args.context_size))
+    print_param(description='Number of MEL filters', param_str=str(args.n_filters))
     print_param(description='Number of records', param_str=str(args.n_records))
     print_param(description='Data split (train/val/test)', param_str=str(args.data_split))
     print_param(description='Dataset destination file name', param_str=destination)
@@ -168,6 +180,7 @@ if __name__ == '__main__':
     dataset['alignments'] = args.alignment_filename
     dataset['border_size'] = str(args.border_size)
     dataset['context_size'] = str(args.context_size)
+    dataset['n_filters'] = str(args.n_filters)
     dataset['n_records'] = str(args.n_records)
     dataset.close()
     print_message(message='Dataset dumped as '+destination)
