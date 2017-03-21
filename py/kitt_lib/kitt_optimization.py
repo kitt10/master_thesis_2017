@@ -16,7 +16,7 @@ class Pruning(object):
         self.net = kw['self']
         self.kw = kw
         self.vars = {'pruned': False, 'step': 0, 'level_ind': 0, 'level': self.kw['levels'][0], 'net_tmp': self.net.copy_()}
-        self.stats = {'structure': list(), 'n_synapses': list(), 'n_to_cut': list(), 'retrained': list(), 'step_time': list()}
+        self.stats = {'structure': list(), 'n_synapses': list(), 'n_to_cut': list(), 'retrained': list(), 'step_time': list(), 'acc': list(), 'err': list()}
         self.vars['net_tmp'].learning.kw['req_acc'] = self.kw['req_acc']
         self.vars['net_tmp'].learning.kw['req_err'] = self.kw['req_err']
         self.vars['net_tmp'].learning.kw['c_stable'] = self.kw['c_stable']
@@ -34,7 +34,7 @@ class Pruning(object):
             self.cut_()
             self.shrink_()
             
-            if self.vars['net_tmp'].learning.retrainable_():
+            if self.vars['net_tmp'].learning.retrainable_(stats=self.stats):
                 self.stats['retrained'].append(True)
                 self.net.set_params_(from_net=self.vars['net_tmp'])
             else:

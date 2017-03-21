@@ -66,8 +66,10 @@ class Backpropagation(object):
 
         return nabla_b, nabla_w
 
-    def retrainable_(self):
+    def retrainable_(self, stats):
         self.stats = {'t_err': list(), 't_acc': list(), 'v_err': list(), 'v_acc': list(), 'ep_time': list(), 
                       't_err_best': inf, 'v_err_best': inf, 'c_stable': 0}
         self.learn_()
+        stats['acc'].append(self.stats['t_acc'][-1])
+        stats['err'].append(self.stats['t_err'][-1])
         return self.stats['t_acc'][-1] >= self.kw['req_acc'] 
