@@ -69,7 +69,12 @@ class Backpropagation(object):
     def retrainable_(self, stats):
         self.stats = {'t_err': list(), 't_acc': list(), 'v_err': list(), 'v_acc': list(), 'ep_time': list(), 
                       't_err_best': inf, 'v_err_best': inf, 'c_stable': 0}
-        self.learn_()
-        stats['acc'].append(self.stats['t_acc'][-1])
-        stats['err'].append(self.stats['t_err'][-1])
+        try:
+            self.learn_()
+            stats['acc'].append(self.stats['t_acc'][-1])
+            stats['err'].append(self.stats['t_err'][-1])
+        except ValueError:
+            stats['acc'].append(0.0)
+            stats['err'].append(1.0)
+            return False    
         return self.stats['t_acc'][-1] >= self.kw['req_acc'] 

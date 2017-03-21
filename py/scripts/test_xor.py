@@ -12,6 +12,7 @@ from kitt_monkey import print_message, print_param
 from kitt_stats import PruningAnalyzer
 from argparse import ArgumentParser
 from shelve import open as open_shelve
+from numpy import sum as np_sum
 
 def parse_arguments():  
     parser = ArgumentParser(description='Run experiments and plot results for XOR dataset.')
@@ -41,12 +42,14 @@ if __name__ == '__main__':
             print_message(message='XOR experiment, observation '+str(i_obs)+'/'+str(args.n_obs))
             net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
             dataset = open_shelve('../examples/xor/dataset_xor.ds', 'c')
-            net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.3, n_epoch=10)
+            net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.1, n_epoch=50, req_acc=1.0)
             res = net.evaluate(x=dataset['x_test'], y=dataset['y_test'])
             print_message(message='Evaluation on test data after training:')
             print_param(description='Accuracy', param_str=str(res[1]))
             print_param(description='Error', param_str=str(res[0]))
-
+            if net.learning.stats['t_acc'][-1] < 0.9:
+                print 'Skipping observation'
+                continue
             net.prune(req_acc=args.req_acc, req_err=0.05, n_epoch=10, levels=args.levels)
             res = net.evaluate(x=dataset['x_test'], y=dataset['y_test'])
             print_message(message='Evaluation on test data after pruning:')
@@ -63,4 +66,9 @@ if __name__ == '__main__':
         analyzer = PruningAnalyzer(stats_data=[])
         analyzer.load_stats(file_name='../examples/xor/experiment_xor'+params_str+'.stats')
 
-    analyzer.plot_pruning_stats()
+    #analyzer.plot_pruning_process(req_acc=args.req_acc)
+    net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
+    net.load('../examples/xor/net_xor'+params_str+'_obs1_pruned.net')
+    analyzer.new_stats_data['n_synapses_layers'] = [np_sum(w_i) for w_i in net.w_is]
+    print analyzer.new_stats_data['n_synapses_layers']
+    analyzer.plot_pruning_results()

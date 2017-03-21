@@ -12,7 +12,7 @@ from kitt_optimization import Pruning
 from kitt_monkey import print_initialized, print_message
 from numpy.random import standard_normal
 from numpy import array, dot, ones, unique, argmax, inf, copy, sum as np_sum
-from cPickle import dump as dump_cpickle
+from cPickle import dump as dump_cpickle, load as load_cpickle
 
 class FeedForwardNet(object):
     
@@ -113,3 +113,8 @@ class FeedForwardNet(object):
         with open(net_file_name, 'w') as f:
             dump_cpickle(net_pack, f)
         print_message(message='Net dumped as '+net_file_name)
+    
+    def load(self, net_file_name):
+        with open(net_file_name, 'r') as f:
+            net_pack = load_cpickle(f)
+        self.w_is = net_pack['w_is']

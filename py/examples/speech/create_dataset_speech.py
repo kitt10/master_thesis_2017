@@ -150,7 +150,7 @@ if __name__ == '__main__':
     args = parse_arguments()
     destination = 'dataset_speech_bs'+str(args.border_size)
     destination += '_cs'+str(args.context_size)+'_nf'+str(args.n_filters)
-    destination += '_ds'+str(args.data_split[0]*10)+str(args.data_split[1]*10)+str(args.data_split[2]*10)
+    destination += '_ds'+str(int(args.data_split[0]*10))+str(int(args.data_split[1]*10))+str(int(args.data_split[2]*10))
     if args.n_samples != maxint:
         destination += '_ns'+str(args.n_samples)
     destination += '_nr'+str(args.n_records)+args.name_appendix+'.ds'
