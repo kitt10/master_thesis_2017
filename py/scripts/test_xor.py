@@ -67,8 +67,16 @@ if __name__ == '__main__':
         analyzer.load_stats(file_name='../examples/xor/experiment_xor'+params_str+'.stats')
 
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
-    net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
-    net.load('../examples/xor/net_xor'+params_str+'_obs1_pruned.net')
-    analyzer.new_stats_data['n_synapses_layers'] = [np_sum(w_i) for w_i in net.w_is]
-    print analyzer.new_stats_data['n_synapses_layers']
+
+    analyzer.new_stats_data['n_synapses_layers'] = list()
+    for i_obs in range(10):
+        if i_obs == 8:
+            continue
+        try:
+            net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
+            net.load('../examples/xor/net_xor'+params_str+'_obs'+str(i_obs)+'_pruned.net')
+            analyzer.new_stats_data['n_synapses_layers'].append([np_sum(w_i) for w_i in net.w_is])
+            print analyzer.new_stats_data['n_synapses_layers']
+        except:
+            pass
     analyzer.plot_pruning_results()

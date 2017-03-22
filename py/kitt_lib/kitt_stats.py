@@ -109,23 +109,33 @@ class PruningAnalyzer(object):
         if show_fig:
             plt.show()
         
-    def plot_pruning_results(self, show_fig=True, savefig_name=None):
+    def plot_pruning_results(self, show_fig=True, savefig_name=None, max_synapses_in_layer=0):
+        init_structure = self.means['structure'][0]
+        init_synapses_l = [l1*l2 for l1, l2 in zip(init_structure[:-1], init_structure[1:])]
+        
         _, ax1 = plt.subplots()
         ax2 = ax1.twinx()
-        for i_layer in range(len(self.means['structure'][0])):
-            '''
-            ax2.bar(step, width=0.3, height=self.means['acc'][step], color='darkgreen', alpha=alpha)
-            ax1.bar(step-0.3, width=0.3, height=self.means['n_synapses_total'][step], color='maroon', alpha=alpha)
-            '''
-            plt.bar(i_layer-0.45, width=0.9, height=1.0, color='whitesmoke', alpha=0.2)
-            '''
-            plt.boxplot([[100.0*structure[-1][l_i]/inits[net_name][l_i] for structure in net['structure']] for l_i in range(3)],
-                        positions=[15+n_i*40, 25+n_i*40, 35+n_i*40], widths=[8]*3)
-            plt.annotate(name_dict[net_name], xy=(25 + n_i * 40, 120), va='center', ha='center', backgroundcolor='moccasin',
-                        fontsize=15)
-            plt.annotate('acc: '+str(accs[net_name]), xy=(25 + n_i * 40, 112), va='center', ha='center', color='green',
-                        fontsize=13)
-            '''
+
+        # input layer
+        plt.bar(-0.3, width=0.6, height=max(init_synapses_l)+0.1*max(init_synapses_l), color='whitesmoke', alpha=0.3)
+        ax1.bar(-0.25, width=0.5, height=init_structure[0], color='darkblue', alpha=0.3)
+        ax1.boxplot([d[0] for d in self.means['structure']], widths=[0.5], positions=[0])
+
+        # hidden layers
+        for i_layer in range(len(init_structure[1:-1])):
+            plt.bar(i_layer+1-0.45, width=0.9, height=max(init_synapses_l)+0.1*max(init_synapses_l), color='whitesmoke', alpha=0.3)
+            ax2.bar(i_layer+1-0.45, width=0.4, height=init_synapses_l[i_layer+1], color='maroon', alpha=0.3)
+            ax2.boxplot([d[i_layer+1] for d in self.new_stats_data['n_synapses_layers']], widths=[0.4], positions=[i_layer+1-0.25])
+            ax1.bar(i_layer+1+0.05, width=0.4, height=init_structure[i_layer+1], color='darkblue', alpha=0.3)
+            ax1.boxplot([d[i_layer+1] for d in self.means['structure']], widths=[0.4], positions=[i_layer+1+0.25])
+            
+        # output layer
+        plt.bar(len(init_structure)-1-0.45, width=0.9, height=max(init_synapses_l)+0.1*max(init_synapses_l), color='whitesmoke', alpha=0.5)
+        ax2.bar(len(init_structure)-1-0.45, width=0.4, height=init_synapses_l[0], color='maroon', alpha=0.3)
+        ax2.boxplot([d[-1] for d in self.new_stats_data['n_synapses_layers']], widths=[0.4], positions=[len(init_structure)-1-0.25])
+        ax1.bar(len(init_structure)-1+0.05, width=0.4, height=init_structure[-1], color='darkblue', alpha=0.3)
+        ax1.boxplot([d[-1] for d in self.means['structure']], widths=[0.4], positions=[len(init_structure)-1+0.25])
+
         ax1.set_xlabel('network layers')
         ax1.set_ylabel('number of neurons', color='darkblue')
         ax1.set_ylim([0, max(self.means['structure'][0])+0.1*max(self.means['structure'][0])])
@@ -134,8 +144,10 @@ class PruningAnalyzer(object):
 
         #ax2.errorbar(x=self.pruning_steps, y=self.means['n_synapses_total'], yerr=self.stds['n_synapses_total'], color='maroon')
         ax2.set_ylabel('number of synapses', color='maroon')
-        ax2.set_ylim([0, self.means['n_synapses_total'][0]+0.1*self.means['n_synapses_total'][0]])
+        ax2.set_ylim([0, max(init_synapses_l)+0.1*max(init_synapses_l)])
         for tl in ax2.get_yticklabels():
             tl.set_color('maroon')
+        plt.xlim([-1, len(init_structure)])
+        plt.xticks(range(len(init_structure)), ['I']+['H'+str(k+1) for k in range(len(init_structure[1:-1]))]+['O'])
         plt.grid()
         plt.show()
