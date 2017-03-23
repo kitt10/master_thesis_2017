@@ -67,12 +67,6 @@ if __name__ == '__main__':
 
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
 
-    analyzer.new_stats_data['n_synapses_layers'] = list()
-    try:
-        net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
-        net.load('../examples/mnist/net_mnist_hs[20]_ra09_no1_obs1_pruned.net')
-        analyzer.new_stats_data['n_synapses_layers'].append([np_sum(w_i) for w_i in net.w_is])
-        print analyzer.new_stats_data['n_synapses_layers']
-    except:
-        'Network not loaded.'
-    #analyzer.plot_pruning_results()
+    net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
+    net.load('../examples/mnist/net_mnist'+params_str+'_obs1_pruned.net')
+    net.compute_feature_energy()

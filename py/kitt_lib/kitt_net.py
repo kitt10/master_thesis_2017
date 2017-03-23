@@ -8,7 +8,7 @@
 
 import kitt_tf
 from kitt_learning import Backpropagation
-from kitt_optimization import Pruning
+from kitt_optimization import Pruning, FeatureEnergy
 from kitt_monkey import print_initialized, print_message
 from numpy.random import standard_normal
 from numpy import array, dot, ones, unique, argmax, inf, copy, sum as np_sum
@@ -118,3 +118,6 @@ class FeedForwardNet(object):
         with open(net_file_name, 'r') as f:
             net_pack = load_cpickle(f)
         self.w_is = net_pack['w_is']
+
+    def compute_feature_energy(self):
+        self.opt['feature_energy'] = FeatureEnergy(locals())

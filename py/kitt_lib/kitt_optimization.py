@@ -117,3 +117,13 @@ class Pruning(object):
             
         # update net structure
         self.vars['net_tmp'].structure = [self.vars['net_tmp'].w[0].shape[1]]+[w.shape[0] for w in self.vars['net_tmp'].w]
+
+class FeatureEnergy(object):
+
+    def __init__(self, kw):
+        self.net = kw['self']
+        self.paths = dict()
+        self.find_paths()
+
+    def find_paths(self):
+        
