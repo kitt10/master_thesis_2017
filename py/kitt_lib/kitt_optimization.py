@@ -7,7 +7,7 @@
 """
 
 from kitt_monkey import print_pruning_started, print_pruning_step, print_pruning_finished
-from numpy import array, percentile, where, hstack, logical_and, inf, delete, sum as np_sum
+from numpy import array, percentile, where, hstack, logical_and, inf, delete, nonzero, sum as np_sum
 from time import time
 
 class Pruning(object):
@@ -122,8 +122,32 @@ class FeatureEnergy(object):
 
     def __init__(self, kw):
         self.net = kw['self']
+        self.n_features = 728
         self.paths = dict()
         self.find_paths()
+        self.energies = dict()
+        self.compute_energies()
 
     def find_paths(self):
-        
+        f = 0
+        for f_i in range(self.n_features):
+            self.paths[f_i] = list()
+            if f_i in [uf[1] for uf in self.net.used_features]:
+                ks = nonzero(self.net.w[0][:, f])[0]
+                for k in ks:
+                    qs = nonzero(self.net.w[1][:, k])[0]
+                    for q in qs:
+                        self.paths[f_i].append(list())
+                        self.paths[f_i][-1].append((k, self.net.w[0][k, f], self.net.b[0][k][0]))
+                        self.paths[f_i][-1].append((q, self.net.w[1][q, k], self.net.b[1][q][0]))
+                f += 1
+
+    def compute_energies(self):
+        for f_i in range(self.n_features):
+            self.energies[f_i] = dict()
+            for c_i, label in enumerate(self.net.labels):
+                self.energies[f_i][label] = 0.0
+                for path in self.paths[f_i]:
+                    if c_i == path[-1][0]:
+                        self.energies[f_i][label] += float(path[0][1])/abs(path[0][2]) * float(path[1][1])/abs(path[1][2])
+            self.energies[f_i]['total'] = sum([e for e in self.energies[f_i].values()])

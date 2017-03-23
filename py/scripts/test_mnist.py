@@ -9,7 +9,7 @@
 
 from kitt_net import FeedForwardNet
 from kitt_monkey import print_message, print_param
-from kitt_stats import PruningAnalyzer
+from kitt_stats import PruningAnalyzer, FeatureAnalyzer
 from argparse import ArgumentParser
 from shelve import open as open_shelve
 
@@ -70,3 +70,7 @@ if __name__ == '__main__':
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
     net.load('../examples/mnist/net_mnist'+params_str+'_obs1_pruned.net')
     net.compute_feature_energy()
+
+    f_analyzer = FeatureAnalyzer(net=net)
+    f_analyzer.plot_feature_energy()
+

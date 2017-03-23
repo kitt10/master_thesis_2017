@@ -151,3 +151,24 @@ class PruningAnalyzer(object):
         plt.xticks(range(len(init_structure)), ['I']+['H'+str(k+1) for k in range(len(init_structure[1:-1]))]+['O'])
         plt.grid()
         plt.show()
+
+class FeatureAnalyzer(object):
+
+    def __init__(self, net):
+        self.net = net
+        self.fe = self.net.opt['feature_energy']
+    
+    def plot_feature_energy(self):
+        mat = list()
+        fe_features = [f_i for f_i in sorted(self.fe.energies.keys()) if abs(self.fe.energies[f_i]['total'])>30]
+        fe_classes = self.net.labels+['total']
+        for label in fe_classes:
+            mat.append([self.fe.energies[f_i][label] for f_i in fe_features])
+        plt.imshow(mat, interpolation='nearest', aspect='auto')
+        plt.yticks(range(len(fe_classes)), fe_classes)
+        plt.xticks(range(len(fe_features)), fe_features, rotation=90)
+        plt.ylabel('classes')
+        plt.xlabel('features')
+        plt.colorbar()
+        plt.grid()
+        plt.show()

@@ -118,6 +118,16 @@ class FeedForwardNet(object):
         with open(net_file_name, 'r') as f:
             net_pack = load_cpickle(f)
         self.w_is = net_pack['w_is']
+        self.w = net_pack['w']
+        self.w_init = net_pack['w_init']
+        self.b_is = net_pack['b_is']
+        self.b = net_pack['b']
+        self.b_init = net_pack['b_init']
+        self.structure = net_pack['structure']
+        self.labels = net_pack['labels']
+        self.used_features = net_pack['features']
+        self.tf_name = net_pack['tf']
+        self.tf = getattr(kitt_tf, self.tf_name)()
 
     def compute_feature_energy(self):
         self.opt['feature_energy'] = FeatureEnergy(locals())
