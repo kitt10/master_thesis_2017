@@ -159,6 +159,7 @@ class FeatureAnalyzer(object):
         self.fe = self.net.opt['feature_energy']
     
     def plot_feature_energy(self):
+        '''
         mat = list()
         fe_features = [f_i for f_i in sorted(self.fe.energies.keys()) if abs(self.fe.energies[f_i]['total'])>30]
         fe_classes = self.net.labels+['total']
@@ -172,3 +173,15 @@ class FeatureAnalyzer(object):
         plt.colorbar()
         plt.grid()
         plt.show()
+        '''
+
+        for digit in range(10)+['total']:
+            mat = list()
+            for row in range(28):
+                mat.append([self.fe.energies[f_i][digit] for f_i in sorted(self.fe.energies.keys())[row*28:row*28+28]])
+            
+            plt.imshow(mat, interpolation='nearest', aspect='auto', vmin=-10, vmax=10, cmap='gray')
+            plt.title(digit)
+            plt.colorbar()
+            plt.grid()
+            plt.show()

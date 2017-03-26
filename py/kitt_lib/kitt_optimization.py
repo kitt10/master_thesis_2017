@@ -122,7 +122,7 @@ class FeatureEnergy(object):
 
     def __init__(self, kw):
         self.net = kw['self']
-        self.n_features = 728
+        self.n_features = 784
         self.paths = dict()
         self.find_paths()
         self.energies = dict()
