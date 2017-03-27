@@ -7,7 +7,8 @@
 """
 
 from kitt_monkey import print_pruning_started, print_pruning_step, print_pruning_finished
-from numpy import array, percentile, where, hstack, logical_and, inf, delete, nonzero, sum as np_sum
+from numpy import array, percentile, where, hstack, logical_and, inf, delete, nonzero, concatenate, sum as np_sum
+from numpy.random import uniform
 from time import time
 
 class Pruning(object):
@@ -157,5 +158,20 @@ class Tailoring(object):
     def __init__(self, kw):
         self.net = kw['self']
         
-    def add_neurons(self, for_class, h=1):
-        pass
+    def add_neurons(self, class_label, h=1):
+        m_i = self.net.labels.index(class_label)
+        print self.net.w_is[1]
+        for h_i in range(h):
+            self.net.w[0] = concatenate((self.net.w[0], array([uniform() for w_i in range(self.net.w[0].shape[1])], ndmin=2)), axis=0)
+            self.net.w_init[0] = concatenate((self.net.w_init[0], array(self.net.w[0][-1,:], ndmin=2)), axis=0)
+            self.net.w_is[0] = concatenate((self.net.w_is[0], array([1 for w_i in range(self.net.w_is[0].shape[1])], ndmin=2)), axis=0)
+            self.net.b[0] = concatenate((self.net.b[0], array([uniform()], ndmin=2)), axis=0)
+            self.net.b_init[0] = concatenate((self.net.b_init[0], array(self.net.b[0][-1], ndmin=2)), axis=0)
+            self.net.b_is[0] = concatenate((self.net.b_is[0], array([1], ndmin=2)), axis=0)
+            
+            self.net.w[1] = concatenate((self.net.w[1], array([uniform() for w_i in range(self.net.w[1].shape[0])], ndmin=2).T), axis=1)
+            self.net.w_init[1] = concatenate((self.net.w_init[1], array(self.net.w[1][:,-1], ndmin=2).T), axis=1)
+            self.net.w_is[1] = concatenate((self.net.w_is[1], array([0 for w_i in range(self.net.w_is[1].shape[0])], ndmin=2).T), axis=1)
+            self.net.w_is[1][m_i, -1] = 1
+        
+        print self.net.w_is[1]

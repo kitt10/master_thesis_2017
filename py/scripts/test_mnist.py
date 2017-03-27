@@ -64,20 +64,21 @@ if __name__ == '__main__':
         analyzer.analyze()
         analyzer.dump_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
     else:
-        analyzer = PruningAnalyzer(stats_data=[])
-        analyzer.load_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
+        #analyzer = PruningAnalyzer(stats_data=[])
+        #analyzer.load_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
+        pass
 
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
 
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
     net.load('../examples/mnist/net_mnist_hs[20]_ra09_no1_obs1_pruned.net')
-    net.compute_feature_energy()
+    #net.compute_feature_energy()
 
     #f_analyzer = FeatureAnalyzer(net=net)
     #f_analyzer.plot_feature_energy()
 
     dataset = open_shelve('../examples/mnist/dataset_mnist.ds', 'c')
-    n_to_test = 100
+    n_to_test = 1000
     x_test = list()
     for sample in dataset['x_test'][:n_to_test]:
         x_test.append([x for x_i, x in enumerate(sample) if x_i in [f[1] for f in net.used_features]])
@@ -89,6 +90,13 @@ if __name__ == '__main__':
     predictions = [net.predict(x)[0][0] for x in x_test]
     print confusion_matrix(y_true=dataset['y_test'][:n_to_test], y_pred=predictions, labels=net.labels)
     print_param(description='Scikit-learn accuracy score', param_str=str(accuracy_score(y_true = dataset['y_test'][:n_to_test], y_pred=predictions)))
+    
+    net.init_tailoring()
+    net.opt['tailoring'].add_neurons(class_label=9, h=3)
+    net.learning.net.w = net.w
+    net.learning.net.w_is = net.w_is
+    net.learning.net.b = net.b
+    net.learning.net.b_is = net.b_is
     net.retrain()
     predictions = [net.predict(x)[0][0] for x in x_test]
     print confusion_matrix(y_true=dataset['y_test'][:n_to_test], y_pred=predictions, labels=net.labels)

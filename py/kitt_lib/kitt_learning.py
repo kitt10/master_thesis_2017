@@ -21,6 +21,7 @@ class Backpropagation(object):
     
     def learn_(self):
         print_learning_started(self.kw)
+        print self.net.w[0].shape, self.net.w[1].shape
         for self.stats['i_epoch'] in xrange(1, self.kw['n_epoch']+1):
             shuffle(self.net.t_data)
             t0 = time()
