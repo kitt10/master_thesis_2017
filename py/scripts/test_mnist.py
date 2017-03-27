@@ -12,7 +12,8 @@ from kitt_monkey import print_message, print_param
 from kitt_stats import PruningAnalyzer, FeatureAnalyzer
 from argparse import ArgumentParser
 from shelve import open as open_shelve
-from sklearn.metrics import confusion_matrix
+from numpy import array
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 def parse_arguments():  
     parser = ArgumentParser(description='Run experiments and plot results for XOR dataset.')
@@ -69,9 +70,28 @@ if __name__ == '__main__':
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
 
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
-    net.load('../examples/mnist/net_mnist'+params_str+'_obs1_pruned_bu.net')
+    net.load('../examples/mnist/net_mnist_hs[20]_ra09_no1_obs1_pruned.net')
     net.compute_feature_energy()
 
-    f_analyzer = FeatureAnalyzer(net=net)
-    f_analyzer.plot_feature_energy()
+    #f_analyzer = FeatureAnalyzer(net=net)
+    #f_analyzer.plot_feature_energy()
+
+    dataset = open_shelve('../examples/mnist/dataset_mnist.ds', 'c')
+    n_to_test = 100
+    x_test = list()
+    for sample in dataset['x_test'][:n_to_test]:
+        x_test.append([x for x_i, x in enumerate(sample) if x_i in [f[1] for f in net.used_features]])
+    res = net.evaluate(x=array(x_test), y=dataset['y_test'][:n_to_test])
+    print_message(message='Evaluation on test data after pruning:')
+    print_param(description='Accuracy', param_str=str(res[1]))
+    print_param(description='Error', param_str=str(res[0]))
+    print_message(message='Confusion matrix for test data after pruning:')
+    predictions = [net.predict(x)[0][0] for x in x_test]
+    print confusion_matrix(y_true=dataset['y_test'][:n_to_test], y_pred=predictions, labels=net.labels)
+    print_param(description='Scikit-learn accuracy score', param_str=str(accuracy_score(y_true = dataset['y_test'][:n_to_test], y_pred=predictions)))
+    net.retrain()
+    predictions = [net.predict(x)[0][0] for x in x_test]
+    print confusion_matrix(y_true=dataset['y_test'][:n_to_test], y_pred=predictions, labels=net.labels)
+    print_param(description='Scikit-learn accuracy score', param_str=str(accuracy_score(y_true = dataset['y_test'][:n_to_test], y_pred=predictions)))
+    dataset.close()
     

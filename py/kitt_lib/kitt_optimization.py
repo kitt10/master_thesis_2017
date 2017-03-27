@@ -151,3 +151,11 @@ class FeatureEnergy(object):
                     if c_i == path[-1][0]:
                         self.energies[f_i][label] += float(path[0][1])/abs(path[0][2]) * float(path[1][1])/abs(path[1][2])
             self.energies[f_i]['total'] = sum([e for e in self.energies[f_i].values()])
+
+class Tailoring(object):
+    
+    def __init__(self, kw):
+        self.net = kw['self']
+        
+    def add_neurons(self, for_class, h=1):
+        pass

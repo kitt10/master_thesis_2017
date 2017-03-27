@@ -8,7 +8,7 @@
 
 import kitt_tf
 from kitt_learning import Backpropagation
-from kitt_optimization import Pruning, FeatureEnergy
+from kitt_optimization import Pruning, FeatureEnergy, Tailoring
 from kitt_monkey import print_initialized, print_message
 from numpy.random import standard_normal
 from numpy import array, dot, ones, unique, argmax, inf, copy, sum as np_sum
@@ -62,6 +62,9 @@ class FeedForwardNet(object):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()
+
+    def retrain(self):
+        self.learning.learn_()
     
     def evaluate(self, x, y):
         return self.evaluate_(data=zip(x, array([self.label_sign[y_i] for y_i in y])))
@@ -109,7 +112,8 @@ class FeedForwardNet(object):
 
     def dump(self, net_file_name):
         net_pack = {'w': self.w, 'b': self.b, 'w_is': self.w_is, 'b_is': self.b_is, 'w_init': self.w_init, 'b_init': self.b_init,
-                    'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels, 'features': self.used_features}
+                    'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels, 'features': self.used_features, 'label_sign': self.label_sign,
+                    'learning': self.learning}
         with open(net_file_name, 'w') as f:
             dump_cpickle(net_pack, f)
         print_message(message='Net dumped as '+net_file_name)
@@ -125,9 +129,14 @@ class FeedForwardNet(object):
         self.b_init = net_pack['b_init']
         self.structure = net_pack['structure']
         self.labels = net_pack['labels']
+        self.label_sign = net_pack['label_sign']
         self.used_features = net_pack['features']
         self.tf_name = net_pack['tf']
         self.tf = getattr(kitt_tf, self.tf_name)()
+        self.learning = net_pack['learning']
 
     def compute_feature_energy(self):
         self.opt['feature_energy'] = FeatureEnergy(locals())
+    
+    def init_tailoring(self):
+        self.opt['tailoring'] = Tailoring(locals())
