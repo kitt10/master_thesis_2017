@@ -52,17 +52,13 @@ if __name__ == '__main__':
                 print 'Skipping observation'
                 continue
             net.prune(req_acc=args.req_acc, req_err=0.05, n_epoch=5, levels=args.levels)
-            #res = net.evaluate(x=dataset['x_test'], y=dataset['y_test'])
-            #print_message(message='Evaluation on test data after pruning:')
-            #print_param(description='Accuracy', param_str=str(res[1]))
-            #print_param(description='Error', param_str=str(res[0]))
             stats_data.append(net.opt['pruning'].stats)
             net.dump('../examples/mnist/net_mnist'+params_str+'_obs'+str(i_obs)+'_pruned.net')
             dataset.close()
 
-        analyzer = PruningAnalyzer(stats_data=stats_data)
-        analyzer.analyze()
-        analyzer.dump_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
+        #analyzer = PruningAnalyzer(stats_data=stats_data)
+        #analyzer.analyze()
+        #analyzer.dump_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
     else:
         #analyzer = PruningAnalyzer(stats_data=[])
         #analyzer.load_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
@@ -71,12 +67,13 @@ if __name__ == '__main__':
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
 
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
-    net.load('../examples/mnist/net_mnist_hs[20]_ra09_no1_obs1_pruned.net')
-    #net.compute_feature_energy()
+    net.load('../examples/mnist/net_mnist_pruned.net')
+    net.compute_feature_energy()
 
-    #f_analyzer = FeatureAnalyzer(net=net)
-    #f_analyzer.plot_feature_energy()
+    f_analyzer = FeatureAnalyzer(net=net)
+    f_analyzer.plot_feature_energy()
 
+    exit()
     dataset = open_shelve('../examples/mnist/dataset_mnist.ds', 'c')
     n_to_test = 1000
     x_test = list()
@@ -92,7 +89,7 @@ if __name__ == '__main__':
     print_param(description='Scikit-learn accuracy score', param_str=str(accuracy_score(y_true = dataset['y_test'][:n_to_test], y_pred=predictions)))
     
     net.init_tailoring()
-    net.opt['tailoring'].add_neurons(class_label=9, h=3)
+    net.opt['tailoring'].add_neurons(class_labels=9, h=3)
     net.learning.net.w = net.w
     net.learning.net.w_is = net.w_is
     net.learning.net.b = net.b

@@ -63,9 +63,21 @@ class FeedForwardNet(object):
         self.learning = Backpropagation(locals())
         self.learning.learn_()
 
-    def retrain(self):
+    def retrain(self, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+        self.learning = Backpropagation(locals())
         self.learning.learn_()
     
+    def prepare_data(self, x, y):
+        x = self.adjust_features(x)
+        return zip(x, array([self.label_sign[y_i] for y_i in y]))
+
+    def adjust_features(self, x):
+        x_new = list()
+        for sample in x:
+            x_new.append(array([sample[f] for (i_f, f) in self.used_features]))
+        
+        return x_new
+
     def evaluate(self, x, y):
         return self.evaluate_(data=zip(x, array([self.label_sign[y_i] for y_i in y])))
     
@@ -112,8 +124,7 @@ class FeedForwardNet(object):
 
     def dump(self, net_file_name):
         net_pack = {'w': self.w, 'b': self.b, 'w_is': self.w_is, 'b_is': self.b_is, 'w_init': self.w_init, 'b_init': self.b_init,
-                    'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels, 'features': self.used_features, 'label_sign': self.label_sign,
-                    'learning': self.learning}
+                    'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels, 'features': self.used_features, 'label_sign': self.label_sign}
         with open(net_file_name, 'w') as f:
             dump_cpickle(net_pack, f)
         print_message(message='Net dumped as '+net_file_name)
@@ -133,7 +144,6 @@ class FeedForwardNet(object):
         self.used_features = net_pack['features']
         self.tf_name = net_pack['tf']
         self.tf = getattr(kitt_tf, self.tf_name)()
-        self.learning = net_pack['learning']
 
     def compute_feature_energy(self):
         self.opt['feature_energy'] = FeatureEnergy(locals())

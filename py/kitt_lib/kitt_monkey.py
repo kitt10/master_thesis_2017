@@ -30,10 +30,10 @@ def print_initialized(net):
 def print_learning_started(kw):
     if kw['verbose']:
         print_message(message='Learning has started...')
-        print_param(description='problem dimension', param_str=str(len(kw['x'][0])))
-        print_param(description='number of training samples', param_str=str(len(kw['x'])))
-        if kw['x_val'] is not None:
-            print_param(description='number of validation samples', param_str=str(len(kw['x_val'])))
+        print_param(description='problem dimension', param_str=str(len(kw['self'].t_data[0][0])))
+        print_param(description='number of training samples', param_str=str(len(kw['self'].t_data)))
+        if kw['self'].v_data is not None:
+            print_param(description='number of validation samples', param_str=str(len(kw['self'].v_data)))
         print_param(description='learning rate', param_str=str(kw['learning_rate']))
         print_param(description='mini-batch size', param_str=str(kw['batch_size']))
         print_param(description='maximum number of epochs (t.c.)', param_str=str(kw['n_epoch']))

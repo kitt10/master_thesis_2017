@@ -173,8 +173,7 @@ class FeatureAnalyzer(object):
         plt.colorbar()
         plt.grid()
         plt.show()
-        '''
-
+        
         for digit in range(10)+['total']:
             mat = list()
             for row in range(28):
@@ -185,3 +184,32 @@ class FeatureAnalyzer(object):
             plt.colorbar()
             plt.grid()
             plt.show()
+        '''
+
+        mat = list()
+        counter = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}
+        for row_i in range(28):
+            col = list()
+            for f_i in sorted(self.fe.energies.keys())[row_i*28:row_i*28+28]:
+                classes_found = list()
+                for digit in range(10):
+                    if abs(self.fe.energies[f_i][digit]) > 0:
+                        classes_found.append(digit)
+                if len(classes_found) == 1:
+                    col.append(classes_found[0])
+                elif len(classes_found) == 0:
+                    col.append(-2)
+                else:
+                    col.append(-1)
+                counter[len(classes_found)] +=1
+                
+            mat.append(col)
+        print counter
+        cmap = plt.get_cmap('jet', 12)
+        cmap.set_under('gray')
+        plt.imshow(mat, interpolation='none', aspect='auto', vmin=-2, vmax=10, cmap=cmap)
+        colorbar = plt.colorbar()
+        colorbar.set_ticks([i+0.5 for i in range(-2, 10)])
+        colorbar.set_ticklabels(['no digit', 'more than one']+['only '+str(i) for i in range(10)])
+        plt.grid()
+        plt.show()

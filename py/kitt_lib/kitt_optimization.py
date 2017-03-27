@@ -158,9 +158,9 @@ class Tailoring(object):
     def __init__(self, kw):
         self.net = kw['self']
         
-    def add_neurons(self, class_label, h=1):
-        m_i = self.net.labels.index(class_label)
-        print self.net.w_is[1]
+    def add_neurons(self, class_labels, h=1):
+        m_i_s = [self.net.labels.index(label) for label in class_labels]
+
         for h_i in range(h):
             self.net.w[0] = concatenate((self.net.w[0], array([uniform() for w_i in range(self.net.w[0].shape[1])], ndmin=2)), axis=0)
             self.net.w_init[0] = concatenate((self.net.w_init[0], array(self.net.w[0][-1,:], ndmin=2)), axis=0)
@@ -172,6 +172,5 @@ class Tailoring(object):
             self.net.w[1] = concatenate((self.net.w[1], array([uniform() for w_i in range(self.net.w[1].shape[0])], ndmin=2).T), axis=1)
             self.net.w_init[1] = concatenate((self.net.w_init[1], array(self.net.w[1][:,-1], ndmin=2).T), axis=1)
             self.net.w_is[1] = concatenate((self.net.w_is[1], array([0 for w_i in range(self.net.w_is[1].shape[0])], ndmin=2).T), axis=1)
-            self.net.w_is[1][m_i, -1] = 1
-        
-        print self.net.w_is[1]
+            for m_i in m_i_s:
+                self.net.w_is[1][m_i, -1] = 1
