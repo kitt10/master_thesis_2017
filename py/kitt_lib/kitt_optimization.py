@@ -134,9 +134,9 @@ class FeatureEnergy(object):
         for f_i in range(self.n_features):
             self.paths[f_i] = list()
             if f_i in [uf[1] for uf in self.net.used_features]:
-                ks = nonzero(self.net.w[0][:, f])[0]
+                ks = nonzero(self.net.w_is[0][:, f])[0]
                 for k in ks:
-                    qs = nonzero(self.net.w[1][:, k])[0]
+                    qs = nonzero(self.net.w_is[1][:, k])[0]
                     for q in qs:
                         self.paths[f_i].append(list())
                         self.paths[f_i][-1].append((k, self.net.w[0][k, f], self.net.b[0][k][0]))

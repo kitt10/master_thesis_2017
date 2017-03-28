@@ -68,6 +68,8 @@ if __name__ == '__main__':
 
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
     net.load('../examples/mnist/net_mnist_pruned.net')
+    net.init_tailoring()
+    net.opt['tailoring'].add_neurons(class_labels=(4, 9), h=3)
     net.compute_feature_energy()
 
     f_analyzer = FeatureAnalyzer(net=net)

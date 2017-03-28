@@ -63,9 +63,46 @@ class FeedForwardNet(object):
         self.learning = Backpropagation(locals())
         self.learning.learn_()
 
-    def retrain(self, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+    def retrain(self, hidden=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+        if hidden:
+            w_is_0 = self.w_is[0].copy()
+            w_is_1 = self.w_is[1].copy()
+            b_is_0 = self.b_is[0].copy()
+            w_0 = self.w[0].copy()
+            w_1 = self.w[1].copy()
+            b_0 = self.b[0].copy()
+            b_1 = self.b[1].copy()
+            
+            self.w_is[0][:,:] = 0
+            self.w_is[1][:,:] = 0
+            self.b_is[0][:] = 0
+            for h in hidden:
+                self.w_is[0][h,:] = w_is_0[h,:]
+                self.w_is[1][:,h] = w_is_1[:,h]
+                self.b_is[0][h] = b_is_0[h]
+
         self.learning = Backpropagation(locals())
         self.learning.learn_()
+
+        if hidden:
+            self.w_is[0] = w_is_0.copy()
+            self.w_is[1] = w_is_1.copy()
+            self.b_is[0] = b_is_0.copy()
+            
+            w_0_new = self.w[0].copy()
+            w_1_new = self.w[1].copy()
+            b_0_new = self.b[0].copy()
+
+            self.w[0] = w_0.copy()
+            self.w[1] = w_1.copy()
+            self.b[0] = b_0.copy()
+            self.b[1] = b_1.copy()
+            for h in hidden:
+                self.w[0][h,:] = w_0_new[h,:]
+                self.w[1][:,h] = w_1_new[:,h]
+                self.b[0][h] = b_0_new[h]
+
+
     
     def prepare_data(self, x, y):
         x = self.adjust_features(x)

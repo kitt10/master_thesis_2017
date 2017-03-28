@@ -8,7 +8,7 @@
 
 from kitt_monkey import print_message
 from cPickle import dump as dump_cpickle, load as load_cpickle
-from numpy import mean, std, var
+from numpy import mean, std, var, unique, array
 from matplotlib import pyplot as plt, rcParams as mpl_params, patches as mpl_patches
 
 mpl_params['axes.labelsize'] = 18
@@ -211,5 +211,39 @@ class FeatureAnalyzer(object):
         colorbar = plt.colorbar()
         colorbar.set_ticks([i+0.5 for i in range(-2, 10)])
         colorbar.set_ticklabels(['no digit', 'more than one']+['only '+str(i) for i in range(10)])
+        plt.grid()
+        plt.show()
+
+        hidden = dict()
+        for h in range(20):
+            hidden[h] = list()
+        for f_i in range(self.fe.n_features):
+            for c_i, label in enumerate(self.net.labels):
+                for path in self.fe.paths[f_i]:
+                    if path[-1][0] == c_i:
+                        hidden[path[0][0]].append(label)
+
+        for h in range(20):
+            print h, len(hidden[h]), unique(hidden[h])
+        print '-------------------'
+        
+        tmp = dict()
+        mat = list()
+        for label in self.net.labels:
+            tmp[label] = list()
+            mat.append(list())
+            for h in range(20):
+                if label in hidden[h]:
+                    tmp[label].append(h)
+                    mat[-1].append(1)
+                else:
+                    mat[-1].append(0)
+            print label, tmp[label]
+        plt.imshow(array(mat).T, interpolation='none', aspect='auto', vmin=0, vmax=1, cmap='gray')
+        plt.xticks(range(10))
+        plt.xlabel('classes')
+        plt.yticks(range(20))
+        plt.ylabel('hidden neurons')
+        plt.colorbar()
         plt.grid()
         plt.show()
