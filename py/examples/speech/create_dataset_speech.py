@@ -133,12 +133,12 @@ def split_data():
         last_idx = len(features[key])-1
         for i_phonem, phonem in enumerate(mlf[key]):
             if phonem == '%%' or (phonems[phonem] == args.n_samples and phonem != '%') \
-                    or (phonem == '%' and phonems[phonem] == args.max_rest):
+                    or (phonem == '%' and phonems['%'] == args.max_rest):
                 continue
 
-            if phonems[phonem] < split_bounds[0] or phonem == '%':
+            if phonems[phonem] < split_bounds[0] or (phonem == '%' and phonems['%'] < args.data_split[0]*args.max_rest):
                 add_sample(i_phonem, phonem, key, last_idx, data_group='')          # add to training set
-            elif split_bounds[0] <= phonems[phonem] < split_bounds[1]:
+            elif split_bounds[0] <= phonems[phonem] < split_bounds[1] and phonem != '%':
                 add_sample(i_phonem, phonem, key, last_idx, data_group='_val')      # add to validation set
             else:
                 add_sample(i_phonem, phonem, key, last_idx, data_group='_test')     # add to testing set
