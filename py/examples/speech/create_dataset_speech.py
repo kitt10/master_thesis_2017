@@ -8,7 +8,7 @@
 
     @:param feature_filename   : Path to the file with features
     @:param alignment_filename : Path to the file with alignments
-    @:param border_size        : Strictness for splitting individual phonems
+    @:param border_size        : Strictness for splitting individual phonemes
     @:param context_size       : size of phonem context (influences sample length)
     @:param n_filters          : number of mel filters to be used
     @:param n_samples          : number of samples
@@ -85,8 +85,8 @@ def read_alignments(htk_time2frames=100000, comment_start=('#', '#!'), encoding=
                     if args.phonemes and phonem not in args.phonemes:
                         phonem = '%'
 
-                    if phonem not in phonems.keys():
-                        phonems[phonem] = 0
+                    if phonem not in samples.keys():
+                        samples[phonem] = list()
 
                     if t_in >= t_out:
                         continue
@@ -106,24 +106,7 @@ def read_features():
             features[file_key] = f[file_key].value
 
 
-def add_sample(i_phonem, phonem, key, last_idx, data_group):
-    sample = list()
-    for i_context in range(1+2*args.context_size):
-        idx = i_phonem-args.context_size+i_context
-        if idx < 0:
-            sample.extend(features[key][0][:args.n_filters])
-        elif idx > last_idx:
-            sample.extend(features[key][last_idx][:args.n_filters])
-        else:
-            sample.extend(features[key][idx][:args.n_filters])
-
-    data['y'+data_group].append(phonem)
-    data['x'+data_group].append(array(sample, ndmin=2).T)
-    #data['record_keys'+data_group].append(key)
-
-
-def split_data():
-    split_bounds = (args.n_samples*args.data_split[0], args.n_samples*(args.data_split[0]+args.data_split[1]))
+def add_samples():
     mlf_keys = mlf.keys()
     shuffle(mlf_keys)
     for i_key, key in enumerate(mlf_keys):
@@ -132,18 +115,39 @@ def split_data():
 
         last_idx = len(features[key])-1
         for i_phonem, phonem in enumerate(mlf[key]):
-            if phonem == '%%' or (phonems[phonem] == args.n_samples and phonem != '%') \
-                    or (phonem == '%' and phonems['%'] == args.max_rest):
+            if phonem == '%%' or (len(samples[phonem]) == args.n_samples and phonem != '%') \
+                    or (phonem == '%' and len(samples['%']) == args.max_rest):
                 continue
 
-            if phonems[phonem] < split_bounds[0] or (phonem == '%' and phonems['%'] < args.data_split[0]*args.max_rest):
-                add_sample(i_phonem, phonem, key, last_idx, data_group='')          # add to training set
-            elif split_bounds[0] <= phonems[phonem] < split_bounds[1] and phonem != '%':
-                add_sample(i_phonem, phonem, key, last_idx, data_group='_val')      # add to validation set
-            else:
-                add_sample(i_phonem, phonem, key, last_idx, data_group='_test')     # add to testing set
+            sample = list()
+            for i_context in range(1+2*args.context_size):
+                idx = i_phonem-args.context_size+i_context
+                if idx < 0:
+                    sample.extend(features[key][0][:args.n_filters])
+                elif idx > last_idx:
+                    sample.extend(features[key][last_idx][:args.n_filters])
+                else:
+                    sample.extend(features[key][idx][:args.n_filters])
 
-            phonems[phonem] += 1
+            samples[phonem].append(sample)
+
+
+def split_data():
+    for phonem, sample_list in samples.iteritems():
+        split_bounds = (len(sample_list)*args.data_split[0], len(sample_list)*(args.data_split[0]+args.data_split[1]))
+        for i_sample, sample in enumerate(sample_list):
+            if i_sample < split_bounds[0] or (phonem == '%' and len(samples['%']) < args.data_split[0]*args.max_rest):
+                append_sample(sample=sample, target=phonem, data_group='')          # add to training set
+            elif split_bounds[0] <= i_sample < split_bounds[1] and phonem != '%':
+                append_sample(sample=sample, target=phonem, data_group='_val')      # add to validation set
+            else:
+                append_sample(sample=sample, target=phonem, data_group='_test')     # add to testing set
+
+
+def append_sample(sample, target, data_group):
+    data['y'+data_group].append(target)
+    data['x'+data_group].append(array(sample, ndmin=2).T)
+    # data['record_keys'+data_group].append(key)
 
 
 def get_speech_data():
@@ -151,25 +155,28 @@ def get_speech_data():
     read_alignments()
     print_param(description='Number of loaded records (alignments)', param_str=str(len(mlf.keys())))
     print_param(description='Number of alignment frames', param_str=str(len(mlf[mlf.keys()[0]])))
-    print_param(description='Number of found phonemes', param_str=str(len(phonems)))
-    print_param(description='Found phonems', param_str=str(sorted(phonems.keys())))
+    print_param(description='Number of found phonemes', param_str=str(len(samples)))
+    print_param(description='Found phonemes', param_str=str(sorted(samples.keys())))
     
     print_message(message='Reading features...')
     read_features()
     print_param(description='Number of loaded records (features)', param_str=str(len(features.keys())))
     print_param(description='Number of feature frames', param_str=str(len(features[features.keys()[0]])))
-    
+
+    print_message(message='Adding samples...')
+    add_samples()
+
     print_message(message='Splitting data...')
     split_data()
     print_param(description='Number of training samples', param_str=str(len(data['x'])))
     print_param(description='Number of validation samples', param_str=str(len(data['x_val'])))
     print_param(description='Number of testing samples', param_str=str(len(data['x_test'])))
     print_param(description='Problem dimension', param_str=str(data['x'][0].shape[0]))
-    print_param(description='Number of classes', param_str=str(len(phonems)))
+    print_param(description='Number of classes', param_str=str(len(samples)))
 
     print_message(message='Number of samples per class:')
-    for phonem in sorted(phonems.keys()):
-        print_param(description=phonem, param_str=str(phonems[phonem]))
+    for phonem in sorted(samples.keys()):
+        print_param(description=phonem, param_str=str(len(samples[phonem])))
 
 if __name__ == '__main__':
     args = parse_arguments()
@@ -195,8 +202,8 @@ if __name__ == '__main__':
     print_param(description='Dataset destination file name', param_str=destination)
     
     mlf = dict()
-    phonems = dict()
     features = dict()
+    samples = dict()
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list(), 
             'record_keys': list(), 'record_keys_val': list(), 'record_keys_test': list()}
     get_speech_data()
