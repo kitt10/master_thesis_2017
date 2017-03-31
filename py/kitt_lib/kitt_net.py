@@ -9,16 +9,17 @@
 import kitt_tf
 from kitt_learning import Backpropagation
 from kitt_optimization import Pruning, FeatureEnergy, Tailoring
-from kitt_monkey import print_initialized, print_message
+from kitt_monkey import print_initialized, print_message, print_error
 from numpy.random import standard_normal
 from numpy import array, dot, ones, unique, argmax, inf, copy, sum as np_sum
 from cPickle import dump as dump_cpickle, load as load_cpickle
+
 
 class FeedForwardNet(object):
     
     def __init__(self, hidden, tf_name='Tanh'):
         self.structure = hidden                             # network hidden structure [h1, h2, ..., hk]
-        self.tf_name = tf_name
+        self.tf_name = tf_name                              # string name of the transfer function
         self.tf = getattr(kitt_tf, self.tf_name)()          # transfer function
         self.w = self.b = None                              # weights and biases
         self.w_init = self.b_init = None                    # initial weights and biases
@@ -37,7 +38,7 @@ class FeedForwardNet(object):
             self.label_sign[label] = self.tf.neg*ones(shape=(len(self.labels), 1))
             self.label_sign[label][index][0] = self.tf.pos
 
-        self.structure = [n]+self.structure+[len(self.labels)]             # overall network structure [n, h1, h2, ..., hk, m]
+        self.structure = [n]+self.structure+[len(self.labels)]  # overall network structure [n, h1, h2, ..., hk, m]
         self.w = [standard_normal(size=(i, j)) for j, i in zip(self.structure[:-1], self.structure[1:])]
         self.b = [standard_normal(size=(i, 1)) for i in self.structure[1:]]
         self.w_is = [ones(shape=w_i.shape) for w_i in self.w]
@@ -58,52 +59,18 @@ class FeedForwardNet(object):
     def predict(self, x):
         return [(self.labels[i[0]], i[1][0]) for i in sorted(enumerate(self.forward(a=x)), key=lambda x:x[1], reverse=True)]
 
-    def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+    def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf,
+            req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()
 
-    def retrain(self, hidden=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
-        if hidden:
-            w_is_0 = self.w_is[0].copy()
-            w_is_1 = self.w_is[1].copy()
-            b_is_0 = self.b_is[0].copy()
-            w_0 = self.w[0].copy()
-            w_1 = self.w[1].copy()
-            b_0 = self.b[0].copy()
-            b_1 = self.b[1].copy()
-            
-            self.w_is[0][:,:] = 0
-            self.w_is[1][:,:] = 0
-            self.b_is[0][:] = 0
-            for h in hidden:
-                self.w_is[0][h,:] = w_is_0[h,:]
-                self.w_is[1][:,h] = w_is_1[:,h]
-                self.b_is[0][h] = b_is_0[h]
+    def learn(self):
+        try:
+            self.learning.learn_()
+        except KeyError:
+            print_error(message='Learning has not been initialized.')
 
-        self.learning = Backpropagation(locals())
-        self.learning.learn_()
-
-        if hidden:
-            self.w_is[0] = w_is_0.copy()
-            self.w_is[1] = w_is_1.copy()
-            self.b_is[0] = b_is_0.copy()
-            
-            w_0_new = self.w[0].copy()
-            w_1_new = self.w[1].copy()
-            b_0_new = self.b[0].copy()
-
-            self.w[0] = w_0.copy()
-            self.w[1] = w_1.copy()
-            self.b[0] = b_0.copy()
-            self.b[1] = b_1.copy()
-            for h in hidden:
-                self.w[0][h,:] = w_0_new[h,:]
-                self.w[1][:,h] = w_1_new[:,h]
-                self.b[0][h] = b_0_new[h]
-
-
-    
     def prepare_data(self, x, y):
         x = self.adjust_features(x)
         return zip(x, array([self.label_sign[y_i] for y_i in y]))
@@ -115,7 +82,9 @@ class FeedForwardNet(object):
         
         return x_new
 
-    def evaluate(self, x, y):
+    def evaluate(self, x, y, adjust_features=True):
+        if adjust_features:
+            x = self.adjust_features(x)
         return self.evaluate_(data=zip(x, array([self.label_sign[y_i] for y_i in y])))
     
     def evaluate_(self, data, acc_buf=None, err_buf=None):
@@ -133,18 +102,21 @@ class FeedForwardNet(object):
             err_buf.append(err)
         return err, float(n_correct)/len(data)
 
-    def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(50, 35, 10, 0), strict_termination_learning=True, verbose=True, verbose_learning=False):
+    def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(75, 50, 35, 20, 10, 7, 5, 3, 1, 0),
+              strict_termination_learning=True, verbose=True, verbose_learning=False):
         self.opt['pruning'] = Pruning(locals())
 
     def count_synapses(self):
-        return (int(sum([np_sum(w_i) for w_i in self.w_is])), int(sum([np_sum(b_i) for b_i in self.b_is])))
+        return int(sum([np_sum(w_i) for w_i in self.w_is])), int(sum([np_sum(b_i) for b_i in self.b_is]))
 
     def copy_(self):
         new_net = FeedForwardNet(hidden=[], tf_name=self.tf_name)
         new_net.set_params_(from_net=self)
         new_net.labels = self.labels[:]
         new_net.label_sign = self.label_sign.copy()
-        new_net.learning = Backpropagation(kw={'self': new_net, 'learning_rate': self.learning.kw['learning_rate'], 'batch_size': self.learning.kw['batch_size']})
+        new_net.learning = Backpropagation(kw={'self': new_net,
+                                               'learning_rate': self.learning.kw['learning_rate'],
+                                               'batch_size': self.learning.kw['batch_size']})
         return new_net
     
     def set_params_(self, from_net):
@@ -160,8 +132,9 @@ class FeedForwardNet(object):
         self.used_features = from_net.used_features[:]
 
     def dump(self, net_file_name):
-        net_pack = {'w': self.w, 'b': self.b, 'w_is': self.w_is, 'b_is': self.b_is, 'w_init': self.w_init, 'b_init': self.b_init,
-                    'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels, 'features': self.used_features, 'label_sign': self.label_sign}
+        net_pack = {'w': self.w, 'b': self.b, 'w_is': self.w_is, 'b_is': self.b_is, 'w_init': self.w_init,
+                    'b_init': self.b_init, 'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels,
+                    'features': self.used_features, 'label_sign': self.label_sign}
         with open(net_file_name, 'w') as f:
             dump_cpickle(net_pack, f)
         print_message(message='Net dumped as '+net_file_name)

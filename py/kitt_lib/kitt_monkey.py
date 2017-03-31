@@ -12,12 +12,20 @@ from numpy import count_nonzero
 pruning_print_template = '{0:<8}{1:<18}{2:<20}{3:<23}{4:<15}{5:<15}{6:<15}'
 learning_print_template = '{0:<8}{1:<22}{2:<25}{3:<20}'
 
+
 def print_message(message):
     print colored('\n--------------------------------------------------------------------', 'blue')
     print colored('-- '+message, 'blue')
 
+
+def print_error(message):
+    print colored('\n--------------------------------------------------------------------', 'red')
+    print colored('-- '+message, 'red')
+
+
 def print_param(description, param_str):
     print colored('\t% '+description+': ', 'blue')+param_str
+
 
 def print_initialized(net):
     print_message(message='Network initialized.')
@@ -26,6 +34,7 @@ def print_initialized(net):
     print_param(description='class labels', param_str=str(net.labels))
     print_param(description='net structure', param_str=str(net.structure))
     print_param(description='net transfer function', param_str=str(net.tf.__class__.__name__))
+
 
 def print_learning_started(kw):
     if kw['verbose']:
@@ -43,6 +52,7 @@ def print_learning_started(kw):
         print '\n'
         print learning_print_template.format('epoch', 'on training data', 'on validation data', 'epoch time')
         print '-------------------------------------------------------------------'
+
 
 def print_and_check_epoch(stats, kw):
     line = ' '+str(stats['i_epoch'])+'\t  '+colored(str(format(stats['t_acc'][-1], '.2f')), 'green')
@@ -83,9 +93,11 @@ def print_and_check_epoch(stats, kw):
             print_learning_finished(why='Error reduced to required number ('+str(kw['req_err'])+').', t=sum(stats['ep_time']), verbose=kw['verbose'])
             return True
 
+
 def print_learning_finished(why, t, verbose):
     if verbose:
         print_message(message='Learning finished in '+str(round(t, 4))+'s. '+why)
+
 
 def print_pruning_started(net, kw, vars, stats):
     if kw['verbose']:
@@ -104,12 +116,14 @@ def print_pruning_started(net, kw, vars, stats):
         print colored(pruning_print_template.format(vars['step'], '0', stats['structure'][-1], stats['n_synapses'][-1], 'None', vars['level'], 
                                                     colored('None', 'cyan')), 'yellow')
 
+
 def print_pruning_step(stats, vars):
     stats['structure'].append(vars['net_tmp'].structure)
     stats['n_synapses'].append(vars['net_tmp'].count_synapses())
     print colored(pruning_print_template.format(vars['step'], str(stats['n_to_cut'][-1]), 
                                                 stats['structure'][-1], stats['n_synapses'][-1], 'yes' if stats['retrained'][-1] else 'no', vars['level'], 
                                                 colored(str(round(stats['step_time'][-1], 4))+' s', 'cyan')), 'green' if stats['retrained'][-1] else 'red')
+
 
 def print_pruning_finished(net, kw, stats):
     print_message(message='Pruning finished in '+str(sum(stats['step_time']))+' s.')

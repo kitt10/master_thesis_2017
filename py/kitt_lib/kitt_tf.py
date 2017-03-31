@@ -8,6 +8,7 @@
 
 from numpy import tanh, exp as exp
 
+
 class Tanh(object):
     
     def __init__(self):
@@ -19,6 +20,7 @@ class Tanh(object):
 
     def prime(self, z):
         return 1-(tanh(z)*tanh(z))
+
 
 class Sigmoid(object):
     
