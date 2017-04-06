@@ -8,8 +8,8 @@
 
 from kitt_monkey import print_pruning_started, print_pruning_step, print_pruning_finished
 from numpy import array, percentile, where, hstack, logical_and, delete, nonzero, concatenate, zeros, unique, \
-    newaxis, argmax, isnan, sum as np_sum
-from numpy.random import uniform
+    newaxis, argmax, isnan, logical_or, sum as np_sum
+from numpy.random import standard_normal
 from sklearn.metrics import confusion_matrix
 from shelve import open as open_shelve
 from time import time
@@ -58,7 +58,11 @@ class Pruning(object):
         print_pruning_finished(net=self.net, kw=self.kw, stats=self.stats)
     
     def cut_(self):
-        if self.kw['measure'] == 'kitt':
+        if self.kw['measure'] == 'random':
+            changes_ = [standard_normal(size=w.shape) for w in self.vars['net_tmp'].w]
+        elif self.kw['measure'] == 'magnitude':
+            changes_ = [abs(w) for w in self.vars['net_tmp'].w]
+        elif self.kw['measure'] == 'kitt':
             changes_ = [abs(w-w0) for w, w0 in zip(self.vars['net_tmp'].w, self.vars['net_tmp'].w_init)]
         elif self.kw['measure'] == 'karnin':
             changes_ = [zeros(shape=w_i.shape) for w_i in self.vars['net_tmp'].w]
@@ -79,7 +83,7 @@ class Pruning(object):
             th_ = min(changes_active_)
         self.stats['th'].append(th_)
 
-        where_ = [logical_and(ch_ <= th_, w_is!=0) for ch_, w_is in zip(changes_, self.vars['net_tmp'].w_is)]
+        where_ = [logical_and(logical_or(ch_ <= th_, isnan(ch_)), w_is!=0) for ch_, w_is in zip(changes_, self.vars['net_tmp'].w_is)]
         for w_is, wh_ in zip(self.vars['net_tmp'].w_is, where_):
             w_is[wh_] = 0.0
         self.stats['n_to_cut'].append(sum([np_sum(wh_) for wh_ in where_]))

@@ -22,6 +22,14 @@ Acc: 1.0
 0 -1.0 [(-1.0, 1.0), (1.0, 0.0)]
 1 1.0 [(1.0, 1.0), (-1.0, 0.0)]
 
+-- Pruning finished in 511.396540642 s.
+	% net final structure: [147, 18, 10]
+	% net final number of synapses (w/b): (254, 28)
+	% classification accuracy on training data: 0.8821
+	% classification error on training data: 0.00997455917695
+	% classification accuracy on validation data: 0.8786
+	% classification error on validation data: 0.0101222940885
+
 karnin on karnin data:
 structure: [2, 2, 2]
 init_structure: [2, 5, 2]
@@ -44,4 +52,12 @@ Acc: 0.98
 [[ 1.    0.  ]
  [ 0.04  0.96]]
 0 -1.0 [(-1.0, 1.0), (1.0, 0.0)]
-1 1.0 [(1.0, 0.96), (-1.0, 0.04)]	   
+1 1.0 [(1.0, 0.96), (-1.0, 0.04)]	 
+
+-- Pruning finished in 520.255204201 s.
+	% net final structure: [215, 20, 10]
+	% net final number of synapses (w/b): (2012, 30)
+	% classification accuracy on training data: 0.8801
+	% classification error on training data: 0.0099672246496
+	% classification accuracy on validation data: 0.8776
+	% classification error on validation data: 0.0100021885815

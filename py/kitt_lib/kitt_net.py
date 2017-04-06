@@ -36,8 +36,9 @@ class FeedForwardNet(object):
         self.mapping = dict()                               # mapping outputs for tailoring
         self.opt = {'feature_energy': FeatureEnergy(net=self),
                     'tailoring': Tailoring(net=self)}
-        self.dw_container = None
+        self.dw_container = None                            # Karnin
         self.dw_i = 0
+        self.saliency = None                                # OBD       #TODO
 
     def init_(self, n, x, y, x_val, y_val):
         self.labels = sorted(unique(y))
@@ -60,6 +61,7 @@ class FeedForwardNet(object):
         self.used_features = zip(range(self.structure[0]), range(self.structure[0]))
         self.n_features_init = self.structure[0]
         self.dw_container = [[zeros(w.shape)] for w in self.w]
+        self.saliency = [zeros(w.shape) for w in self.w]
         print_initialized(net=self)
 
     def forward(self, a):

@@ -33,3 +33,6 @@ class Sigmoid(object):
 
     def prime(self, z):
         return self.fire(z)*(1-self.fire(z))
+
+    def prime2(self, z):
+        return (exp(z)*(exp(z)-1))/(exp(z)+1)**3

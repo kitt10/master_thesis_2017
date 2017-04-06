@@ -52,7 +52,7 @@ class Backpropagation(object):
         for l, dw in enumerate(nabla_w):
             if self.net.dw_i > len(self.net.dw_container[l]):
                 self.net.dw_container[l].append(zeros(self.net.w[l].shape))
-            self.net.dw_container[l][self.net.dw_i-1] += dw             # Karnin
+            self.net.dw_container[l][self.net.dw_i-1] += dw
 
     def backpropagate_error(self, x, y):
         nabla_b = [zeros(b_i.shape) for b_i in self.net.b]
