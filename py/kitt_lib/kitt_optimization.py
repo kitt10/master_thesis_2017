@@ -7,8 +7,8 @@
 """
 
 from kitt_monkey import print_pruning_started, print_pruning_step, print_pruning_finished
-from numpy import array, percentile, where, hstack, logical_and, inf, delete, nonzero, concatenate, zeros, unique, \
-    newaxis, argmax, sum as np_sum
+from numpy import array, percentile, where, hstack, logical_and, delete, nonzero, concatenate, zeros, unique, \
+    newaxis, argmax, isnan, sum as np_sum
 from numpy.random import uniform
 from sklearn.metrics import confusion_matrix
 from shelve import open as open_shelve
@@ -22,7 +22,8 @@ class Pruning(object):
         self.kw = kw
         self.vars = {'pruned': False, 'step': 0, 'level_ind': 0, 'level': self.kw['levels'][0], 'net_tmp': self.net.copy_()}
         self.stats = {'structure': list(), 'n_synapses': list(), 'n_to_cut': [0], 'retrained': [True], 
-                      'step_time': [0.0], 'acc': [self.net.learning.stats['t_acc'][-1]], 'err': [self.net.learning.stats['t_err'][-1]]}
+                      'step_time': [0.0], 'acc': [self.net.learning.stats['t_acc'][-1]],
+                      'err': [self.net.learning.stats['t_err'][-1]], 'th': ['inf']}
         self.vars['net_tmp'].learning.kw['req_acc'] = self.kw['req_acc']
         self.vars['net_tmp'].learning.kw['req_err'] = self.kw['req_err']
         self.vars['net_tmp'].learning.kw['c_stable'] = self.kw['c_stable']
@@ -63,20 +64,22 @@ class Pruning(object):
             changes_ = [zeros(shape=w_i.shape) for w_i in self.vars['net_tmp'].w]
             for ep_i in range(self.vars['net_tmp'].dw_i):
                 for l_i in range(len(changes_)):
-                    changes_[l_i] += self.vars['net_tmp'].dw_container[l_i][ep_i]**2 * \
-                                     (self.vars['net_tmp'].w[l_i]/(self.vars['net_tmp'].learning.kw['learning_rate']*(self.vars['net_tmp'].w[l_i]-self.vars['net_tmp'].w_init[l_i])))
+                    den = (self.vars['net_tmp'].learning.kw['learning_rate']*(self.vars['net_tmp'].w[l_i]-self.vars['net_tmp'].w_init[l_i]))
+                    changes_[l_i] += self.vars['net_tmp'].dw_container[l_i][ep_i]**2*(self.vars['net_tmp'].w[l_i]/den)
 
         changes_active_ = list()
         for ch_mat, w_is_mat in zip(changes_, self.vars['net_tmp'].w_is):
             for ch_, w_is in zip(hstack(ch_mat), hstack(w_is_mat)):
-                if w_is:
+                if w_is and not isnan(ch_):
                     changes_active_.append(ch_)
 
         if self.vars['level'] > 0:
             th_ = percentile(a=changes_active_, q=self.vars['level'])
         else:
             th_ = min(changes_active_)
-        where_ = [logical_and(ch_<=th_, w_is!=0) for ch_, w_is in zip(changes_, self.vars['net_tmp'].w_is)]
+        self.stats['th'].append(th_)
+
+        where_ = [logical_and(ch_ <= th_, w_is!=0) for ch_, w_is in zip(changes_, self.vars['net_tmp'].w_is)]
         for w_is, wh_ in zip(self.vars['net_tmp'].w_is, where_):
             w_is[wh_] = 0.0
         self.stats['n_to_cut'].append(sum([np_sum(wh_) for wh_ in where_]))
