@@ -11,6 +11,7 @@ from numpy import zeros, dot, inf, multiply
 from numpy.random import shuffle
 from time import time
 
+
 class Backpropagation(object):
     
     def __init__(self, kw):
@@ -22,6 +23,7 @@ class Backpropagation(object):
     def learn_(self):
         print_learning_started(self.kw)
         for self.stats['i_epoch'] in xrange(1, self.kw['n_epoch']+1):
+            self.net.dw_i += 1
             shuffle(self.net.t_data)
             t0 = time()
             for mini_batch in [self.net.t_data[k:k+self.kw['batch_size']] for k in xrange(0, len(self.net.t_data), self.kw['batch_size'])]:
@@ -33,7 +35,8 @@ class Backpropagation(object):
             if print_and_check_epoch(self.stats, self.kw):
                 break
         else:
-            print_learning_finished(why='Given number of epochs performed.', t=sum(self.stats['ep_time']), verbose=self.kw['verbose'])              
+            print_learning_finished(why='Given number of epochs performed.', t=sum(self.stats['ep_time']),
+                                    verbose=self.kw['verbose'])
     
     def update_mini_batch(self, mini_batch):
         nabla_b = [zeros(b_i.shape) for b_i in self.net.b]
@@ -42,8 +45,14 @@ class Backpropagation(object):
             delta_nabla_b, delta_nabla_w = self.backpropagate_error(x, y)
             nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-        self.net.w = multiply([w-(self.kw['learning_rate'])*nw for w, nw in zip(self.net.w, nabla_w)], self.net.w_is)
-        self.net.b = multiply([b-(self.kw['learning_rate'])*nb for b, nb in zip(self.net.b, nabla_b)], self.net.b_is)
+
+        self.net.w = multiply([w-self.kw['learning_rate']*nw for w, nw in zip(self.net.w, nabla_w)], self.net.w_is)
+        self.net.b = multiply([b-self.kw['learning_rate']*nb for b, nb in zip(self.net.b, nabla_b)], self.net.b_is)
+
+        for l, dw in enumerate(nabla_w):
+            if self.net.dw_i > len(self.net.dw_container[l]):
+                self.net.dw_container[l].append(zeros(self.net.w[l].shape))
+            self.net.dw_container[l][self.net.dw_i-1] += dw             # Karnin
 
     def backpropagate_error(self, x, y):
         nabla_b = [zeros(b_i.shape) for b_i in self.net.b]

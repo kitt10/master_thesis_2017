@@ -11,7 +11,7 @@ from kitt_learning import Backpropagation
 from kitt_optimization import Pruning, FeatureEnergy, Tailoring
 from kitt_monkey import print_initialized, print_message, print_error
 from numpy.random import standard_normal
-from numpy import array, dot, ones, unique, argmax, inf, copy, sum as np_sum
+from numpy import array, dot, zeros, ones, unique, argmax, inf, copy, sum as np_sum
 from cPickle import dump as dump_cpickle, load as load_cpickle
 
 
@@ -28,15 +28,23 @@ class FeedForwardNet(object):
         self.label_sign = dict()                            # and corresponding vectorized signatures
         self.t_data = None                                  # training data for this net
         self.v_data = None                                  # validation data for this net
+        self.v_data_ = None                                 # validation data with original labels (not signs)
         self.learning = None                                # net learning algorithm
-        self.opt = dict()                                   # optimization method instances
         self.used_features = None                           # features still interesting after pruning
+        self.n_features_init = None                         # initial number of features before pruning
+        self.subnets = list()                               # subnet list for tailoring
+        self.mapping = dict()                               # mapping outputs for tailoring
+        self.opt = {'feature_energy': FeatureEnergy(net=self),
+                    'tailoring': Tailoring(net=self)}
+        self.dw_container = None
+        self.dw_i = 0
 
     def init_(self, n, x, y, x_val, y_val):
         self.labels = sorted(unique(y))
         for index, label in enumerate(self.labels):
             self.label_sign[label] = self.tf.neg*ones(shape=(len(self.labels), 1))
             self.label_sign[label][index][0] = self.tf.pos
+            self.mapping[label] = label
 
         self.structure = [n]+self.structure+[len(self.labels)]  # overall network structure [n, h1, h2, ..., hk, m]
         self.w = [standard_normal(size=(i, j)) for j, i in zip(self.structure[:-1], self.structure[1:])]
@@ -48,7 +56,10 @@ class FeedForwardNet(object):
         self.t_data = zip(x, array([self.label_sign[y_i] for y_i in y]))
         if x_val is not None and y_val is not None:
             self.v_data = zip(x_val, array([self.label_sign[y_i] for y_i in y_val]))
+            self.v_data_ = zip(x_val, y_val)
         self.used_features = zip(range(self.structure[0]), range(self.structure[0]))
+        self.n_features_init = self.structure[0]
+        self.dw_container = [[zeros(w.shape)] for w in self.w]
         print_initialized(net=self)
 
     def forward(self, a):
@@ -60,13 +71,19 @@ class FeedForwardNet(object):
         return [(self.labels[i[0]], i[1][0]) for i in sorted(enumerate(self.forward(a=x)), key=lambda x:x[1], reverse=True)]
 
     def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf,
-            req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()
 
-    def learn(self):
+    def learn(self, learning_rate=None, batch_size=None, n_epoch=None):
         try:
+            if learning_rate:
+                self.learning.kw['learning_rate'] = learning_rate
+            if batch_size:
+                self.learning.kw['batch_size'] = batch_size
+            if n_epoch:
+                self.learning.kw['n_epoch'] = n_epoch
             self.learning.learn_()
         except KeyError:
             print_error(message='Learning has not been initialized.')
@@ -102,10 +119,6 @@ class FeedForwardNet(object):
             err_buf.append(err)
         return err, float(n_correct)/len(data)
 
-    def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(75, 50, 35, 20, 10, 7, 5, 3, 1, 0),
-              strict_termination_learning=True, verbose=True, verbose_learning=False):
-        self.opt['pruning'] = Pruning(locals())
-
     def count_synapses(self):
         return int(sum([np_sum(w_i) for w_i in self.w_is])), int(sum([np_sum(b_i) for b_i in self.b_is]))
 
@@ -126,6 +139,8 @@ class FeedForwardNet(object):
         self.b_is = [b_is.copy() for b_is in from_net.b_is]
         self.w_init = [w_init.copy() for w_init in from_net.w_init]
         self.b_init = [b_init.copy() for b_init in from_net.b_init]
+        self.dw_container = [[dw.copy() for dw in dw_l] for dw_l in from_net.dw_container]
+        self.dw_i = from_net.dw_i
         self.structure = from_net.structure[:]
         self.t_data = zip(array([x[0].copy() for x in from_net.t_data]), array([x[1].copy() for x in from_net.t_data]))
         self.v_data = zip(array([x[0].copy() for x in from_net.v_data]), array([x[1].copy() for x in from_net.v_data]))
@@ -155,8 +170,17 @@ class FeedForwardNet(object):
         self.tf_name = net_pack['tf']
         self.tf = getattr(kitt_tf, self.tf_name)()
 
-    def compute_feature_energy(self):
-        self.opt['feature_energy'] = FeatureEnergy(locals())
-    
-    def init_tailoring(self):
-        self.opt['tailoring'] = Tailoring(locals())
+    def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(75, 50, 35, 20, 10, 7, 5, 3, 1, 0),
+              measure='kitt', strict_termination_learning=True, verbose=True, verbose_learning=False):
+        self.opt['pruning'] = Pruning(locals())
+
+    def tailor(self):
+        groups = self.opt['tailoring'].analyse_cm(x_val=[s[0] for s in self.v_data_],
+                                                  y_val=[s[1] for s in self.v_data_], th=0.2)
+        for ph_keep in groups:
+            self.opt['tailoring'].create_dataset(ph_keep, a_path='../examples/speech/')
+            net = self.opt['tailoring'].train_subnet(ph_keep, a_path='../examples/speech/')
+            self.opt['tailoring'].map_output(class_labels=ph_keep, net=net)
+
+    def predict_tailored(self, x):
+        y_p = self.labels[argmax(self.forward(a=x))]
