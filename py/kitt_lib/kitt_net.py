@@ -61,7 +61,6 @@ class FeedForwardNet(object):
         self.used_features = zip(range(self.structure[0]), range(self.structure[0]))
         self.n_features_init = self.structure[0]
         self.dw_container = [[zeros(w.shape)] for w in self.w]
-        self.saliency = [zeros(w.shape) for w in self.w]
         print_initialized(net=self)
 
     def forward(self, a):
@@ -73,7 +72,7 @@ class FeedForwardNet(object):
         return [(self.labels[i[0]], i[1][0]) for i in sorted(enumerate(self.forward(a=x)), key=lambda x:x[1], reverse=True)]
 
     def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf,
-            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, verbose=True):
+            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, nd_der=False, verbose=True):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()
@@ -143,6 +142,7 @@ class FeedForwardNet(object):
         self.b_init = [b_init.copy() for b_init in from_net.b_init]
         self.dw_container = [[dw.copy() for dw in dw_l] for dw_l in from_net.dw_container]
         self.dw_i = from_net.dw_i
+        self.saliency = [s_i.copy() for s_i in from_net.saliency]
         self.structure = from_net.structure[:]
         self.t_data = zip(array([x[0].copy() for x in from_net.t_data]), array([x[1].copy() for x in from_net.t_data]))
         self.v_data = zip(array([x[0].copy() for x in from_net.v_data]), array([x[1].copy() for x in from_net.v_data]))
@@ -173,7 +173,7 @@ class FeedForwardNet(object):
         self.tf = getattr(kitt_tf, self.tf_name)()
 
     def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(75, 50, 35, 20, 10, 7, 5, 3, 1, 0),
-              measure='kitt', strict_termination_learning=True, verbose=True, verbose_learning=False):
+              measure='kitt', retrain=True, strict_termination_learning=True, verbose=True, verbose_learning=False):
         self.opt['pruning'] = Pruning(locals())
 
     def tailor(self):

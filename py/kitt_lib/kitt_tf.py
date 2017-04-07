@@ -6,7 +6,7 @@
     Transfer functions.
 """
 
-from numpy import tanh, exp as exp
+from numpy import tanh, sinh, cosh, exp
 
 
 class Tanh(object):
@@ -20,6 +20,9 @@ class Tanh(object):
 
     def prime(self, z):
         return 1-(tanh(z)*tanh(z))
+
+    def prime2(self, z):
+        return -8*sinh(z)/(3*cosh(z)+cosh(3*z))
 
 
 class Sigmoid(object):

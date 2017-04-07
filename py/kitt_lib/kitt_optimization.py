@@ -30,6 +30,8 @@ class Pruning(object):
         self.vars['net_tmp'].learning.kw['n_epoch'] = self.kw['n_epoch']
         self.vars['net_tmp'].learning.kw['strict_termination'] = self.kw['strict_termination_learning']
         self.vars['net_tmp'].learning.kw['verbose'] = self.kw['verbose_learning']
+        if self.kw['measure'] == 'obd':
+            self.vars['net_tmp'].learning.kw['nd_der'] = True
         self.prune_()
 
     def prune_(self):
@@ -41,7 +43,7 @@ class Pruning(object):
             self.cut_()
             self.shrink_()
             
-            if self.vars['net_tmp'].learning.retrainable_(stats=self.stats):
+            if self.vars['net_tmp'].learning.retrainable_(stats=self.stats, retrain=self.kw['retrain']):
                 self.stats['retrained'].append(True)
                 self.net.set_params_(from_net=self.vars['net_tmp'])
             else:
@@ -70,6 +72,8 @@ class Pruning(object):
                 for l_i in range(len(changes_)):
                     den = (self.vars['net_tmp'].learning.kw['learning_rate']*(self.vars['net_tmp'].w[l_i]-self.vars['net_tmp'].w_init[l_i]))
                     changes_[l_i] += self.vars['net_tmp'].dw_container[l_i][ep_i]**2*(self.vars['net_tmp'].w[l_i]/den)
+        elif self.kw['measure'] == 'obd':
+            changes_ = [(hkk_i*(w_i**2))/2 for w_i, hkk_i in zip(self.vars['net_tmp'].w, self.vars['net_tmp'].saliency)]
 
         changes_active_ = list()
         for ch_mat, w_is_mat in zip(changes_, self.vars['net_tmp'].w_is):

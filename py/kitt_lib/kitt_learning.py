@@ -23,7 +23,8 @@ class Backpropagation(object):
     def learn_(self):
         print_learning_started(self.kw)
         for self.stats['i_epoch'] in xrange(1, self.kw['n_epoch']+1):
-            self.net.dw_i += 1
+            self.net.dw_i += 1                                                      # Karnin
+            self.net.saliency = [zeros(w.shape) for w in self.net.w]                # OBD
             shuffle(self.net.t_data)
             t0 = time()
             for mini_batch in [self.net.t_data[k:k+self.kw['batch_size']] for k in xrange(0, len(self.net.t_data), self.kw['batch_size'])]:
@@ -68,22 +69,33 @@ class Backpropagation(object):
         nabla_b[-1] = delta
         nabla_w[-1] = dot(delta, a_[-2].transpose())
 
+        if self.kw['nd_der']:
+            delta2 = (y-a_[-1])*self.net.tf.prime2(z_[-1])+self.net.tf.prime(z_[-1])**2
+            self.net.saliency[-1] += dot(delta2, (a_[-2]**2).transpose())
+
         for i_layer in xrange(2, len(self.net.structure)): 
             delta = dot(self.net.w[-i_layer+1].transpose(), delta) * self.net.tf.prime(z_[-i_layer])
             nabla_b[-i_layer] = delta
             nabla_w[-i_layer] = dot(delta, a_[-i_layer-1].transpose())
 
+            if self.kw['nd_der']:
+                delta2 = (-1)*dot(self.net.w[-i_layer+1].transpose(), delta2)*self.net.tf.prime2(z_[-i_layer])+self.net.tf.prime(z_[-i_layer])**2
+                self.net.saliency[-i_layer] += dot(delta2, (a_[-i_layer-1]**2).transpose())
+
         return nabla_b, nabla_w
 
-    def retrainable_(self, stats):
-        self.stats = {'t_err': list(), 't_acc': list(), 'v_err': list(), 'v_acc': list(), 'ep_time': list(), 
-                      't_err_best': inf, 'v_err_best': inf, 'c_stable': 0}
-        try:
-            self.learn_()
-            stats['acc'].append(self.stats['t_acc'][-1])
-            stats['err'].append(self.stats['t_err'][-1])
-        except ValueError:
-            stats['acc'].append(0.0)
-            stats['err'].append(1.0)
-            return False    
-        return self.stats['t_acc'][-1] >= self.kw['req_acc'] 
+    def retrainable_(self, stats, retrain):
+        if retrain:
+            self.stats = {'t_err': list(), 't_acc': list(), 'v_err': list(), 'v_acc': list(), 'ep_time': list(),
+                          't_err_best': inf, 'v_err_best': inf, 'c_stable': 0}
+            try:
+                self.learn_()
+                stats['acc'].append(self.stats['t_acc'][-1])
+                stats['err'].append(self.stats['t_err'][-1])
+            except ValueError:
+                stats['acc'].append(0.0)
+                stats['err'].append(1.0)
+                return False
+            return self.stats['t_acc'][-1] >= self.kw['req_acc']                        # do retraining
+        else:
+            return self.net.evaluate_(data=self.net.t_data)[1] >= self.kw['req_acc']    # online pruning (no retraining)

@@ -54,10 +54,32 @@ Acc: 0.98
 0 -1.0 [(-1.0, 1.0), (1.0, 0.0)]
 1 1.0 [(1.0, 0.96), (-1.0, 0.04)]	 
 
--- Pruning finished in 520.255204201 s.
-	% net final structure: [215, 20, 10]
-	% net final number of synapses (w/b): (2012, 30)
-	% classification accuracy on training data: 0.8801
-	% classification error on training data: 0.0099672246496
-	% classification accuracy on validation data: 0.8776
-	% classification error on validation data: 0.0100021885815
+-- Pruning finished in 383.064495325 s.
+	% net final structure: [149, 17, 10]
+	% net final number of synapses (w/b): (299, 27)
+	% classification accuracy on training data: 0.8808
+	% classification error on training data: 0.0100990370458
+	% classification accuracy on validation data: 0.8859
+	% classification error on validation data: 0.010011559733
+	
+OBD (retrain True):
+-- Pruning finished in 947.647089243 s.
+	% net final structure: [297, 18, 10]
+	% net final number of synapses (w/b): (828, 28)
+	% classification accuracy on training data: 0.94075
+	% classification error on training data: 0.00517584293825
+	% classification accuracy on validation data: 0.9144
+	% classification error on validation data: 0.00747794314868
+	
+KITT (retrain True):
+-- Pruning finished in 938.733542919 s.
+	% net final structure: [354, 19, 10]
+	% net final number of synapses (w/b): (743, 29)
+	% classification accuracy on training data: 0.94035
+	% classification error on training data: 0.00529995766879
+	% classification accuracy on validation data: 0.9218
+	% classification error on validation data: 0.00676641448938
+	
+	
+NO RETRAINING TEST: ONLINE PRUNING (req_acc=0.93):
+Random:
