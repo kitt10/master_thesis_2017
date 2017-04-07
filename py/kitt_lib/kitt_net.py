@@ -108,17 +108,20 @@ class FeedForwardNet(object):
     def evaluate_(self, data, acc_buf=None, err_buf=None):
         n_correct = 0
         err = 0
-        for x_i, y_i in data:
-            u_i = self.forward(a=x_i)
-            if argmax(u_i) == argmax(y_i):
-                n_correct += 1
-            err += sum([(u_ii-y_ii)*(u_ii-y_ii) for u_ii, y_ii in zip(u_i, y_i)])[0]
-        err /= 2*len(data)*len(data[0][1])
-        if acc_buf is not None:
-            acc_buf.append(float(n_correct)/len(data))
-        if err_buf is not None:
-            err_buf.append(err)
-        return err, float(n_correct)/len(data)
+        try:
+            for x_i, y_i in data:
+                u_i = self.forward(a=x_i)
+                if argmax(u_i) == argmax(y_i):
+                    n_correct += 1
+                err += sum([(u_ii-y_ii)*(u_ii-y_ii) for u_ii, y_ii in zip(u_i, y_i)])[0]
+            err /= 2*len(data)*len(data[0][1])
+            if acc_buf is not None:
+                acc_buf.append(float(n_correct)/len(data))
+            if err_buf is not None:
+                err_buf.append(err)
+            return err, float(n_correct)/len(data)
+        except IndexError:
+            return inf, 0
 
     def count_synapses(self):
         return int(sum([np_sum(w_i) for w_i in self.w_is])), int(sum([np_sum(b_i) for b_i in self.b_is]))

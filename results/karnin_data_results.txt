@@ -81,5 +81,14 @@ KITT (retrain True):
 	% classification error on validation data: 0.00676641448938
 	
 	
-NO RETRAINING TEST: ONLINE PRUNING (req_acc=0.93):
-Random:
+NO RETRAINING TEST: ONLINE PRUNING (req_acc=0.93, acc_val_init=0.9252):
+Random: 		34, [769, 19, 10], (2841, 29), 18.2123 s, acc_val=0.9169
+Magnitude:		21, [704, 20, 10], (1819, 30), 20.1013 s, acc_val=0.9179
+Karnin:			17, [397, 20, 10], (1443, 30), 11.5592 s, acc_val=0.9202
+-- Pruning finished in 218.918563366 s.
+	% net final structure: [397, 20, 10]
+	% net final number of synapses (w/b): (1443, 30)
+	% classification accuracy on training data: 0.9317
+	% classification error on training data: 0.00556509485553
+	% classification accuracy on validation data: 0.9202
+	% classification error on validation data: 0.0064968293772

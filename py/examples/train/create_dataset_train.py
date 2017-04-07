@@ -45,32 +45,34 @@ if __name__ == '__main__':
     print_message(message='Generating and splitting TRAIN data...')
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     for ni in range(args.n_samples):
-        x_east = uniform(-1, a)
-        y0 = uniform(-1, b)
-        x1 = uniform(-1, 1)
-        if x1 >= a:
-            y1 = uniform(-1, 1)
+        if ni%3 == 0:
+            x_east = [0, 0, 1, 1, 0, 1, 0]
+            x_west = [0, 1, 1, 1, 1, 0, 0]
+        elif ni%3 == 1:
+            x_east = [0, 0, 0, 1, 1, 0, 0]
+            x_west = [1, 0, 1, 1, 1, 0, 0]
         else:
-            y1 = uniform(b, 1)
+            x_east = [0, 0, 0, 1, 0, 1, 1]
+            x_west = [1, 1, 1, 0, 1, 1, 1]
 
         ''' train/val/test split '''
         if ni < split_bounds[0]:
-            data['x'].append(array([x0, y0], ndmin=2).T)
-            data['x'].append(array([x1, y1], ndmin=2).T)
-            data['y'].append(-1.0)
-            data['y'].append(1.0)
+            data['x'].append(array(x_east, ndmin=2).T)
+            data['x'].append(array(x_west, ndmin=2).T)
+            data['y'].append('east')
+            data['y'].append('west')
         elif split_bounds[0] <= ni < split_bounds[1]:
-            data['x_val'].append(array([x0, y0], ndmin=2).T)
-            data['x_val'].append(array([x1, y1], ndmin=2).T)
-            data['y_val'].append(-1.0)
-            data['y_val'].append(1.0)
+            data['x_val'].append(array(x_east, ndmin=2).T)
+            data['x_val'].append(array(x_west, ndmin=2).T)
+            data['y_val'].append('east')
+            data['y_val'].append('west')
         else:
-            data['x_test'].append(array([x0, y0], ndmin=2).T)
-            data['x_test'].append(array([x1, y1], ndmin=2).T)
-            data['y_test'].append(-1.0)
-            data['y_test'].append(1.0)
+            data['x_test'].append(array(x_east, ndmin=2).T)
+            data['x_test'].append(array(x_west, ndmin=2).T)
+            data['y_test'].append('east')
+            data['y_test'].append('west')
     
-    print_message(message='Got KARNIN dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
+    print_message(message='Got TRAIN dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
     dataset = open_shelve(destination, 'c')
     for key, value in data.items():
         dataset[key] = value

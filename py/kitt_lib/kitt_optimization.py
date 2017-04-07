@@ -30,8 +30,7 @@ class Pruning(object):
         self.vars['net_tmp'].learning.kw['n_epoch'] = self.kw['n_epoch']
         self.vars['net_tmp'].learning.kw['strict_termination'] = self.kw['strict_termination_learning']
         self.vars['net_tmp'].learning.kw['verbose'] = self.kw['verbose_learning']
-        if self.kw['measure'] == 'obd':
-            self.vars['net_tmp'].learning.kw['nd_der'] = True
+        self.vars['net_tmp'].learning.kw['nd_der'] = self.kw['measure'] == 'obd'
         self.prune_()
 
     def prune_(self):
@@ -110,6 +109,9 @@ class Pruning(object):
                 for ep_i in range(self.vars['net_tmp'].dw_i):
                     self.vars['net_tmp'].dw_container[l_i][ep_i] = delete(self.vars['net_tmp'].dw_container[l_i][ep_i], neurons_to_delete, axis=0)
                     self.vars['net_tmp'].dw_container[l_i+1][ep_i] = delete(self.vars['net_tmp'].dw_container[l_i+1][ep_i], neurons_to_delete, axis=1)
+            elif self.kw['measure'] == 'obd':
+                self.vars['net_tmp'].saliency[l_i] = delete(self.vars['net_tmp'].saliency[l_i], neurons_to_delete, axis=0)
+                self.vars['net_tmp'].saliency[l_i+1] = delete(self.vars['net_tmp'].saliency[l_i+1], neurons_to_delete, axis=1)
 
         # Delete neurons with no outputs
         f_ind_to_delete = where(~self.vars['net_tmp'].w_is[0].any(axis=0))[0]
@@ -135,6 +137,8 @@ class Pruning(object):
         if self.kw['measure'] == 'karnin':
             for ep_i in range(self.vars['net_tmp'].dw_i):
                 self.vars['net_tmp'].dw_container[0][ep_i] = delete(self.vars['net_tmp'].dw_container[0][ep_i], f_ind_to_delete, axis=1)
+        elif self.kw['measure'] == 'obd':
+            self.vars['net_tmp'].saliency[0] = delete(self.vars['net_tmp'].saliency[0], f_ind_to_delete, axis=1)
 
         for l_i in range(1, len(self.vars['net_tmp'].structure)-1):
             neurons_to_delete = where(~self.vars['net_tmp'].w_is[l_i].any(axis=0))[0]
@@ -152,6 +156,9 @@ class Pruning(object):
                 for ep_i in range(self.vars['net_tmp'].dw_i):
                     self.vars['net_tmp'].dw_container[l_i][ep_i] = delete(self.vars['net_tmp'].dw_container[l_i][ep_i], neurons_to_delete, axis=1)
                     self.vars['net_tmp'].dw_container[l_i-1][ep_i] = delete(self.vars['net_tmp'].dw_container[l_i-1][ep_i], neurons_to_delete, axis=0)
+            elif self.kw['measure'] == 'obd':
+                self.vars['net_tmp'].saliency[l_i] = delete(self.vars['net_tmp'].saliency[l_i], neurons_to_delete, axis=1)
+                self.vars['net_tmp'].saliency[l_i-1] = delete(self.vars['net_tmp'].saliency[l_i-1], neurons_to_delete, axis=0)
 
         # update net structure
         self.vars['net_tmp'].structure = [self.vars['net_tmp'].w[0].shape[1]]+[w.shape[0] for w in self.vars['net_tmp'].w]
