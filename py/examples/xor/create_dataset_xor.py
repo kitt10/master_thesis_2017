@@ -16,7 +16,7 @@ from kitt_monkey import print_message
 from argparse import ArgumentParser
 from sys import stderr
 from random import choice, uniform
-from math import sin, cos, pi
+from math import sqrt, sin, cos, pi
 from shelve import open as open_shelve
 from numpy import array, arange
 
@@ -49,31 +49,33 @@ if __name__ == '__main__':
     print_message(message='Generating and splitting XOR data...')
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     for ni in range(args.n_samples):
-        x0 = uniform(-0.5, 0.5)                                         # x-coordinate for sample of class 0
-        y0 = uniform(-0.5+args.class_dist, 0.5-args.class_dist)         # y-coordinate for sample of class 0
-        x1 = uniform(-0.5, 0.5)                                         # x-coordinate for sample of class 1
-        y1 = choice([uniform(-1.0, -0.5), uniform(0.5, 1.0)])           # y-coordinate for sample of class 1
+        x0, y0 = choice(((0, 0), (1, 1)))
+        x1, y1 = choice(((0, 1), (1, 0)))
 
-        ''' rotate points in space, 45deg '''
-        x0_r = x0 * cos(pi / 4) - y0 * sin(pi / 4)
-        y0_r = y0 * cos(pi / 4) + x0 * sin(pi / 4)
-        x1_r = x1 * cos(pi / 4) - y1 * sin(pi / 4)
-        y1_r = y1 * cos(pi / 4) + x1 * sin(pi / 4)
+        r0 = uniform(0, sqrt(2)/4-args.class_dist)
+        r1 = uniform(0, sqrt(2)/4-args.class_dist)
+        a0 = uniform(0, 2*pi)
+        a1 = uniform(0, 2*pi)
+
+        x0 += r0*sin(a0)
+        y0 += r0*cos(a0)
+        x1 += r1*sin(a1)
+        y1 += r1*cos(a1)
 
         ''' train/val/test split '''
         if ni < split_bounds[0]:
-            data['x'].append(array([x0_r, y0_r], ndmin=2).T)
-            data['x'].append(array([x1_r, y1_r], ndmin=2).T)
+            data['x'].append(array([x0, y0], ndmin=2).T)
+            data['x'].append(array([x1, y1], ndmin=2).T)
             data['y'].append(0.0)
             data['y'].append(1.0)
         elif split_bounds[0] <= ni < split_bounds[1]:
-            data['x_val'].append(array([x0_r, y0_r], ndmin=2).T)
-            data['x_val'].append(array([x1_r, y1_r], ndmin=2).T)
+            data['x_val'].append(array([x0, y0], ndmin=2).T)
+            data['x_val'].append(array([x1, y1], ndmin=2).T)
             data['y_val'].append(0.0)
             data['y_val'].append(1.0)
         else:
-            data['x_test'].append(array([x0_r, y0_r], ndmin=2).T)
-            data['x_test'].append(array([x1_r, y1_r], ndmin=2).T)
+            data['x_test'].append(array([x0, y0], ndmin=2).T)
+            data['x_test'].append(array([x1, y1], ndmin=2).T)
             data['y_test'].append(0.0)
             data['y_test'].append(1.0)
     

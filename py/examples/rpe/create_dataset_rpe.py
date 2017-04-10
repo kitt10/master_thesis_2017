@@ -20,7 +20,7 @@ from numpy import array, arange
 
 
 def parse_arguments():  
-    parser = ArgumentParser(description='Creates an XOR dataset for kitt_lib.')
+    parser = ArgumentParser(description='Creates an Rule-plus-Exception dataset for kitt_lib.')
     parser.add_argument('-ns', '--n_samples', type=int, default=1000,
                         help='Number of samples per class')
     parser.add_argument('-ds', '--data_split', type=float, nargs=3, default=[0.8, 0.1, 0.1],
