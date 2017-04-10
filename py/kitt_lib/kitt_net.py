@@ -176,7 +176,8 @@ class FeedForwardNet(object):
         self.tf = getattr(kitt_tf, self.tf_name)()
 
     def prune(self, req_acc=1.0, req_err=0.0, n_epoch=100, c_stable=10, levels=(75, 50, 35, 20, 10, 7, 5, 3, 1, 0),
-              measure='kitt', retrain=True, strict_termination_learning=True, verbose=True, verbose_learning=False):
+              measure='kitt', retrain=True, max_steps=inf, strict_termination_learning=True, verbose=True,
+              verbose_learning=False):
         self.opt['pruning'] = Pruning(locals())
 
     def tailor(self):

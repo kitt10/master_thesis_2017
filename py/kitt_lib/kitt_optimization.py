@@ -37,6 +37,8 @@ class Pruning(object):
         print_pruning_started(net=self.net, kw=self.kw, vars=self.vars, stats=self.stats)
         while not self.vars['pruned']:
             t0 = time()
+            if self.kw['max_steps'] == self.vars['step']:
+                break
             self.vars['step'] += 1
             self.vars['net_tmp'].set_params_(from_net=self.net)
             self.cut_()

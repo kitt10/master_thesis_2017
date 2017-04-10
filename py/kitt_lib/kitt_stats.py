@@ -16,6 +16,7 @@ mpl_params['xtick.labelsize'] = 15
 mpl_params['ytick.labelsize'] = 15
 mpl_params['legend.fontsize'] = 13
 
+
 class PruningAnalyzer(object):
 
     def __init__(self, stats_data):
@@ -36,7 +37,7 @@ class PruningAnalyzer(object):
     def analyze(self):
         for key in self.stats_data[0].keys():
             for i_obs in range(len(self.stats_data)):
-                tmp = self.stats_data[i_obs][key][-2]
+                tmp = self.stats_data[i_obs][key][-1]
                 while len(self.stats_data[i_obs][key]) <= self.pruning_steps[-1]:
                     self.stats_data[i_obs][key].append(tmp)
             
@@ -151,6 +152,7 @@ class PruningAnalyzer(object):
         plt.xticks(range(len(init_structure)), ['I']+['H'+str(k+1) for k in range(len(init_structure[1:-1]))]+['O'])
         plt.grid()
         plt.show()
+
 
 class FeatureAnalyzer(object):
 
