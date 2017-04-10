@@ -54,11 +54,11 @@ if __name__ == '__main__':
     for ni in range(args.n_samples):
         x0 = uniform(-1, a)
         y0 = uniform(-1, b)
-        x1 = uniform(-1, 1)
-        if x1 >= a:
-            y1 = uniform(-1, 1)
-        else:
-            y1 = uniform(b, 1)
+        x1 = uniform(a, 1)
+        y1 = uniform(-1, 1+(1-b))
+        if y1 > 1:
+            x1 = uniform(-1, a)
+            y1 -= 1-b
 
         ''' train/val/test split '''
         if ni < split_bounds[0]:
@@ -81,5 +81,7 @@ if __name__ == '__main__':
     dataset = open_shelve(destination, 'c')
     for key, value in data.items():
         dataset[key] = value
+    dataset['a'] = a
+    dataset['b'] = b
     dataset.close()
     print_message(message='Dataset dumped as '+destination)
