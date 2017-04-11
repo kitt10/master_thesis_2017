@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     #analyzer.analyze()
     #analyzer.plot_pruning_process(req_acc=args.req_acc)
-    #analyzer.plot_pruning_result_pie()
+    analyzer.plot_pruning_result_pie()
     '''
     for obs in range(10):
         with open('../examples/xor/net_xor_hs[50]_ra10_no10_obs'+str(obs+1)+'_pruned.net', 'r') as f:

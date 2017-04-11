@@ -25,13 +25,13 @@ This problem serves perfectly for demonstration of network optimization methods,
 \begin{subfigure}{.4\textwidth}
   \centering
   \includegraphics[height=2cm]{xor_min1}
-  \caption{Solution in 2D.}
+  \caption{Solution A.}
   \label{fig:examples:xor_min1}
 \end{subfigure}
 \begin{subfigure}{.4\textwidth}
   \centering
   \includegraphics[height=2cm]{xor_min2}
-  \caption{Solution in 3D.}
+  \caption{Solution B.}
   \label{fig:examples:xor_min2}
 \end{subfigure}
 \caption{Optimal network architectures producing the XOR function.}
@@ -77,7 +77,7 @@ transfer fcn          & sigmoid                & number of epochs               
 \label{fig:examples:pruning_process_xor}
 \end{figure}
 
-In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is confirmed. In \cref{fig:examples:pie_xor} we can see that in $ X $ cases out of 100 the pruning algorithm changed the network to $ [2, 2, 2] $ architecture (\cref{fig:examples:xor_min1}), in $ X\% $ of the cases it resulted with $ [2, 3, 2] $ (\cref{fig:examples:xor_min2}) and only in $ X\% $ it failed. \cref{fig:examples:result_synapses_xor} gives statistics for the final number of synapses in these three cases.
+In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is confirmed. In \cref{fig:examples:pie_xor} we can see that in $ 47 $ out of $ 100 $ cases the pruning algorithm changed the network to $ [2, 2, 2] $ architecture (\cref{fig:examples:xor_min1}), in $ 45\% $ of the cases it resulted with $ [2, 3, 2] $ (\cref{fig:examples:xor_min2}) and only in $ 8\% $ it failed to find the optimal architecture. \cref{fig:examples:result_synapses_xor} gives statistics for the final number of synapses in these three cases.
 
 \begin{figure}[H]
 \centering

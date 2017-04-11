@@ -52,6 +52,14 @@ if __name__ == '__main__':
     print_param(description='parameter b', param_str=str(b))
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     for ni in range(args.n_samples):
+        x1 = uniform(-1, 1)
+        x2 = uniform(-1, 1)
+        if x1 < a and x2 <= b:
+            y = 0.0
+        else:
+            y = 1.0
+
+        '''
         x0 = uniform(-1, a)
         y0 = uniform(-1, b)
         x1 = uniform(a, 1)
@@ -59,23 +67,24 @@ if __name__ == '__main__':
         if y1 > 1:
             x1 = uniform(-1, a)
             y1 -= 1-b
+        '''
 
         ''' train/val/test split '''
         if ni < split_bounds[0]:
-            data['x'].append(array([x0, y0], ndmin=2).T)
-            data['x'].append(array([x1, y1], ndmin=2).T)
-            data['y'].append(-1.0)
-            data['y'].append(1.0)
+            data['x'].append(array([x1, x2], ndmin=2).T)
+            #data['x'].append(array([x1, y1], ndmin=2).T)
+            data['y'].append(y)
+            #data['y'].append(1.0)
         elif split_bounds[0] <= ni < split_bounds[1]:
-            data['x_val'].append(array([x0, y0], ndmin=2).T)
-            data['x_val'].append(array([x1, y1], ndmin=2).T)
-            data['y_val'].append(-1.0)
-            data['y_val'].append(1.0)
+            data['x_val'].append(array([x1, x2], ndmin=2).T)
+            #data['x_val'].append(array([x1, y1], ndmin=2).T)
+            data['y_val'].append(y)
+            #data['y_val'].append(1.0)
         else:
-            data['x_test'].append(array([x0, y0], ndmin=2).T)
-            data['x_test'].append(array([x1, y1], ndmin=2).T)
-            data['y_test'].append(-1.0)
-            data['y_test'].append(1.0)
+            data['x_test'].append(array([x1, x2], ndmin=2).T)
+            #data['x_test'].append(array([x1, y1], ndmin=2).T)
+            data['y_test'].append(y)
+            #data['y_test'].append(1.0)
     
     print_message(message='Got KARNIN dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
     dataset = open_shelve(destination, 'c')
