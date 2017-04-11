@@ -21,7 +21,7 @@ from numpy import array, arange
 
 def parse_arguments():  
     parser = ArgumentParser(description='Creates an Rule-plus-Exception dataset for kitt_lib.')
-    parser.add_argument('-ns', '--n_samples', type=int, default=1000,
+    parser.add_argument('-ns', '--n_samples', type=int, default=10000,
                         help='Number of samples per class')
     parser.add_argument('-ds', '--data_split', type=float, nargs=3, default=[0.8, 0.1, 0.1],
                         choices=list(arange(start=0.0, stop=1.0, step=0.01)),
@@ -44,6 +44,8 @@ if __name__ == '__main__':
 
     print_message(message='Generating and splitting RPE data...')
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
+    ab = 0
+    abcd = 0
     for ni in range(args.n_samples):
         a = choice((0, 1))
         b = choice((0, 1))
@@ -51,8 +53,10 @@ if __name__ == '__main__':
         d = choice((0, 1))
         if a == 1 and b == 1:
             y = 1
+            ab += 1
         elif 1 not in (a, b, c, d):
             y = 1
+            abcd += 1
         else:
             y = 0
 
@@ -66,7 +70,10 @@ if __name__ == '__main__':
         else:
             data['x_test'].append(array([a, b, c, d], ndmin=2).T)
             data['y_test'].append(y)
-    
+    print ab
+    print abcd
+    print args.n_samples
+    exit()
     print_message(message='Got RPE dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
     dataset = open_shelve(destination, 'c')
     for key, value in data.items():

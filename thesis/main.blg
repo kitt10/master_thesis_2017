@@ -4,7 +4,7 @@ The top-level auxiliary file: main.aux
 The style file: biblatex.bst
 A level-1 auxiliary file: tex/chap/chap_introduction.aux
 A level-1 auxiliary file: tex/chap/chap_methods.aux
-A level-1 auxiliary file: tex/chap/chap_results.aux
+A level-1 auxiliary file: tex/chap/chap_examples.aux
 A level-1 auxiliary file: tex/chap/chap_discussion.aux
 A level-1 auxiliary file: tex/chap/chap_conclusion.aux
 A level-1 auxiliary file: tex/appx/app_structure_of_the_workspace.aux
@@ -26,44 +26,44 @@ Database file #2: bib/thesis_bibliography.bib
 Biblatex version: 3.3
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-You've used 4 entries,
+You've used 7 entries,
             6047 wiz_defined-function locations,
-            1157 strings with 9415 characters,
-and the built_in function-call counts, 12419 in all, are:
-= -- 363
-> -- 826
-< -- 115
-+ -- 560
-- -- 572
-* -- 690
-:= -- 1294
+            1178 strings with 9939 characters,
+and the built_in function-call counts, 27058 in all, are:
+= -- 1069
+> -- 1696
+< -- 329
++ -- 1180
+- -- 1122
+* -- 1377
+:= -- 2404
 add.period$ -- 0
-call.type$ -- 4
-change.case$ -- 31
-chr.to.int$ -- 75
-cite$ -- 6
-duplicate$ -- 1099
-empty$ -- 1139
-format.name$ -- 165
-if$ -- 2392
+call.type$ -- 7
+change.case$ -- 165
+chr.to.int$ -- 112
+cite$ -- 12
+duplicate$ -- 2504
+empty$ -- 2397
+format.name$ -- 333
+if$ -- 5416
 int.to.chr$ -- 0
-int.to.str$ -- 6
+int.to.str$ -- 15
 missing$ -- 0
-newline$ -- 90
-num.names$ -- 123
-pop$ -- 1013
+newline$ -- 161
+num.names$ -- 356
+pop$ -- 1986
 preamble$ -- 1
-purify$ -- 39
+purify$ -- 181
 quote$ -- 0
-skip$ -- 618
+skip$ -- 1465
 stack$ -- 0
-substring$ -- 351
-swap$ -- 376
-text.length$ -- 110
-text.prefix$ -- 3
+substring$ -- 1088
+swap$ -- 853
+text.length$ -- 203
+text.prefix$ -- 6
 top$ -- 1
-type$ -- 140
+type$ -- 254
 warning$ -- 0
-while$ -- 132
+while$ -- 212
 width$ -- 0
-write$ -- 85
+write$ -- 153

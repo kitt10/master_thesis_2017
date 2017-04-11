@@ -36,6 +36,59 @@
   \field{year}{1958}
 \endentry
 
+\entry{mozer_smolensky}{inproceedings}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Mozer}{M.}%
+     {Michael~C.}{M.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Smolensky}{S.}%
+     {Paul}{P.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {CO 80309-0430}%
+  }
+  \strng{namehash}{MMCSP1}
+  \strng{fullhash}{MMCSP1}
+  \field{labelyear}{1989}
+  \field{sortinit}{1}
+  \field{booktitle}{Boulder}
+  \field{pages}{107\bibrangedash 115}
+  \field{title}{Skeletonization: A Technique for Trimming the Fat from a
+  Network via Relevance Assessment}
+  \list{location}{1}{%
+    {Institute of Cognitive Science, University of Colorado}%
+  }
+  \field{year}{1989}
+\endentry
+
+\entry{karnin}{inproceedings}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Karnin}{K.}%
+     {Ehud~D.}{E.~D.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {IEEE Transaction on Neural Networks}%
+  }
+  \strng{namehash}{KED1}
+  \strng{fullhash}{KED1}
+  \field{labelyear}{1990}
+  \field{sortinit}{1}
+  \field{booktitle}{Letters}
+  \field{pages}{239\bibrangedash 242}
+  \field{title}{A Simple Procedure for Pruning Back-Propagation Trained Neural
+  Networks}
+  \field{year}{1990}
+  \warn{\item Invalid format of field 'month'}
+\endentry
+
 \entry{article:pruning_algorithms}{article}{}
   \name{author}{1}{}{%
     {{}%
@@ -92,6 +145,26 @@
   \verb http://yann.lecun.com/exdb/mnist/
   \endverb
   \field{year}{1998}
+\endentry
+
+\entry{online:xor_solution}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Bradley}{B.}%
+     {Peter}{P.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BP1}
+  \strng{fullhash}{BP1}
+  \field{labelyear}{2006}
+  \field{sortinit}{2}
+  \field{title}{The XOR Problem and Solution}
+  \verb{url}
+  \verb http://www.mind.ilstu.edu/curriculum/artificial_neural_net/xor_problem_
+  \verb and_solution.php
+  \endverb
+  \field{year}{2006}
 \endentry
 
 \lossort

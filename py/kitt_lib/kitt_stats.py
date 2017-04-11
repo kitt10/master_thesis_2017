@@ -11,10 +11,10 @@ from cPickle import dump as dump_cpickle, load as load_cpickle
 from numpy import mean, std, var, unique, array
 from matplotlib import pyplot as plt, rcParams as mpl_params, patches as mpl_patches
 
-mpl_params['axes.labelsize'] = 18
-mpl_params['xtick.labelsize'] = 15
-mpl_params['ytick.labelsize'] = 15
-mpl_params['legend.fontsize'] = 13
+mpl_params['axes.labelsize'] = 32
+mpl_params['xtick.labelsize'] = 32
+mpl_params['ytick.labelsize'] = 25
+mpl_params['legend.fontsize'] = 30
 
 
 class PruningAnalyzer(object):
@@ -35,6 +35,7 @@ class PruningAnalyzer(object):
             self.pruning_steps = None
 
     def analyze(self):
+        self.stats_data = [self.stats_data[7]]
         for key in self.stats_data[0].keys():
             for i_obs in range(len(self.stats_data)):
                 tmp = self.stats_data[i_obs][key][-1]
@@ -45,6 +46,8 @@ class PruningAnalyzer(object):
                 self.means[key] = [mean([obs[key][i_layer] for obs in self.stats_data], axis=0) for i_layer in range(len(self.stats_data[0][key]))]
                 self.stds[key] = [std([obs[key][i_layer] for obs in self.stats_data], axis=0) for i_layer in range(len(self.stats_data[0][key]))]
                 self.vars[key] = [var([obs[key][i_layer] for obs in self.stats_data], axis=0) for i_layer in range(len(self.stats_data[0][key]))]
+            elif key == 'th':
+                continue
             else:
                 self.means[key] = mean([obs[key] for obs in self.stats_data], axis=0)
                 self.stds[key] = std([obs[key] for obs in self.stats_data], axis=0)
@@ -74,9 +77,11 @@ class PruningAnalyzer(object):
         if pruning_steps:
             self.pruning_steps = pruning_steps
         for i_step, step in enumerate(self.pruning_steps):
-            alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
-            ax1.bar(i_step-0.3, width=0.3, height=self.means['n_synapses_total'][step], color='maroon', alpha=alpha)
-            ax2.bar(i_step, width=0.3, height=self.means['acc'][step], color='darkgreen', alpha=alpha)
+            #alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
+            color1 = 'maroon' if self.means['retrained'][step] > 0.5 else '#e5cccc'
+            color2 = 'darkgreen' if self.means['retrained'][step] > 0.5 else '#cce0cc'
+            ax1.bar(i_step-0.3, width=0.3, height=self.means['n_synapses_total'][step], color=color1, alpha=1.0)
+            ax2.bar(i_step, width=0.3, height=self.means['acc'][step], color=color2, alpha=1.0)
         
         ax1.set_xlabel('pruning step')
         ax1.set_ylabel('number of synapses', color='maroon')
@@ -92,15 +97,16 @@ class PruningAnalyzer(object):
             tl.set_color('darkgreen')
         
         blue_patch = mpl_patches.Patch(color='darkblue', label='net structure')
-        plt.legend([blue_patch, dashed_line], [p.get_label() for p in [blue_patch, dashed_line]], loc='upper center')
+        plt.legend([blue_patch, dashed_line], [p.get_label() for p in [blue_patch, dashed_line]], loc='upper right')
 
         for i_step, step in enumerate(self.pruning_steps):
             if self.means['retrained'][step] > 0.5:
                 plt.annotate(str([int(n) for n in self.means['structure'][step].tolist()]).replace(',', '-').replace(' ', '')[1:-1], xy=(i_step-0.1, 0.5),
-                            horizontalalignment='center', verticalalignment='center', fontsize=13, color='white', rotation=75, backgroundcolor='darkblue')
-            alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
+                            horizontalalignment='center', verticalalignment='center', fontsize=25, color='white', rotation=75, backgroundcolor='darkblue')
+            #alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
+            color1 = 'maroon' if self.means['retrained'][step] > 0.5 else '#e5cccc'
             plt.annotate(int(self.means['n_synapses_total'][step]), xy=(i_step-0.3, self.means['n_synapses_total'][step]/self.means['n_synapses_total'][0]+0.03),
-                        horizontalalignment='center', verticalalignment='center', fontsize=13, color='maroon', alpha=alpha)
+                        horizontalalignment='center', verticalalignment='center', fontsize=25, color=color1, alpha=1.0)
 
         plt.grid()
         plt.xlim([-1, len(self.pruning_steps)])
@@ -109,6 +115,57 @@ class PruningAnalyzer(object):
             plt.savefig(savefig_name, bbox_inches='tight', pad_inches=0.1)
         if show_fig:
             plt.show()
+
+    def plot_pruning_result_pie(self):
+        labels = 'solution A (2-2-2)', 'solution B (2-3-2)', 'other'
+        n_222 = 0
+        ns_222 = list()
+        n_232 = 0
+        ns_232 = list()
+        n_other = 0
+        ns_other = list()
+        for obs in self.stats_data:
+            ind = max([i for i, r in enumerate(obs['retrained']) if r])
+            if obs['structure'][ind] == [2, 2, 2]:
+                n_222 += 1
+                ns_222.append(obs['n_synapses'][ind][0])
+            elif obs['structure'][ind] == [2, 3, 2]:
+                n_232 += 1
+                ns_232.append(obs['n_synapses'][ind][0])
+            else:
+                n_other += 1
+                ns_other.append(obs['n_synapses'][ind][0])
+        sizes = [n_222, n_232, n_other]
+        colors = ['darkblue', 'darkgreen', 'maroon']
+        explode = (0, 0, 0.1)
+        patches, _, texts = plt.pie(sizes, explode=explode, colors=colors, shadow=True, startangle=140,
+                            autopct = '%1.0f%%')
+        texts[0].set_fontsize(35)
+        texts[1].set_fontsize(35)
+        texts[2].set_fontsize(35)
+        plt.legend(patches, labels, loc="lower right")
+        plt.axis('equal')
+        plt.show()
+
+        medianprops = dict(linestyle='-', linewidth=3, color='black')
+        meanpointprops = dict(marker='D', markeredgecolor='black',
+                              markerfacecolor='black')
+        boxes = plt.boxplot([ns_222, ns_232, ns_other], widths=[0.75]*3, positions=range(3), patch_artist=True, medianprops=medianprops,
+                            meanprops=meanpointprops, showmeans=True)
+        xlabs = plt.gca().get_xticklabels()
+        for box, xlab, color in zip(boxes['boxes'], xlabs, colors):
+            box.set_facecolor(color)
+            box.set_color(color)
+            xlab.set_color(color)
+
+        plt.xlim([-0.5, 2.5])
+        plt.xticks(range(3), labels, rotation=-15)
+        plt.xlabel('structure after pruning')
+        plt.ylim([4, 15])
+        plt.ylabel('number of synapses')
+        plt.grid()
+        plt.show()
+
         
     def plot_pruning_results(self, show_fig=True, savefig_name=None, max_synapses_in_layer=0):
         init_structure = self.means['structure'][0]

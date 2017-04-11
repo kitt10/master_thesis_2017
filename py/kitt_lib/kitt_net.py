@@ -155,6 +155,8 @@ class FeedForwardNet(object):
         net_pack = {'w': self.w, 'b': self.b, 'w_is': self.w_is, 'b_is': self.b_is, 'w_init': self.w_init,
                     'b_init': self.b_init, 'structure': self.structure, 'tf': self.tf_name, 'labels': self.labels,
                     'features': self.used_features, 'label_sign': self.label_sign}
+        if 'pruning' in self.opt.keys():
+            net_pack['pruning_stats'] = self.opt['pruning'].stats
         with open(net_file_name, 'w') as f:
             dump_cpickle(net_pack, f)
         print_message(message='Net dumped as '+net_file_name)
