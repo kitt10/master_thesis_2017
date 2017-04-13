@@ -1,7 +1,7 @@
 \chapter{Examples} \label{chap:examples}
 The pruning algorithm is presented on several examples, where each of them has its purpose of being shown. The XOR problem (\cref{sec:dataset_xor}) should verify the ability of finding an optimal network structure. Section \ref{sec:dataset_unbfea} comes with another 2D problem, where one feature carries more information than the other one. The Rule-plus-Exception problem in \cref{sec:dataset_rpe} deals with a minority of samples that has to be treated by a different net part than rule-based samples. The train problem (\cref{sec:dataset_train}) is a working example of feature selection procedure. The MNIST database (\cref{sec:dataset_mnist}) is widely used in machine learning and can be regarded as commonly known. Therefore it is a good example for presentation of new methods. Finally, in \cref{sec:dataset_phonemes} the pruning algorithm is applied on a large dataset of phonemes.
 
-\section{2D-problem A: XOR Function} \label{sec:dataset_xor}
+\section{2D-problem: XOR Function} \label{sec:dataset_xor}
 The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:xor_function}. Based on this function one can build a classification problem with two features and two classes.
 
 \begin{table}[H]
@@ -14,7 +14,7 @@ The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:
 1                & 0                & 1          \\ \hline
 1                & 1                & 0          \\ \hline
 \end{tabular}
-\caption{Standard XOR function.}
+\caption{XOR function.}
 \label{tab:examples:xor_function}
 \end{table}
 
@@ -97,22 +97,107 @@ In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is c
 \label{fig:examples:pruning_result_xor}
 \end{figure}
 
-\section{2D-problem B: Unbalanced Features} \label{sec:dataset_unbfea}
-This example is adopted from \citep{karnin}. The problem is again two-dimensional having two non-overlapping classes as depicted in \cref{fig:examples:dataset_unbfea}. The samples are uniformly distributed in $ [-1, 1] $ x $ [-1, 1] $ and the classes are equally probable, separated by two lines in 2D space ($ x_1 = a $ and $ x_2 = b $, where $ a = 0.1 $ and $ b = \frac{2}{a+1} - 1 $). Therefore, the problem can be solved by two neurons, similarly as the previous one.
+\section{2D-problem: Unbalanced Feature Information} \label{sec:dataset_unbfea}
+This example is adopted from \citep{karnin}. The problem is again two-dimensional having two non-overlapping classes as depicted in \cref{fig:examples:dataset_unbfea}. The samples are uniformly distributed in $ [-1, 1] $ x $ [-1, 1] $ and the classes are equally probable, separated by two lines in 2D space ($ x_1 = a $ and $ x_2 = b $, where $ a = 0.1 $ and $ b = \frac{2}{a+1} - 1 \approx 0.82 $). Clearly, the problem can be solved by two neurons, similarly as the previous one.
 
-What is interesting about this two-classes layout is that feature $ x_1 $ is much more important for the global classification accuracy than feature $ x_2 $. Having $ x_1 $ information, based on \cref{fig:examples:dataset_unbfea} one could potentially classify about $ 80-90\% $ of the samples. Opposite of that, we cannot say much with information from feature $ x_2 $ only. And this is something what also the pruning algorithm should find out.
+What is interesting about this two-classes layout is that feature $ x_1 $ is much more important for the global classification accuracy than feature $ x_2 $. Having $ x_1 $ information, based on \cref{fig:examples:dataset_unbfea} one could potentially classify more than $ 90\% $ of the samples. Opposite of that, we cannot say much with information from feature $ x_2 $ only. And this is something what also the pruning algorithm should find out.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{dataset_unbfea.eps}
-\caption{A dataset with unbalanced feature importance.}
+\includegraphics[width=0.9\textwidth]{dataset_unbfea.eps}
+\caption{Dataset with unbalanced feature information.}
 \label{fig:examples:dataset_unbfea}
 \end{figure}
 
-\subsection*{Results: Unbalanced Features}
+Hence, we focus on synapses connecting the input and hidden layer. We know the required network structure is $ [2, 2, 2] $, as two lines are needed to separate the data in 2D space. Actually, we even know the lines must be parallel to coordinate axes, which means that each of the hidden units needs one of the features only. Therefore, the first hypothesis here is that pruning of input-hidden synapses should result in one of the cases in \cref{fig:examples:unbfea_hypos}.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.4\textwidth}
+  \centering
+  \includegraphics[height=2cm]{unbfea_hypo1}
+  \caption{Pruning result 1.}
+  \label{fig:examples:unbfea_hypo1}
+\end{subfigure}
+\begin{subfigure}{.4\textwidth}
+  \centering
+  \includegraphics[height=2cm]{unbfea_hypo2}
+  \caption{Pruning result 2.}
+  \label{fig:examples:unbfea_hypo2}
+\end{subfigure}
+\caption{Expected pruning of input-hidden synapses.}
+\label{fig:examples:unbfea_hypos}
+\end{figure}
+
+To prove this behaviour, we ran an experiment with settings in \cref{tab:examples:unbfea_settings}.
+
+\begin{table}[H]
+\centering
+\scalebox{0.95}{
+\begin{tabular}{|l|c|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
+structure             & {[}2, 2, 2{]}          & learning rate                  & 0.7              & required accuracy             & 0.98             \\ \hline
+transfer fcn          & sigmoid                & number of epochs               & 50               & retrain                       & True             \\ \hline
+                      &                        & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
+\end{tabular}}
+\caption{Experiment settings for dataset with unbalanced feature information.}
+\label{tab:examples:unbfea_settings}
+\end{table}
+
+The second hypothesis is that the synapse connected to the first feature ($ x_1 $) is more important and therefore, the other synapse (the one connected to feature $ x_2 $) will always be removed first.
+
+\subsection*{Results: Unbalanced Feature Information}
+In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirmed. The pruning of input-hidden synapses finished with the result shown in \cref{fig:examples:unbfea_hypo1} in $ 48 $ out of $ 100 $ observations and with the result in \cref{fig:examples:unbfea_hypo2} in $ 44\% $ of the cases.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{pruning_result_pie_unbfea.eps}
+\caption{Results of pruning in input-hidden layer (100 observations).}
+\label{fig:examples:pruning_result_pie_unbfea}
+\end{figure}
+
+In other words, with a probability of $ 92\% $ the algorithm is able to find the axes-parallel lines and reveals that each of the lines needs information from one feature only. In the remaining $ 8\% $ of the cases the pruning resulted with more than two input-hidden synapses.
+
+The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. As we can see, the coefficient of synapses's significance was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low coefficients first, therefore information coming from feature $ x_1 $ would live longer in the network than $ x_2 $ information.
+
+This result is not surprising at all. Having $ w_{r1} $ the weight of synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ the weight of synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{article:perceptron} we created two lines, perpendicular one to each other.
+
+\begin{align}
+w_{r1} \cdot x_1 + 0 \cdot x_2 + b_r &= 0 \\
+x_1 &= -\frac{b_r}{w_{r1}} \\
+0 \cdot x_1 + w_{s2} \cdot x_2 + b_s &= 0 \\
+x_2 &= -\frac{b_s}{w_{s2}}
+\end{align}
+
+
+The feature vectors are normalised (described in \cref{chap:methods}) and in \cref{fig:examples:dataset_unbfea} we see that $ |b| > |a| $, hence we want:
+
+\begin{align}
+|- \frac{b_s}{w_{s2}}| &> |- \frac{b_r}{w_{r1}}| \\
+\frac{|b_s|}{|w_{s2}|} &> \frac{|b_r|}{|w_{r1}|} \\
+|w_{s2}| &< |w_{r1}|
+\end{align}
+
+Out of this we expect greater magnitudes for weights of more important synapses - so the magnitude measure [eqref] would fit here.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{unbfea_synapse_weight_change.eps}
+\caption{Weight change in training for the remaining synapses in the input-hidden layer (100 observations).}
+\label{fig:examples:unbfea_synapse_weight_change}
+\end{figure}
+
+However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not effect the result significantly and so we can state:
+
+\begin{equation}
+|w_{ji}| \approx |w_{ji} - w0_{ji}|
+\end{equation}
+
+where $ w0_{ji} \in [0, 1] $ is the initial value of weight $ w_{ji} $. Summing it up we can say that the \textit{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
 
 \section{The Rule-plus-Exception Problem} \label{sec:dataset_rpe}
-This problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. In this case the problem is four-dimensional. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}. It should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
+This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}. It should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
 
 Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method will reveal the part of network, which deals with the \textit{exception}, to be eliminated first - before the part of network dealing with the \textit{rule}.
 
@@ -123,7 +208,7 @@ The Michalski's train problem...
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{train_problem}
+\includegraphics[width=0.7\textwidth]{train_problem}
 \caption{Michalski's train problem.}
 \label{fig:examples:dataset_train}
 \end{figure}
