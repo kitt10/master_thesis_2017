@@ -73,7 +73,7 @@ if __name__ == '__main__':
     print ab
     print abcd
     print args.n_samples
-    exit()
+
     print_message(message='Got RPE dataset: '+str(len(data['x']))+' : '+str(len(data['x_val']))+' : '+str(len(data['x_test']))+', saving...')
     dataset = open_shelve(destination, 'c')
     for key, value in data.items():

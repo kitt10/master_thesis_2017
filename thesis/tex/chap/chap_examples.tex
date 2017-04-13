@@ -104,7 +104,7 @@ What is interesting about this two-classes layout is that feature $ x_1 $ is muc
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{dataset_unbfea.eps}
+\includegraphics[width=0.85\textwidth]{dataset_unbfea.eps}
 \caption{Dataset with unbalanced feature information.}
 \label{fig:examples:dataset_unbfea}
 \end{figure}
@@ -125,7 +125,7 @@ Hence, we focus on synapses connecting the input and hidden layer. We know the r
   \caption{Pruning result 2.}
   \label{fig:examples:unbfea_hypo2}
 \end{subfigure}
-\caption{Expected pruning of input-hidden synapses.}
+\caption{Expected pruning of input-hidden synapses (Unbalanced features problem).}
 \label{fig:examples:unbfea_hypos}
 \end{figure}
 
@@ -153,7 +153,7 @@ In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirm
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{pruning_result_pie_unbfea.eps}
-\caption{Results of pruning in input-hidden layer (100 observations).}
+\caption{Results of pruning (see \cref{fig:examples:unbfea_hypos}) in input-hidden layer (100 observations).}
 \label{fig:examples:pruning_result_pie_unbfea}
 \end{figure}
 
@@ -161,34 +161,30 @@ In other words, with a probability of $ 92\% $ the algorithm is able to find the
 
 The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. As we can see, the coefficient of synapses's significance was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low coefficients first, therefore information coming from feature $ x_1 $ would live longer in the network than $ x_2 $ information.
 
-This result is not surprising at all. Having $ w_{r1} $ the weight of synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ the weight of synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{article:perceptron} we created two lines, perpendicular one to each other.
-
+This result can be explained for such simple example. Assuming $ w_{r1} $ to be the weight of synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ the weight of synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{article:perceptron} we created two lines, perpendicular one to each other, as follows.
 \begin{align}
-w_{r1} \cdot x_1 + 0 \cdot x_2 + b_r &= 0 \\
-x_1 &= -\frac{b_r}{w_{r1}} \\
-0 \cdot x_1 + w_{s2} \cdot x_2 + b_s &= 0 \\
-x_2 &= -\frac{b_s}{w_{s2}}
+w_{r1} \cdot x_1 + 0 \cdot x_2 &= b_r \\
+x_1 &= \frac{b_r}{w_{r1}} \\
+0 \cdot x_1 + w_{s2} \cdot x_2 &= b_s \\
+x_2 &= \frac{b_s}{w_{s2}}
 \end{align}
 
-
-The feature vectors are normalised (described in \cref{chap:methods}) and in \cref{fig:examples:dataset_unbfea} we see that $ |b| > |a| $, hence we want:
-
+The feature vectors are normalised (described in \cref{chap:methods}) and in \cref{fig:examples:dataset_unbfea} we see that $ |a| < |b| $, hence we want:
 \begin{align}
-|- \frac{b_s}{w_{s2}}| &> |- \frac{b_r}{w_{r1}}| \\
-\frac{|b_s|}{|w_{s2}|} &> \frac{|b_r|}{|w_{r1}|} \\
-|w_{s2}| &< |w_{r1}|
+|\frac{b_r}{w_{r1}}| &< |\frac{b_s}{w_{s2}}| \\
+|w_{r1}| &> |w_{s2}|
 \end{align}
 
-Out of this we expect greater magnitudes for weights of more important synapses - so the magnitude measure [eqref] would fit here.
+Out of this we expect a weight magnitude to be greater the more important the corresponding synapse is.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{unbfea_synapse_weight_change.eps}
+\includegraphics[width=0.75\textwidth]{unbfea_synapse_weight_change.eps}
 \caption{Weight change in training for the remaining synapses in the input-hidden layer (100 observations).}
 \label{fig:examples:unbfea_synapse_weight_change}
 \end{figure}
 
-However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not effect the result significantly and so we can state:
+However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not affect the result significantly and so we can state:
 
 \begin{equation}
 |w_{ji}| \approx |w_{ji} - w0_{ji}|
@@ -197,11 +193,62 @@ However, as we do not use a weight decay (see the learning approach in \cref{cha
 where $ w0_{ji} \in [0, 1] $ is the initial value of weight $ w_{ji} $. Summing it up we can say that the \textit{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
 
 \section{The Rule-plus-Exception Problem} \label{sec:dataset_rpe}
-This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}. It should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
+This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}, and it should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
 
 Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method will reveal the part of network, which deals with the \textit{exception}, to be eliminated first - before the part of network dealing with the \textit{rule}.
 
+To test this example, a dataset of $ 10000 $ samples was generated. Each sample consists of four features: $ [a, b, c, d] $. Each of these features (for every sample) was randomly set to be \textit{on} ($ 1 $) or \textit{off} ($ 0 $). Then, whenever the \textit{rule} occured ($ a = 1 \wedge b = 1 $), the sample was assigned to class $ 1 $ (as a \textit{rule} sample). If the \textit{exception} occured ($ a = 0 \wedge b = 0 \wedge c = 0 \wedge d = 0 $), the sample was also labeled as $ 1 $ (as an \textit{exception} sample). Otherwise, the sample was assigned to class $ 0 $. Thereby the generated dataset consisted of:
+
+\begin{itemize}
+\item $ 2511 $ \textit{rule} samples (class $ 1 $);
+\item $ 649 $ \textit{exception} samples (class $ 1 $);
+\item $ 6840 $ samples in class $ 0 $.
+\end{itemize}
+
+The function is expected to be learned by two hidden neurons, one dealing with the \textit{rule} and the other one with the \textit{exception}. We focus on input-hidden layer again. Two possibilities of expected pruning result are shown in \cref{fig:examples:rpe_hypos}.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.4\textwidth}
+  \centering
+  \includegraphics[height=3.5cm]{rpe_hypo1}
+  \caption{Pruning result 1.}
+  \label{fig:examples:rpe_hypo1}
+\end{subfigure}
+\begin{subfigure}{.4\textwidth}
+  \centering
+  \includegraphics[height=3.5cm]{rpe_hypo2}
+  \caption{Pruning result 2.}
+  \label{fig:examples:rpe_hypo2}
+\end{subfigure}
+\caption{Expected pruning of input-hidden synapses (RPE problem).}
+\label{fig:examples:rpe_hypos}
+\end{figure}
+
+We ran the learning-pruning procedure with the settings listed in \cref{tab:examples:rpe_settings}.
+
+\begin{table}[H]
+\centering
+\scalebox{0.95}{
+\begin{tabular}{|l|c|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
+structure             & {[}2, 2, 2{]}          & learning rate                  & 0.7              & required accuracy             & 1.0             \\ \hline
+transfer fcn          & sigmoid                & number of epochs               & 10               & retrain                       & True             \\ \hline
+                      &                        & minibatch size                 & 1                & retraining epochs             & 10               \\ \hline
+\end{tabular}}
+\caption{Experiment settings for dataset with unbalanced feature information.}
+\label{tab:examples:rpe_settings}
+\end{table}
+
 \subsection*{Results: The Rule-plus-Exception}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{pruning_result_rpe.eps}
+\caption{Weight change in training for synapses in input-hidden layer (100 observations, RPE problem).}
+\label{fig:examples:pruning_result_rpe}
+\end{figure}
 
 \section{The Train Problem} \label{sec:dataset_train}
 The Michalski's train problem...

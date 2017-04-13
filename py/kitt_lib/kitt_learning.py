@@ -47,8 +47,8 @@ class Backpropagation(object):
             nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
 
-        self.net.w = multiply([w-self.kw['learning_rate']*nw for w, nw in zip(self.net.w, nabla_w)], self.net.w_is)
-        self.net.b = multiply([b-self.kw['learning_rate']*nb for b, nb in zip(self.net.b, nabla_b)], self.net.b_is)
+        self.net.w = [multiply(ww, ww_is) for ww, ww_is in zip([w-self.kw['learning_rate']*nw for w, nw in zip(self.net.w, nabla_w)], self.net.w_is)]
+        self.net.b = [multiply(bb, bb_is) for bb, bb_is in zip([b-self.kw['learning_rate']*nb for b, nb in zip(self.net.b, nabla_b)], self.net.b_is)]
 
         for l, dw in enumerate(nabla_w):
             if self.net.dw_i > len(self.net.dw_container[l]):
