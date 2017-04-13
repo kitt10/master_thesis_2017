@@ -233,15 +233,25 @@ We ran the learning-pruning procedure with the settings listed in \cref{tab:exam
 \begin{tabular}{|l|c|l|c|l|c|}
 \hline
 \multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
-structure             & {[}2, 2, 2{]}          & learning rate                  & 0.7              & required accuracy             & 1.0             \\ \hline
-transfer fcn          & sigmoid                & number of epochs               & 10               & retrain                       & True             \\ \hline
-                      &                        & minibatch size                 & 1                & retraining epochs             & 10               \\ \hline
+structure             & {[}2, 2, 2{]}          & learning rate                  & 1.0              & required accuracy             & 1.0             \\ \hline
+transfer fcn          & sigmoid                & number of epochs               & 50               & retrain                       & True             \\ \hline
+                      &                        & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
 \end{tabular}}
 \caption{Experiment settings for dataset with unbalanced feature information.}
 \label{tab:examples:rpe_settings}
 \end{table}
 
 \subsection*{Results: The Rule-plus-Exception}
+\cref{fig:examples:pruning_result_pie_rpe} supports the hypothesis that one hidden neuron forms the \textit{rule} and the other one the \textit{exception}. With a probability of $ 97\% $ the pruning finished with one of the structures in \cref{fig:examples:rpe_hypos}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{pruning_result_pie_rpe.eps}
+\caption{Results of pruning (see \cref{fig:examples:rpe_hypos}) in input-hidden layer (100 observations, RPE problem).}
+\label{fig:examples:pruning_result_pie_rpe}
+\end{figure}
+
+The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows weight changes in training (coefficients of significance) for all 8 synapses in input-hidden layer. We can see that synapses connecting the \textit{rule} neuron with feature \textit{c} ($ s_{rc}) $ and \textit{d} ($ s_{rd} $) were eliminated first (resulting in structures in \cref{fig:examples:rpe_hypos}).
 
 \begin{figure}[H]
 \centering
@@ -249,6 +259,8 @@ transfer fcn          & sigmoid                & number of epochs               
 \caption{Weight change in training for synapses in input-hidden layer (100 observations, RPE problem).}
 \label{fig:examples:pruning_result_rpe}
 \end{figure}
+
+Additionally, synapses responsible for \textit{rule} ($ s_{ra} $ and $ s_{rb} $) have greater mean significance than the synapses connected with the \textit{exception} neuron ($ s_{e*} $).
 
 \section{The Train Problem} \label{sec:dataset_train}
 The Michalski's train problem...
