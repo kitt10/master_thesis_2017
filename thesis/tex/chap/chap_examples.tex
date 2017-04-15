@@ -351,7 +351,43 @@ The dataset was downloaded from \citep{online:mnist}. Some of the digits were wr
 \label{fig:examples:dataset_mnist}
 \end{figure}
 
-Each sample is a grayscale image (normalised to $ [0, 1] $) of size $ 28x28 $ pixels. This gives row-by-row a vector of $ 784 $ features.
+Each sample is a grayscale image (normalised to $ [0, 1] $) of size $ 28x28 $ pixels. This gives row-by-row a vector of $ 784 $ features. The data was splitted into a training set of $ 50000 $ samples, a validation set of $ 10000 $ samples and a testing set of $ 10000 $ samples.
+
+From \citep{online:mnist} we know the problem can be learnt by a feedforward network with one hidden layer up to high accuracy ($ 98-99\% $). The first task is to achieve similar results with the implemented neural net framework. We tested the following learning settings (\cref{tab:examples:mnist_training_settings}).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{\textit{network parameters}} & \multicolumn{2}{c|}{\textit{learning parameters}} \\ \hline
+structure               & {[}784, 20, 10{]}       & learning rate                  & 0.3              \\ \hline
+transfer function       & Sigmoid                 & number of epochs               & 100              \\ \hline
+       &                  & batch size               & 10              \\ \hline
+\end{tabular}
+\caption{Settings for learning a dense feedforward net the MNIST dataset.}
+\label{tab:examples:mnist_training_settings}
+\end{table}
+
+The training results are summarized in \cref{tab:examples:mnist_training_results}. A confusion matrix for testing data is given in \cref{fig:examples:mnist_cm}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+                       & \multicolumn{1}{l|}{\textit{accuracy}} & \multicolumn{1}{l|}{\textit{MSE}} \\ \hline
+\textit{training data} & 0.972                                      & 0.526                                 \\ \hline
+\textit{testing data}  & 0.943                                     & 1.025                                 \\ \hline
+\end{tabular}
+\caption{Training results on MNIST dataset.}
+\label{tab:examples:mnist_training_results}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{mnist_training_result_cm.eps}
+\caption{MNIST: confusion matrix (testing data).}
+\label{fig:examples:mnist_cm}
+\end{figure}
 
 \section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}
 PHONES data...
