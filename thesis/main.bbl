@@ -176,6 +176,26 @@
   \field{year}{1998}
 \endentry
 
+\entry{wiki:mnist}{misc}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Wikipedia}{W.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{W1}
+  \strng{fullhash}{W1}
+  \field{labelyear}{2004}
+  \field{sortinit}{2}
+  \field{note}{[Online; accessed 15-April-2017]}
+  \field{title}{Plagiarism --- {W}ikipedia{,} The Free Encyclopedia}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/MNIST_database
+  \endverb
+  \field{year}{2004}
+\endentry
+
 \entry{online:xor_solution}{online}{}
   \name{author}{1}{}{%
     {{}%
@@ -194,6 +214,16 @@
   \verb and_solution.php
   \endverb
   \field{year}{2006}
+\endentry
+
+\entry{online:census}{online}{}
+  \field{labelyear}{2017}
+  \field{sortinit}{2}
+  \field{title}{United States Census Bureau}
+  \verb{url}
+  \verb https://www.census.gov/
+  \endverb
+  \field{year}{2017}
 \endentry
 
 \lossort

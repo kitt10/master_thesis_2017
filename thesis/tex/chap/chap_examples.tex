@@ -291,7 +291,7 @@ Each train is described by $ 7 $ binary features listed in \cref{tab:examples:tr
 \label{tab:examples:train_features}
 \end{table}
 
-Using the encoding from \cref{tab:examples:train_features} we can encode the trains shown in \cref{fig:examples:dataset_train} into feature vectors as follows in \cref{tab:examples:train_feature_vectors}.
+Having \cref{tab:examples:train_features} we can encode the trains shown in \cref{fig:examples:dataset_train} into feature vectors as follows in \cref{tab:examples:train_feature_vectors}.
 
 \begin{table}[H]
 \centering
@@ -302,15 +302,15 @@ east 1    & $ [0, 1, 1, 0, 0, 0, 1]^T $   & west 1   & $ [0, 1, 1, 1, 1, 0, 0]^T
 east 2    & $ [0, 0, 1, 0, 1, 0, 0]^T $   & west 2   & $ [1, 1, 1, 0, 1, 0, 0]^T $   \\ \hline
 east 3    & $ [0, 0, 1, 0, 0, 1, 1]^T $   & west 3   & $ [1, 1, 0, 1, 1, 1, 1]^T $   \\ \hline
 \end{tabular}
-\caption{Feature vectors for samples of the train problem.}
+\caption{Feature vectors for different train types.}
 \label{tab:examples:train_feature_vectors}
 \end{table}
 
-The task is to determine the minimal number of input features capable of east-west classification based on the six possible samples in \cref{tab:examples:train_feature_vectors} (or in \cref{fig:examples:dataset_train}).
+The task is to determine the minimal number of input features capable of east-west classification based on the six possible types in \cref{tab:examples:train_feature_vectors} (or in \cref{fig:examples:dataset_train}).
 
 The hypothesis is that the pruning algorithm selects the needed features by eliminating unimportant input-hidden synapses. Looking at \cref{fig:examples:dataset_train} one of the solutions could be keeping features $ (0, 3) $, because the shape of the load together with the length of the car is enough to distinguish \textit{west} trains from \textit{east} trains. Another solution, for example, is keeping the car length, car type and color of the second car wheel (features $ (0, 1, 6) $).
 
-To prove this behavior, a dataset of $ 6000 $ samples ($ 3000 $ west and $ 3000 $ east trains) was generated. The three possible train types for each class (\cref{fig:examples:dataset_train}) are equally distributed among the samples, meaning we have $ 1000 $ samples of each train type.
+To test our pruning algorithm on this feature selection task, a dataset of $ 6000 $ samples ($ 3000 $ west and $ 3000 $ east trains) was generated. The three possible train types for each class (\cref{fig:examples:dataset_train}) are equally distributed among the samples, meaning we have $ 1000 $ samples of each train type.
 
 As used in \citep{mozer_smolensky}, one hidden neuron should be enough to learn this problem, hence we started with network structure $ [7, 1, 2] $. The experiment parameters are listed in \cref{tab:examples:train_settings}.
 
@@ -340,7 +340,18 @@ We ran $ 100 $ observations of the experiment and considered the features that w
 The result pie in \cref{fig:examples:pruning_result_pie_train} shows that the pruning algorithm found the best possible solution ($ (0, 3) $ - the car length and the load shape) in $ 46\% $ of the cases. We can regard the $ (0, 1, 6) $ and $ (1, 3, 6) $ as another (not best but also good) solutions. The rest we consider as fail cases, as all of them includes the $ (0, 3) $ and the other features are redundant. To sum it up, we got a perfect solution: $ 46\% $; a good solution: $ 32\% $; a bad solution: $ 22\% $.
 
 \section{Handwritten digits (MNIST)} \label{sec:dataset_mnist}
-MNIST data... \citep{online:mnist}
+The MNIST (Modified National Institute of Standards and Technology) database \citep{wiki:mnist} is a large database of handwritten digits that is widely used for training and testing methods in the field of machine learning. 
+
+The dataset was downloaded from \citep{online:mnist}. Some of the digits were written by employees of American Census Bureau \citep{online:census} and some by students of an American high school. In total $ 70000 $ samples were collected. Examples are shown in \cref{fig:examples:dataset_mnist}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{dataset_mnist}
+\caption{Examples of MNIST dataset.}
+\label{fig:examples:dataset_mnist}
+\end{figure}
+
+Each sample is a grayscale image (normalised to $ [0, 1] $) of size $ 28x28 $ pixels. This gives row-by-row a vector of $ 784 $ features.
 
 \section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}
 PHONES data...

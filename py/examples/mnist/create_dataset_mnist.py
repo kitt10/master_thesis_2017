@@ -55,6 +55,7 @@ if __name__ == '__main__':
                 tmp_y.append(y)
         dataset['x'] = tmp_x
         dataset['y'] = tmp_y
+
     dataset['x_val'] = [reshape(x, (784, 1)) for x in data_val[0]]
     dataset['y_val'] = data_val[1]
     dataset['x_test'] = [reshape(x, (784, 1)) for x in data_test[0]]
