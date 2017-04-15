@@ -45,15 +45,15 @@ if __name__ == '__main__':
     print_message(message='Generating and splitting TRAIN data...')
     data = {'x': list(), 'y': list(), 'x_val': list(), 'y_val': list(), 'x_test': list(), 'y_test': list()}
     for ni in range(args.n_samples):
-        if ni%3 == 0:
-            x_east = [0, 0, 1, 1, 0, 1, 0]
+        if ni % 3 == 0:
+            x_east = [0, 1, 1, 0, 0, 0, 1]
             x_west = [0, 1, 1, 1, 1, 0, 0]
-        elif ni%3 == 1:
-            x_east = [0, 0, 0, 1, 1, 0, 0]
-            x_west = [1, 0, 1, 1, 1, 0, 0]
+        elif ni % 3 == 1:
+            x_east = [0, 0, 1, 0, 1, 0, 0]
+            x_west = [1, 1, 1, 0, 1, 0, 0]
         else:
-            x_east = [0, 0, 0, 1, 0, 1, 1]
-            x_west = [1, 1, 1, 0, 1, 1, 1]
+            x_east = [0, 0, 1, 0, 0, 1, 1]
+            x_west = [1, 1, 0, 1, 1, 1, 1]
 
         ''' train/val/test split '''
         if ni < split_bounds[0]:

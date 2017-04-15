@@ -175,7 +175,7 @@ The feature vectors are normalised (described in \cref{chap:methods}) and in \cr
 |w_{r1}| &> |w_{s2}|
 \end{align}
 
-Out of this we expect a weight magnitude to be greater the more important the corresponding synapse is.
+Out of this we expect a weight magnitude to be greater for more important synapses.
 
 \begin{figure}[H]
 \centering
@@ -184,7 +184,7 @@ Out of this we expect a weight magnitude to be greater the more important the co
 \label{fig:examples:unbfea_synapse_weight_change}
 \end{figure}
 
-However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not affect the result significantly and so we can state:
+It seems like the magnitude is a perfect measure. However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not affect the result significantly and so we can state:
 
 \begin{equation}
 |w_{ji}| \approx |w_{ji} - w0_{ji}|
@@ -262,8 +262,8 @@ The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows 
 
 Additionally, synapses responsible for \textit{rule} ($ s_{ra} $ and $ s_{rb} $) have greater mean significance than the synapses connected with the \textit{exception} neuron ($ s_{e*} $).
 
-\section{The Train Problem} \label{sec:dataset_train}
-The Michalski's train problem...
+\section{Michalski's Train Problem} \label{sec:dataset_train}
+The train problem was originally introduced in \citep{michalski}. The task was to determine concise decision rules distinguishing between two sets of trains (Eastbound and Westbound). In \citep{mozer_smolensky}, they presented a simplified version illustrated in \cref{fig:examples:dataset_train}.
 
 \begin{figure}[H]
 \centering
@@ -271,6 +271,44 @@ The Michalski's train problem...
 \caption{Michalski's train problem.}
 \label{fig:examples:dataset_train}
 \end{figure}
+
+Each train is described by $ 7 $ binary features listed in \cref{tab:examples:train_features}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|c|c|}
+\hline
+\multicolumn{2}{|c|}{feature} & \textit{encoded as \textbf{0}} & \textit{encoded as \textbf{1}} \\ \hline \hline
+0 & car length                & long                  & short                 \\ \hline
+1 & car type                  & open                  & closed                \\ \hline
+2 & cabin pattern             & vertical lines        & horizontal lines      \\ \hline
+3 & load shape                & triangle              & circle                \\ \hline
+4 & color of trailer wheels   & white                 & black                 \\ \hline
+5 & color of first car wheel  & white                 & black                 \\ \hline
+6 & color of second car wheel & white                 & black                 \\ \hline
+\end{tabular}
+\caption{Features describing a train.}
+\label{tab:examples:train_features}
+\end{table}
+
+Using the encoding from \cref{tab:examples:train_features} we can encode the trains shown in \cref{fig:examples:dataset_train} into feature vectors as follows in \cref{tab:examples:train_feature_vectors}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{\textit{class EAST}} & \multicolumn{2}{c|}{\textit{class WEST}} \\ \hline
+east 1    & $ [0, 1, 1, 0, 0, 0, 1]^T $   & west 1   & $ [0, 1, 1, 1, 1, 0, 0]^T $   \\ \hline
+east 2    & $ [0, 0, 1, 0, 1, 0, 0]^T $   & west 2   & $ [1, 1, 1, 0, 1, 0, 0]^T $   \\ \hline
+east 3    & $ [0, 0, 1, 0, 0, 1, 1]^T $   & west 3   & $ [1, 1, 0, 1, 1, 1, 1]^T $   \\ \hline
+\end{tabular}
+\caption{Feature vectors for samples of the train problem.}
+\label{tab:examples:train_feature_vectors}
+\end{table}
+
+The task is to determine the minimal number of input features capable of east-west classification based on the six possible samples in \cref{tab:examples:train_feature_vectors} (or in \cref{fig:examples:dataset_train}).
+
+
 
 \section{Handwritten digits (MNIST)} \label{sec:dataset_mnist}
 MNIST data... \citep{online:mnist}

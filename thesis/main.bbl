@@ -36,6 +36,35 @@
   \field{year}{1958}
 \endentry
 
+\entry{michalski}{inproceedings}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Larson}{L.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Michalski}{M.}%
+     {R.~S.}{R.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {ACM SIGAI}%
+  }
+  \strng{namehash}{LJMRS1}
+  \strng{fullhash}{LJMRS1}
+  \field{labelyear}{1977}
+  \field{sortinit}{1}
+  \field{booktitle}{ACM SIGART Bulletin}
+  \field{pages}{38\bibrangedash 44}
+  \field{title}{Inductive Inference of VL Decision Rules}
+  \list{location}{1}{%
+    {New York, USA}%
+  }
+  \field{year}{1977}
+\endentry
+
 \entry{mozer_smolensky}{inproceedings}{}
   \name{author}{2}{}{%
     {{}%
