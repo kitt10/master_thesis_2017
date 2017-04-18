@@ -1,8 +1,8 @@
 \chapter{Examples} \label{chap:examples}
-The pruning algorithm is presented on several examples, where each of them has its purpose of being shown. The XOR problem (\cref{sec:dataset_xor}) should verify the ability of finding an optimal network structure. Section \ref{sec:dataset_unbfea} comes with another 2D problem, where one feature carries more information than the other one. The Rule-plus-Exception problem in \cref{sec:dataset_rpe} deals with a minority of samples that has to be treated by a different net part than rule-based samples. The train problem (\cref{sec:dataset_train}) is a working example of feature selection procedure. The MNIST database (\cref{sec:dataset_mnist}) is widely used in machine learning and can be regarded as commonly known. Therefore it is a good example for presentation of new methods. Finally, in \cref{sec:dataset_phonemes} the pruning algorithm is applied on a large dataset of phonemes.
+The pruning algorithm is presented on several examples, where each of them has its purpose of being shown. The XOR problem (\cref{sec:dataset_xor}) should verify the ability of finding an optimal network structure. Section \ref{sec:dataset_unbfea} comes with another 2D problem, where one feature carries more information than the other one. The Rule-plus-Exception problem in \cref{sec:dataset_rpe} deals with a minority of samples that has to be treated by a different net part than rule-based samples. The train problem (\cref{sec:dataset_train}) is a working example of the feature selection procedure. The MNIST database (\cref{sec:dataset_mnist}) is widely used in machine learning and can be regarded as commonly known, hence it is an ideal example to present new methods on. Finally, in \cref{sec:dataset_phonemes} the pruning algorithm is analysed on a large dataset of phonemes.
 
-\section{2D-problem: XOR Function} \label{sec:dataset_xor}
-The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:xor_function}. Based on this function one can build a classification problem with two features and two classes.
+\section{XOR Function} \label{sec:example_xor}
+The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:xor_function}. Based on this function one can build a classification problem of two features and two classes.
 
 \begin{table}[H]
 \centering
@@ -18,7 +18,7 @@ The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:
 \label{tab:examples:xor_function}
 \end{table}
 
-This problem serves perfectly for demonstration of network optimization methods, as two optimal architectural solutions producing the XOR function are known (\cref{fig:examples:xor_solutions}) \footnote{The known (e.g. from \citep{online:xor_solution}) minimal network architectures producing the XOR function $ [2, 2, 1] $ and $ [2, 3, 1] $ are adjusted to $ [2, 2, 2] $ and $ [2, 3, 2] $ in \cref{fig:examples:xor_solutions} in order to comply with the conventions introduced in \cref{chap:methods}. The number of output neurons always equals the number of classes. The number of synapses connected to the output layer is a subject to think about.}. 
+This problem serves perfectly for a demonstration of network optimization methods, as two optimal architectural solutions producing the XOR function are already known (\cref{fig:examples:xor_solutions}) \footnote{The known (e.g. from \citep{online:xor_solution}) minimal network architectures producing the XOR function $ [2, 2, 1] $ and $ [2, 3, 1] $ are adjusted to $ [2, 2, 2] $ and $ [2, 3, 2] $ in \cref{fig:examples:xor_solutions} in order to comply with the conventions introduced in \cref{chap:methods}. The number of output neurons always equals the number of classes. The number of hidden-output synapses might not be optimized in this study.}. 
 
 \begin{figure}[H]
 \centering
@@ -40,7 +40,7 @@ This problem serves perfectly for demonstration of network optimization methods,
 
 With this knowledge we can prove that the pruning algorithm is (or is not) able to find the optimal solution. If the method is correct, it should end up with one of the shown architectures (\cref{fig:examples:xor_min1} or \cref{fig:examples:xor_min2}).
 
-The truth \cref{tab:examples:xor_function} ruled the generation of a 2D dataset illustrated in \cref{fig:examples:dataset_xor}. The two classes can be linearly separated by two lines (two neurons, see \cref{fig:examples:xor_min1}) and each class consists of 1000 samples. Each sample was randomly assigned to one of the two possible points belonging to its class (e.g. (0,0) or (1,1) for class 0) and then randomly placed in the surounding area within a specified range ($ r = \frac{\sqrt{2}}{4} $).
+The truth \cref{tab:examples:xor_function} ruled the generation of a 2D dataset illustrated in \cref{fig:examples:dataset_xor}. The two classes can be linearly separated by two lines (corresponding to two neurons, see \cref{fig:examples:xor_min1}) and each class consists of 1000 samples. Each sample was randomly assigned to one of the two possible points belonging to its class (e.g. (0,0) or (1,1) for class 0) and then randomly placed in the surounding area within a specified range ($ r = \frac{\sqrt{2}}{4} $).
 
 The samples of each class were then splitted into three sets in the following manner: $ 80\% $ to a training set, $ 10\% $ to a validation set and $ 10\% $ to a testing set.
 
@@ -60,15 +60,15 @@ The goal of this example is to show that the pruning algorithm finds one of the 
 \hline
 \multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
 structure             & {[}2, 50, 2{]}         & learning rate                  & 0.3              & required accuracy             & 1.0              \\ \hline
-transfer fcn          & sigmoid                & number of epochs               & 50               & retrain                       & True             \\ \hline
-                      &                        & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
+n synapses            & 200                    & number of epochs               & 50               & retrain                       & True             \\ \hline
+transfer fcn          & sigmoid                & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
 \end{tabular}}
-\caption{Experiment settings for XOR dataset.}
+\caption{Experiment settings for the XOR example.}
 \label{tab:examples:xor_settings}
 \end{table}
 
 \subsection*{Results: XOR Function}
-\cref{fig:examples:pruning_process_xor} describes the pruning process. We can see the number of synapses (starting with $ 200 $ for fully-connected structure $ [2, 50, 2] $), the network structure and classification accuracy at single pruning steps (see [PA]). When the required accuracy ($ 1.0 $) was not reached, the corresponding steps are transparent in the figure, indicating they were forgotten.
+\cref{fig:examples:pruning_process_xor} describes the pruning process. We can see the number of synapses, the network structure and the classification accuracy for single pruning steps (see [PA]). When the required accuracy ($ 1.0 $) was not reached, the corresponding steps are transparent in the figure, indicating they were forgotten.
 
 \begin{figure}[H]
 \centering
@@ -97,19 +97,19 @@ In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is c
 \label{fig:examples:pruning_result_xor}
 \end{figure}
 
-\section{2D-problem: Unbalanced Feature Information} \label{sec:dataset_unbfea}
+\section{Unbalanced Feature Information (UFI)} \label{sec:example_ufi}
 This example is adopted from \citep{karnin}. The problem is again two-dimensional having two non-overlapping classes as depicted in \cref{fig:examples:dataset_unbfea}. The samples are uniformly distributed in $ [-1, 1] $ x $ [-1, 1] $ and the classes are equally probable, separated by two lines in 2D space ($ x_1 = a $ and $ x_2 = b $, where $ a = 0.1 $ and $ b = \frac{2}{a+1} - 1 \approx 0.82 $). Clearly, the problem can be solved by two neurons, similarly as the previous one.
 
-What is interesting about this two-classes layout is that feature $ x_1 $ is much more important for the global classification accuracy than feature $ x_2 $. Having $ x_1 $ information, based on \cref{fig:examples:dataset_unbfea} one could potentially classify more than $ 90\% $ of the samples. Opposite of that, we cannot say much with information from feature $ x_2 $ only. And this is something what also the pruning algorithm should find out.
+What is interesting about this two-classes layout is that feature $ x_1 $ is much more important for the global classification accuracy than feature $ x_2 $. Having $ x_1 $ information, based on \cref{fig:examples:dataset_unbfea} one could potentially classify more than $ 90\% $ of the samples. Opposite of that, we cannot say much with information from feature $ x_2 $ only. And this is something that also the pruning algorithm should find out.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{dataset_unbfea.eps}
-\caption{Dataset with unbalanced feature information.}
+\includegraphics[width=0.8\textwidth]{dataset_unbfea.eps}
+\caption{The UFI dataset.}
 \label{fig:examples:dataset_unbfea}
 \end{figure}
 
-Hence, we focus on synapses connecting the input and hidden layer. We know the required network structure is $ [2, 2, 2] $, as two lines are needed to separate the data in 2D space. Actually, we even know the lines must be parallel to coordinate axes, which means that each of the hidden units needs one of the features only. Therefore, the first hypothesis here is that pruning of input-hidden synapses should result in one of the cases in \cref{fig:examples:unbfea_hypos}.
+Hence, we focus on synapses connecting the input and the hidden layer (shortly input-hidden synapses). We know the required network structure is $ [2, 2, 2] $, as two lines are needed to separate the data in 2D space. Actually, we even know the lines must be parallel to coordinate axes, which means that each of the hidden units needs one of the features only. Therefore, the first hypothesis here is that pruning of input-hidden synapses should result in one of the cases in \cref{fig:examples:unbfea_hypos}.
 
 \begin{figure}[H]
 \centering
@@ -125,7 +125,7 @@ Hence, we focus on synapses connecting the input and hidden layer. We know the r
   \caption{Pruning result 2.}
   \label{fig:examples:unbfea_hypo2}
 \end{subfigure}
-\caption{Expected pruning of input-hidden synapses (Unbalanced features problem).}
+\caption{Expected pruning of input-hidden synapses (UFI problem).}
 \label{fig:examples:unbfea_hypos}
 \end{figure}
 
@@ -138,14 +138,14 @@ To prove this behaviour, we ran an experiment with settings in \cref{tab:example
 \hline
 \multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
 structure             & {[}2, 2, 2{]}          & learning rate                  & 0.7              & required accuracy             & 0.98             \\ \hline
-transfer fcn          & sigmoid                & number of epochs               & 50               & retrain                       & True             \\ \hline
-                      &                        & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
+n synapses            & 8                      & number of epochs               & 50               & retrain                       & True             \\ \hline
+transfer fcn          & sigmoid                & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
 \end{tabular}}
-\caption{Experiment settings for dataset with unbalanced feature information.}
+\caption{Experiment settings for the UFI example.}
 \label{tab:examples:unbfea_settings}
 \end{table}
 
-The second hypothesis is that the synapse connected to the first feature ($ x_1 $) is more important and therefore, the other synapse (the one connected to feature $ x_2 $) will always be removed first.
+The second hypothesis is that the synapse connected to the first feature ($ x_1 $) is more important and therefore, the other synapse (the one connected to feature $ x_2 $) should always be removed first.
 
 \subsection*{Results: Unbalanced Feature Information}
 In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirmed. The pruning of input-hidden synapses finished with the result shown in \cref{fig:examples:unbfea_hypo1} in $ 48 $ out of $ 100 $ observations and with the result in \cref{fig:examples:unbfea_hypo2} in $ 44\% $ of the cases.
@@ -153,25 +153,27 @@ In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirm
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{pruning_result_pie_unbfea.eps}
-\caption{Results of pruning (see \cref{fig:examples:unbfea_hypos}) in input-hidden layer (100 observations).}
+\caption{Results of pruning (see \cref{fig:examples:unbfea_hypos}) input-hidden synapses (100 observations, UFI example).}
 \label{fig:examples:pruning_result_pie_unbfea}
 \end{figure}
 
-In other words, with a probability of $ 92\% $ the algorithm is able to find the axes-parallel lines and reveals that each of the lines needs information from one feature only. In the remaining $ 8\% $ of the cases the pruning resulted with more than two input-hidden synapses.
+In other words, with a probability of $ 92\% $ the algorithm is able to find the axis-parallel lines and reveals that each of the lines needs the information from corresponding feature only. In the remaining $ 8\% $ of the cases the pruning resulted with more than two input-hidden synapses.
 
-The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. As we can see, the coefficient of synapses's significance was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low coefficients first, therefore information coming from feature $ x_1 $ would live longer in the network than $ x_2 $ information.
+The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. The synapses's significance factor was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low significance factors first, therefore the information coming from feature $ x_1 $ would live longer in the network than the $ x_2 $ information.
 
-This result can be explained for such simple example. Assuming $ w_{r1} $ to be the weight of synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ the weight of synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{article:perceptron} we created two lines, perpendicular one to each other, as follows.
+Let's try to explain this result. Consider $ w_{r1} $ to be the weight of the synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ to be the weight of the synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{article:perceptron} we created two lines, perpendicular one to each other, as follows.
 \begin{align}
-w_{r1} \cdot x_1 + 0 \cdot x_2 &= b_r \\
-x_1 &= \frac{b_r}{w_{r1}} \\
-0 \cdot x_1 + w_{s2} \cdot x_2 &= b_s \\
-x_2 &= \frac{b_s}{w_{s2}}
+w_{r1} \cdot x_1 + 0 \cdot x_2 + b_r &= 0 \\
+x_1 &= -\frac{b_r}{w_{r1}} \\
+0 \cdot x_1 + w_{s2} \cdot x_2 + b_s &= 0 \\
+x_2 &= -\frac{b_s}{w_{s2}}
 \end{align}
-
-The feature vectors are normalised (described in \cref{chap:methods}) and in \cref{fig:examples:dataset_unbfea} we see that $ |a| < |b| $, hence we want:
+In \cref{fig:examples:dataset_unbfea} we see that $ a < b $. To generalize the problem (assuming normalised feature vectors, see \cref{chap:methods}) we state $ |a| < |b| $, meaning we want:
 \begin{align}
-|\frac{b_r}{w_{r1}}| &< |\frac{b_s}{w_{s2}}| \\
+|-\frac{b_r}{w_{r1}}| &< |-\frac{b_s}{w_{s2}}|
+\end{align}
+Hence we expect:
+\begin{align}
 |w_{r1}| &> |w_{s2}|
 \end{align}
 
@@ -179,25 +181,25 @@ Out of this we expect a weight magnitude to be greater for more important synaps
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\textwidth]{unbfea_synapse_weight_change.eps}
-\caption{Weight change in training for the remaining synapses in the input-hidden layer (100 observations).}
+\includegraphics[width=0.5\textwidth]{unbfea_synapse_weight_change.eps}
+\caption{Weight change in training for the remaining input-hidden synapses (100 observations).}
 \label{fig:examples:unbfea_synapse_weight_change}
 \end{figure}
 
-It seems like the magnitude is a perfect measure. However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater the weight magnitudes are. Therefore small initial weight values does not affect the result significantly and so we can state:
+The weight magnitude seems to be a perfect measure to find feature significance factor. However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater weight magnitudes we get. Therefore small initial weight values do not affect the result significantly and so we can state:
 
 \begin{equation}
 |w_{ji}| \approx |w_{ji} - w0_{ji}|
 \end{equation}
 
-where $ w0_{ji} \in [0, 1] $ is the initial value of weight $ w_{ji} $. Summing it up we can say that the \textit{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
+where $ w0_{ji} \in N(0,1) $ is the initial value of weight $ w_{ji} $. Summing it up we can say that the \texttt{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
 
-\section{The Rule-plus-Exception Problem} \label{sec:dataset_rpe}
+\section{Rule-plus-Exception (RPE)} \label{sec:example_rpe}
 This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}, and it should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
 
-Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method will reveal the part of network, which deals with the \textit{exception}, to be eliminated first - before the part of network dealing with the \textit{rule}.
+Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method should suggest the part of network, which deals with the \textit{exception}, to be eliminated first - before network elements dealing with the \textit{rule}.
 
-To test this example, a dataset of $ 10000 $ samples was generated. Each sample consists of four features: $ [a, b, c, d] $. Each of these features (for every sample) was randomly set to be \textit{on} ($ 1 $) or \textit{off} ($ 0 $). Then, whenever the \textit{rule} occured ($ a = 1 \wedge b = 1 $), the sample was assigned to class $ 1 $ (as a \textit{rule} sample). If the \textit{exception} occured ($ a = 0 \wedge b = 0 \wedge c = 0 \wedge d = 0 $), the sample was also labeled as $ 1 $ (as an \textit{exception} sample). Otherwise, the sample was assigned to class $ 0 $. Thereby the generated dataset consisted of:
+To test this hypothesis, a dataset of $ 10000 $ samples was generated. Each sample consists of four features: $ [a, b, c, d] $. Each of these features (for every sample) was randomly set to be \textit{on} ($ 1 $) or \textit{off} ($ 0 $). Then, whenever the \textit{rule} occured ($ a = 1 \wedge b = 1 $), the sample was assigned to class $ 1 $ (as a \textit{rule} sample). If the \textit{exception} occured ($ a = 0 \wedge b = 0 \wedge c = 0 \wedge d = 0 $), the sample was also labeled as $ 1 $ (as an \textit{exception} sample). Otherwise, the sample was assigned to class $ 0 $. Thereby the generated dataset consisted of:
 
 \begin{itemize}
 \item $ 2511 $ \textit{rule} samples (class $ 1 $);
@@ -205,7 +207,7 @@ To test this example, a dataset of $ 10000 $ samples was generated. Each sample 
 \item $ 6840 $ samples in class $ 0 $.
 \end{itemize}
 
-The function is expected to be learned by two hidden neurons, one dealing with the \textit{rule} and the other one with the \textit{exception}. We focus on input-hidden layer again. Two possibilities of expected pruning result are shown in \cref{fig:examples:rpe_hypos}.
+The function is expected to be learned by two hidden neurons, one dealing with the \textit{rule} and the other one with the \textit{exception}. We focus on input-hidden synapses again. Two possible expected pruning results are shown in \cref{fig:examples:rpe_hypos}.
 
 \begin{figure}[H]
 \centering
@@ -234,35 +236,35 @@ We ran the learning-pruning procedure with the settings listed in \cref{tab:exam
 \hline
 \multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
 structure             & {[}2, 2, 2{]}          & learning rate                  & 1.0              & required accuracy             & 1.0             \\ \hline
-transfer fcn          & sigmoid                & number of epochs               & 50               & retrain                       & True             \\ \hline
-                      &                        & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
+n synapses            & 8                      & number of epochs               & 50               & retrain                       & True             \\ \hline
+transfer fcn          & sigmoid                & minibatch size                 & 1                & retraining epochs             & 50               \\ \hline
 \end{tabular}}
-\caption{Experiment settings for dataset with unbalanced feature information.}
+\caption{Experiment settings for the RPE example.}
 \label{tab:examples:rpe_settings}
 \end{table}
 
-\subsection*{Results: The Rule-plus-Exception}
+\subsection*{Results: Rule-plus-Exception}
 \cref{fig:examples:pruning_result_pie_rpe} supports the hypothesis that one hidden neuron forms the \textit{rule} and the other one the \textit{exception}. With a probability of $ 97\% $ the pruning finished with one of the structures in \cref{fig:examples:rpe_hypos}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{pruning_result_pie_rpe.eps}
-\caption{Results of pruning (see \cref{fig:examples:rpe_hypos}) in input-hidden layer (100 observations, RPE problem).}
+\caption{Results of pruning (see \cref{fig:examples:rpe_hypos}) input-hidden synapses (100 observations, RPE example).}
 \label{fig:examples:pruning_result_pie_rpe}
 \end{figure}
 
-The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows weight changes in training (coefficients of significance) for all 8 synapses in input-hidden layer. We can see that synapses connecting the \textit{rule} neuron with feature \textit{c} ($ s_{rc}) $ and \textit{d} ($ s_{rd} $) were eliminated first (resulting in structures in \cref{fig:examples:rpe_hypos}).
+The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows weight change in training (\texttt{kitt} significance factor) for all 8 input-hidden synapses. We can see that synapses connecting the \textit{rule} neuron with feature \textit{c} ($ s_{rc}) $ and feature \textit{d} ($ s_{rd} $) were suggested as least important (resulted in structures in \cref{fig:examples:rpe_hypos}).
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{pruning_result_rpe.eps}
-\caption{Weight change in training for synapses in input-hidden layer (100 observations, RPE problem).}
+\caption{Weight change in training for input-hidden synapses (100 observations, RPE example).}
 \label{fig:examples:pruning_result_rpe}
 \end{figure}
 
-Additionally, synapses responsible for \textit{rule} ($ s_{ra} $ and $ s_{rb} $) have greater mean significance than the synapses connected with the \textit{exception} neuron ($ s_{e*} $).
+Additionally, synapses responsible for \textit{rule} ($ s_{ra} $ and $ s_{rb} $) have a greater mean significance than the synapses connected with the \textit{exception} neuron ($ s_{e*} $).
 
-\section{Michalski's Train Problem} \label{sec:dataset_train}
+\section{Michalski's Trains} \label{sec:example_trains}
 The train problem was originally introduced in \citep{michalski}. The task was to determine concise decision rules distinguishing between two sets of trains (Eastbound and Westbound). In \citep{mozer_smolensky}, they presented a simplified version illustrated in \cref{fig:examples:dataset_train}.
 
 \begin{figure}[H]
@@ -306,13 +308,13 @@ east 3    & $ [0, 0, 1, 0, 0, 1, 1]^T $   & west 3   & $ [1, 1, 0, 1, 1, 1, 1]^T
 \label{tab:examples:train_feature_vectors}
 \end{table}
 
-The task is to determine the minimal number of input features capable of east-west classification based on the six possible types in \cref{tab:examples:train_feature_vectors} (or in \cref{fig:examples:dataset_train}).
+The task is to determine the minimal number of input features capable of the east-west classification based on the six possible types in \cref{tab:examples:train_feature_vectors} (or in \cref{fig:examples:dataset_train}).
 
-The hypothesis is that the pruning algorithm selects the needed features by eliminating unimportant input-hidden synapses. Looking at \cref{fig:examples:dataset_train} one of the solutions could be keeping features $ (0, 3) $, because the shape of the load together with the length of the car is enough to distinguish \textit{west} trains from \textit{east} trains. Another solution, for example, is keeping the car length, car type and color of the second car wheel (features $ (0, 1, 6) $).
+The hypothesis is that the pruning algorithm should select the needed features by eliminating unimportant input-hidden synapses. Looking at \cref{fig:examples:dataset_train} one of the solutions could be keeping features $ (0, 3) $, because the shape of the load together with the length of the car is enough to distinguish \textit{west} trains from \textit{east} trains. Another solution, for example, is keeping the car length, car type and color of the second car wheel - features $ (0, 1, 6) $.
 
 To test our pruning algorithm on this feature selection task, a dataset of $ 6000 $ samples ($ 3000 $ west and $ 3000 $ east trains) was generated. The three possible train types for each class (\cref{fig:examples:dataset_train}) are equally distributed among the samples, meaning we have $ 1000 $ samples of each train type.
 
-As used in \citep{mozer_smolensky}, one hidden neuron should be enough to learn this problem, hence we started with network structure $ [7, 1, 2] $. The experiment parameters are listed in \cref{tab:examples:train_settings}.
+As shown in \citep{mozer_smolensky}, one hidden neuron is enough to learn this problem, hence we started with the network structure $ [7, 1, 2] $. The experiment parameters are listed in \cref{tab:examples:train_settings}.
 
 \begin{table}[H]
 \centering
@@ -321,10 +323,10 @@ As used in \citep{mozer_smolensky}, one hidden neuron should be enough to learn 
 \hline
 \multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
 structure             & {[}7, 1, 2{]}          & learning rate                  & 0.3              & required accuracy             & 1.0             \\ \hline
-transfer fcn          & sigmoid                & number of epochs               & 100               & retrain                       & True             \\ \hline
-                      &                        & minibatch size                 & 1                & retraining epochs             & 10               \\ \hline
+n synapses            & 9                      & number of epochs               & 100               & retrain                       & True             \\ \hline
+transfer fcn          & sigmoid                & minibatch size                 & 1                & retraining epochs             & 10               \\ \hline
 \end{tabular}}
-\caption{Experiment settings for the train dataset.}
+\caption{Experiment settings for the train example.}
 \label{tab:examples:train_settings}
 \end{table}
 
@@ -333,11 +335,11 @@ We ran $ 100 $ observations of the experiment and considered the features that w
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{pruning_result_pie_train.eps}
-\caption{Results of feature selection by the pruning algorithm (train problem). The labels corresponds with feature indices in \cref{tab:examples:train_features}.}
+\caption{Results of feature selection by the pruning algorithm (train example). The labels corresponds with feature indices in \cref{tab:examples:train_features}.}
 \label{fig:examples:pruning_result_pie_train}
 \end{figure}
 
-The result pie in \cref{fig:examples:pruning_result_pie_train} shows that the pruning algorithm found the best possible solution ($ (0, 3) $ - the car length and the load shape) in $ 46\% $ of the cases. We can regard the $ (0, 1, 6) $ and $ (1, 3, 6) $ as another (not best but also good) solutions. The rest we consider as fail cases, as all of them includes the $ (0, 3) $ and the other features are redundant. To sum it up, we got a perfect solution: $ 46\% $; a good solution: $ 32\% $; a bad solution: $ 22\% $.
+The result pie in \cref{fig:examples:pruning_result_pie_train} shows that the pruning algorithm found the best possible solution ($ (0, 3) $ - the car length and the load shape) in $ 46\% $ of the cases. We can regard the $ (0, 1, 6) $ and $ (1, 3, 6) $ as another (not best but also good) solutions. The rest we consider as fail cases, as all of them include features $ (0, 3) $ and the other features are redundant. To sum it up, we got a perfect solution: $ 46\% $; a good solution: $ 32\% $; a bad solution: $ 22\% $.
 
 \section{Handwritten digits (MNIST)} \label{sec:dataset_mnist}
 The MNIST (Modified National Institute of Standards and Technology) database \citep{wiki:mnist} is a large database of handwritten digits that is widely used for training and testing methods in the field of machine learning. 
@@ -361,14 +363,14 @@ From \citep{online:mnist} we know the problem can be learnt by a feedforward net
 \hline
 \multicolumn{2}{|c|}{\textit{network parameters}} & \multicolumn{2}{c|}{\textit{learning parameters}} \\ \hline
 structure               & {[}784, 20, 10{]}       & learning rate                  & 0.3              \\ \hline
-transfer function       & sigmoid                 & number of epochs               & 100              \\ \hline
-       &                  & batch size               & 10              \\ \hline
+n synapses              & 15880                   & number of epochs               & 100              \\ \hline
+transfer function       & sigmoid                 & batch size               & 10              \\ \hline
 \end{tabular}
-\caption{Settings for learning a dense feedforward net the MNIST dataset.}
+\caption{Settings for training a dense feedforward net on the MNIST dataset.}
 \label{tab:examples:mnist_training_settings}
 \end{table}
 
-The training results are summarized in \cref{tab:examples:mnist_training_results}. A confusion matrix for testing data is given in \cref{fig:examples:mnist_cm}.
+The training results are summarized in \cref{tab:examples:mnist_training_results}. A confusion matrix for the testing data is given in \cref{fig:examples:mnist_cm}.
 
 \begin{table}[H]
 \centering
@@ -385,11 +387,11 @@ The training results are summarized in \cref{tab:examples:mnist_training_results
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{mnist_training_result_cm.eps}
-\caption{MNIST: confusion matrix (testing data).}
+\caption{Confusion matrix (MNIST, testing data).}
 \label{fig:examples:mnist_cm}
 \end{figure}
 
-The rest of this section is devoted to analysis of the pruning method on MNIST database. Parameters of the learning-pruning procedure are listed in \cref{tab:examples:mnist_settings}.
+In the following, the pruning method is analysed on networks trained on the MNIST database. Parameters of the learning-pruning procedure are listed in \cref{tab:examples:mnist_settings}.
 
 \begin{table}[H]
 \centering
@@ -401,20 +403,20 @@ structure             & {[}784, 20, 10{]}          & learning rate              
 n synapses          & 15800                & number of epochs               & 30               & retrain                       & True             \\ \hline
 transfer fcn          & sigmoid                & minibatch size                 & 10                & retraining epochs             & 10               \\ \hline
 \end{tabular}}
-\caption{Experiment settings for the train dataset.}
+\caption{Experiment settings for the MNIST example.}
 \label{tab:examples:mnist_settings}
 \end{table}
 
-The hypothesis is that the initial number of synapses in the network ($ 15800 $) is redundant, as well as the number of features ($ 784 $). In \cref{fig:examples:pruning_process_mnist} we can see a selected observation of the pruning process. The number of synapses was reduced to $ 1259 $ and the number of used features to $ 465 $, while the classification accuracy was kept on $ 97\% $. The selected observation of the pruning procedure in \cref{fig:examples:pruning_process_mnist} finished after $ 424 $ steps (see [PA]).
+The hypothesis is that the initial number of synapses in the network ($ 15800 $) is redundant, as well as the number of features ($ 784 $). In \cref{fig:examples:pruning_process_mnist} we can see a selected observation of the pruning process. The number of synapses was reduced to $ 1259 $ and the number of used features to $ 465 $, while the classification accuracy was kept on $ 97\% $. The pruning procedure finished in $ 424 $ pruning steps (explained in [PA]).
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{pruning_process_mnist.eps}
-\caption{Illustration of the pruning procedure applied on MNIST dataset (selected observation). Required accuracy: $ 96\% $.}
+\caption{Illustration of the pruning procedure applied on MNIST dataset (selected observation). Required accuracy: $ 97\% $.}
 \label{fig:examples:pruning_process_mnist}
 \end{figure}
 
-In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the evaluation time. We compare a fully-connected (initial) network to a pruned one. Bars are given for the three data groups (training: $ 50000 $ samples, validation: $ 10000 $ samples, testing: $ 10000 $ samples). The processing time was reduced by nearly half after the pruning and corresponding reduction of matrix dimension (see [SHRINK]).
+In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the evaluation time. We compare a fully-connected (initial) network to a pruned one. Bars are given for the three data groups (training: $ 50000 $ samples, validation: $ 10000 $ samples, testing: $ 10000 $ samples). The processing time was reduced by nearly half after the pruning, which led to a reduction of weight matrix dimension (see [SHRINK]).
 
 \begin{figure}[H]
 \centering
@@ -423,7 +425,7 @@ In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the eva
 \label{fig:examples:evaluation_time_mnist}
 \end{figure}
 
- \cref{fig:examples:mnist_pruning_vs_req_acc} gives the statistics by running 10 observations of the pruning procedure for several values of required classification accuracy. We observed the number of synapses (blue axis) and used features after pruning (red axis).
+ \cref{fig:examples:mnist_pruning_vs_req_acc} gives the statistics by running 10 observations of the pruning procedure for several values of required classification accuracy. We observed the number of synapses (red axis) and used features after pruning (blue axis).
 
 \begin{figure}[H]
 \centering
@@ -464,7 +466,9 @@ We can see that each of the features affects more than one class in this case. T
 \label{fig:examples:fs_mnist}
 \end{figure}
 
-Knowing all the remaining synapses are important for classification, we can track tha paths from individual classes to features. This way we distinguish features connected to a selected class from those that do not affect that class. \cref{fig:examples:fs_mnist} shows important features for each class (digit) separately. Note that the \textit{"at least one"} subplot corresponds to the features shown in \cref{fig:examples:pruned_net_mnist_097}. It shows all features used by at least one class.
+Knowing all the remaining synapses are important for classification, we can track tha paths from individual classes to features. This way we distinguish features connected to a selected class from those that do not affect that class. \cref{fig:examples:fs_mnist} shows important features for each class (digit) separately. Note that the \textit{at-least-once} subplot corresponds to the features shown in \cref{fig:examples:pruned_net_mnist_097}. It shows all features used by at least one class.
+
+Some more ideas about path tracking in pruned networks are further discussed in \cref{sec:future_work}.
 
 \section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}
 PHONES data...
