@@ -11,10 +11,10 @@ from cPickle import dump as dump_cpickle, load as load_cpickle
 from numpy import mean, std, var, unique, array, ones, argmax
 from matplotlib import pyplot as plt, rcParams as mpl_params, patches as mpl_patches
 
-mpl_params['axes.labelsize'] = 26
+mpl_params['axes.labelsize'] = 22
 mpl_params['xtick.labelsize'] = 26
 mpl_params['ytick.labelsize'] = 26
-mpl_params['legend.fontsize'] = 30
+mpl_params['legend.fontsize'] = 20
 
 
 class PruningAnalyzer(object):
@@ -221,10 +221,11 @@ class FeatureAnalyzer(object):
         self.fe = self.net.opt['feature_energy']
     
     def plot_feature_energy(self):
+        '''
         colors = ('red', 'green', 'blue', 'gray', 'magenta', 'cyan', 'yellow', 'lime', 'indigo', 'brown')
         n_hidden = sum(self.net.b_is[0])
         n_output = sum(self.net.b_is[1])
-        hidden_space = 40-n_hidden+10
+        hidden_space = 600/(n_hidden+1)
 
         f_x = list()
         f_y = list()
@@ -251,7 +252,7 @@ class FeatureAnalyzer(object):
         for neuron_i in range(n_output):
             plt.gca().add_artist(
                 mpl_patches.Ellipse(xy=(250, -300+(n_output-neuron_i)*55), width=15, height=15, color=colors[neuron_i]))
-            plt.annotate(str(neuron_i), xy=(270, -300+(n_output-neuron_i)*55), ha='left', va='center', fontsize=18,
+            plt.annotate(str(neuron_i), xy=(270, -300+(n_output-neuron_i)*55), ha='left', va='center', fontsize=20,
                          bbox=dict(facecolor=colors[neuron_i], edgecolor='black', boxstyle='round,pad=0.1'))
 
         # input-hidden connections and features
@@ -282,8 +283,28 @@ class FeatureAnalyzer(object):
         plt.grid()
         plt.tight_layout()
         plt.show()
-        exit()
+        '''
+        fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax_total, ax_none)) = plt.subplots(nrows=4, ncols=3, sharex=True, sharey=True)
+        fig.delaxes(ax_none)
+        axs = (ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax_total)
+        for key, ax in zip(range(10)+['total'], axs):
+            img = list()
+            for row in range(28):
+                img.append([self.fe.affects[f_i][key] for f_i in sorted(self.fe.affects.keys())[row*28:row*28+28]])
+            ax.imshow(img, interpolation='none', aspect='auto', cmap='gray')
+            key = 'at least once' if key == 'total' else key
+            ax.annotate(str(key), xy=(0, 1), fontsize=20,
+                        bbox=dict(facecolor='yellow', edgecolor='black', boxstyle='round,pad=0.07'))
 
+        plt.xticks((), ())
+        plt.yticks((), ())
+        patches = [mpl_patches.Patch(facecolor='white', label='used', edgecolor='black')]
+        patches.append(mpl_patches.Patch(color='black', label='not used'))
+        fig.legend(patches, [p.get_label() for p in patches], loc='lower right')
+        plt.tight_layout()
+        plt.show()
+
+        '''
         mat = list()
         fe_features = [f_i for f_i in sorted(self.fe.energies.keys()) if abs(self.fe.energies[f_i]['total'])>30]
         fe_classes = self.net.labels+['total']
@@ -309,7 +330,7 @@ class FeatureAnalyzer(object):
             plt.grid()
             plt.show()
 
-        '''
+
         mat = list()
         counter = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}
         for row_i in range(28):

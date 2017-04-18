@@ -432,23 +432,39 @@ In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the eva
 \label{fig:examples:mnist_pruning_vs_req_acc}
 \end{figure}
 
-The results show that \textit{less than a tenth} of the synapses and \textit{about a half} of the features are needed to keep the maximal classification accuracy ($ 97\% $). It is also worth saying that the MNIST dataset can be learnt to $ 50\% $ using only $ 14 $ features and a network with $ 25 $ synapses. In the following these two results are further analysed.
+The results show that \textit{less than a tenth} of the synapses and \textit{about a half} of the features are needed to keep the maximal classification accuracy ($ 97\% $). It is also worth saying that the MNIST dataset can be learnt to $ 50\% $ using only $ 20 $ features and a network with $ 38 $ synapses. In the following, these two results are further analysed.
 
 \subsubsection*{Minimal MNIST network}
+At first, we focus on a pruned network capable of MNIST classification with accuracy of $ 50\% $ (\cref{fig:examples:pruned_net_mnist_05}). This example is simple enough to show the feature selection method described in [ref FS].
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{pruned_net_mnist_05.eps}
-\caption{Result of network pruning and pathing, MNIST data, accuracy: $ 50\% $.}
+\includegraphics[width=0.7\textwidth]{pruned_net_mnist_05.eps}
+\caption{Result of network pruning and path tracking, MNIST data, accuracy: $ 50\% $.}
 \label{fig:examples:pruned_net_mnist_05}
 \end{figure}
 
+Each class (digit in this case) has its color. If a hidden unit has one output connection only, it inherits the color of the class it is connected to. The features (pixels of the $ 28x28 $ image) are then colored in the same way. If a hidden unit influences more than one class, it is blacked. All features connected to a black hidden unit are then blacked as well, as they also affects more than one class.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{pruned_net_mnist_097.eps}
-\caption{Result of network pruning and pathing (synapses to $ 17^{th} $ hidden neuron only), MNIST data, accuracy: $ 97\% $.}
-\label{fig:examples:pruned_net_mnist_05}
+\includegraphics[width=0.7\textwidth]{pruned_net_mnist_097.eps}
+\caption{Result of network pruning and path tracking (shown $ 17^{th} $ hidden neuron only), MNIST data, accuracy: $ 97\% $.}
+\label{fig:examples:pruned_net_mnist_097}
 \end{figure}
+
+A pruned network capable of $ 97\% $ accurate classification is visualized in \cref{fig:examples:pruned_net_mnist_097}. To make the figure clearer, only synapses coming to the $ 17^{th} $ hidden unit are drawn between the input and hidden layer.
+
+We can see that each of the features affects more than one class in this case. Therefore we better use the visualization in \cref{fig:examples:fs_mnist}. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{fs_mnist.eps}
+\caption{Used features for individual classes, MNIST data, accuracy: $ 97\% $.}
+\label{fig:examples:fs_mnist}
+\end{figure}
+
+Knowing all the remaining synapses are important for classification, we can track tha paths from individual classes to features. This way we distinguish features connected to a selected class from those that do not affect that class. \cref{fig:examples:fs_mnist} shows important features for each class (digit) separately. Note that the \textit{"at least one"} subplot corresponds to the features shown in \cref{fig:examples:pruned_net_mnist_097}. It shows all features used by at least one class.
 
 \section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}
 PHONES data...

@@ -172,6 +172,7 @@ class FeatureEnergy(object):
         self.net = net
         self.paths = dict()
         self.energies = dict()
+        self.affects = dict()
 
     def find_paths(self):
         f = 0
@@ -190,12 +191,18 @@ class FeatureEnergy(object):
     def compute_energies(self):
         for f_i in range(self.net.n_features_init):
             self.energies[f_i] = dict()
+            self.affects[f_i] = dict()
             for c_i, label in enumerate(self.net.labels):
                 self.energies[f_i][label] = 0.0
+                self.affects[f_i][label] = False
                 for path in self.paths[f_i]:
                     if c_i == path[-1][0]:
                         self.energies[f_i][label] += float(path[0][1])/abs(path[0][2]) * float(path[1][1])/abs(path[1][2])
+                        self.affects[f_i][label] = True
             self.energies[f_i]['total'] = sum([e for e in self.energies[f_i].values()])
+            self.affects[f_i]['total'] = True in self.affects[f_i].values()
+            self.affects[f_i]['none'] = True not in self.affects[f_i].values()
+            self.affects[f_i]['all'] = False not in self.affects[f_i].values()
 
 
 class Tailoring(object):
