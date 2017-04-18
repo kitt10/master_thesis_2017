@@ -224,6 +224,7 @@ class FeatureAnalyzer(object):
         colors = ('red', 'green', 'blue', 'gray', 'magenta', 'cyan', 'yellow', 'lime', 'indigo', 'brown')
         n_hidden = sum(self.net.b_is[0])
         n_output = sum(self.net.b_is[1])
+        hidden_space = 40-n_hidden+10
 
         f_x = list()
         f_y = list()
@@ -237,13 +238,14 @@ class FeatureAnalyzer(object):
                     f_y.append(275-10*r)
 
                 p += 1
+
         plt.plot([-280, 0], [280, 280], '-', color='#dddddd')
         plt.plot([-280, -280], [0, 280], '-', color='#dddddd')
 
         # hidden layer
         for neuron_i in range(n_hidden):
             plt.gca().add_artist(
-                mpl_patches.Ellipse(xy=(120, -300+(neuron_i+1)*48), width=15, height=15, color='black'))
+                mpl_patches.Ellipse(xy=(120, -300+(neuron_i+1)*hidden_space), width=15, height=15, color='black'))
 
         # output layer
         for neuron_i in range(n_output):
@@ -253,26 +255,24 @@ class FeatureAnalyzer(object):
                          bbox=dict(facecolor=colors[neuron_i], edgecolor='black', boxstyle='round,pad=0.1'))
 
         # input-hidden connections and features
-        f = 0
         for r in range(self.net.w_is[0].shape[0]):
             for c in range(self.net.w_is[0].shape[1]):
                 if self.net.w_is[0][r,c] == 1:
-                    print r, c, f, self.net.used_features[c][1], [path[-1][0] for path in self.fe.paths[self.net.used_features[c][1]]]
                     if len(self.fe.paths[self.net.used_features[c][1]]) > 1:
-                        plt.plot([f_x[f], 120], [f_y[f], -300+(11-r+1)*48], '-', color='black')
-                        plt.plot(f_x[f], f_y[f], 'ks')
+                        if r == 16:
+                            plt.plot([f_x[c], 120], [f_y[c], -300+(n_hidden-r)*hidden_space], '-', color='black')
+                        plt.plot(f_x[c], f_y[c], 'ks')
                     else:
                         i = self.fe.paths[self.net.used_features[c][1]][0][-1][0]
-                        plt.gca().add_artist(mpl_patches.Ellipse(xy=(120, -300+(11-r+1)*48), width=15, height=15, color=colors[i]))
-                        plt.plot([f_x[f], 120], [f_y[f], -300+(11-r+1)*48], '-', color=colors[i])
-                        plt.plot(f_x[f], f_y[f], 's', color=colors[i])
-                    f += 1
+                        plt.gca().add_artist(mpl_patches.Ellipse(xy=(120, -300+(11-r+1)*hidden_space), width=15, height=15, color=colors[i]))
+                        plt.plot([f_x[c], 120], [f_y[c], -300+(n_hidden-r)*hidden_space], '-', color=colors[i])
+                        plt.plot(f_x[c], f_y[c], 's', color=colors[i])
 
         # hidden-output connections
         for r in range(self.net.w_is[1].shape[0]):
             for c in range(self.net.w_is[1].shape[1]):
                 if self.net.w_is[1][r,c] == 1:
-                    plt.plot([120, 250], [-300+(11-c+1)*48, -300+(9-r+1)*55], '-', color=colors[r])
+                    plt.plot([120, 250], [-300+(n_hidden-c)*hidden_space, -300+(n_output-r)*55], '-', color=colors[r])
 
         plt.xlim([-300, 300])
         plt.xticks((), ())
