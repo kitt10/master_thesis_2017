@@ -1,5 +1,5 @@
 \chapter{Examples} \label{chap:examples}
-The pruning algorithm is presented on several examples, where each of them has its purpose of being shown. The XOR problem (\cref{sec:dataset_xor}) should verify the ability of finding an optimal network structure. Section \ref{sec:dataset_unbfea} comes with another 2D problem, where one feature carries more information than the other one. The Rule-plus-Exception problem in \cref{sec:dataset_rpe} deals with a minority of samples that has to be treated by a different net part than rule-based samples. The train problem (\cref{sec:dataset_train}) is a working example of the feature selection procedure. The MNIST database (\cref{sec:dataset_mnist}) is widely used in machine learning and can be regarded as commonly known, hence it is an ideal example to present new methods on. Finally, in \cref{sec:dataset_phonemes} the pruning algorithm is analysed on a large dataset of phonemes.
+The pruning algorithm is presented on several examples, where each of them has its purpose of being shown. The XOR problem (\cref{sec:example_xor}) should verify the ability of finding an optimal network structure. Section \ref{sec:example_ufi} comes with another 2D problem, where one feature carries more information than the other one. The Rule-plus-Exception problem in \cref{sec:example_rpe} deals with a minority of samples that has to be treated by a different net part than rule-based samples. The train problem (\cref{sec:example_trains}) is a working example of the feature selection procedure. The MNIST database (\cref{sec:example_mnist}) is widely used in machine learning and can be regarded as commonly known, hence it is an ideal example to present new methods on. Finally, in \cref{sec:example_speech} the pruning algorithm is analysed on a large dataset of phonemes.
 
 \section{XOR Function} \label{sec:example_xor}
 The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:xor_function}. Based on this function one can build a classification problem of two features and two classes.
@@ -341,7 +341,7 @@ We ran $ 100 $ observations of the experiment and considered the features that w
 
 The result pie in \cref{fig:examples:pruning_result_pie_train} shows that the pruning algorithm found the best possible solution ($ (0, 3) $ - the car length and the load shape) in $ 46\% $ of the cases. We can regard the $ (0, 1, 6) $ and $ (1, 3, 6) $ as another (not best but also good) solutions. The rest we consider as fail cases, as all of them include features $ (0, 3) $ and the other features are redundant. To sum it up, we got a perfect solution: $ 46\% $; a good solution: $ 32\% $; a bad solution: $ 22\% $.
 
-\section{Handwritten digits (MNIST)} \label{sec:dataset_mnist}
+\section{Handwritten digits (MNIST)} \label{sec:example_mnist}
 The MNIST (Modified National Institute of Standards and Technology) database \citep{wiki:mnist} is a large database of handwritten digits that is widely used for training and testing methods in the field of machine learning. 
 
 The dataset was downloaded from \citep{online:mnist}. Some of the digits were written by employees of American Census Bureau \citep{online:census} and some by students of an American high school. In total $ 70000 $ samples were collected. Examples are shown in \cref{fig:examples:dataset_mnist}.
@@ -470,5 +470,5 @@ Knowing all the remaining synapses are important for classification, we can trac
 
 Some more ideas about path tracking in pruned networks are further discussed in \cref{sec:future_work}.
 
-\section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}
+\section{Phonemes (Speech Data)} \label{sec:example_speech}
 PHONES data...
