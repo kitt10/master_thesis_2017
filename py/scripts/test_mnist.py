@@ -23,9 +23,9 @@ def parse_arguments():
                         help='Number of experiment observations')
     parser.add_argument('-hs', '--hidden_structure', type=int, default=[20], nargs='+',
                         help='Neural network structure')
-    parser.add_argument('-ra', '--req_acc', type=float, default=0.9,
+    parser.add_argument('-ra', '--req_acc', type=float, default=0.96,
                         help='Required classificationa accuracy')
-    parser.add_argument('-lev', '--levels', type=int, default=(75, 50, 35, 20, 10, 5, 1, 0), nargs='+',
+    parser.add_argument('-lev', '--levels', type=int, default=(75, 50, 35, 20, 15, 10, 7, 5, 3, 2, 1, 0), nargs='+',
                         help='Pruning percentile levels')
     return parser.parse_args()
 
@@ -42,8 +42,8 @@ if __name__ == '__main__':
         for i_obs in range(1, args.n_obs+1):
             print_message(message='MNIST experiment, observation '+str(i_obs)+'/'+str(args.n_obs))
             net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
-            dataset = open_shelve('../examples/mnist/dataset_mnist.ds', 'c')
-            net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.3, n_epoch=10, req_acc=0.92, batch_size=10)
+            dataset = open_shelve('../examples/mnist/dataset_mnist_1K.ds', 'c')
+            net.fit(x=dataset['x'], y=dataset['y'], x_val=dataset['x_val'], y_val=dataset['y_val'], learning_rate=0.3, n_epoch=10, req_acc=1.0, batch_size=10)
             res = net.evaluate(x=dataset['x_test'], y=dataset['y_test'])
             print_message(message='Evaluation on test data after training:')
             print_param(description='Accuracy', param_str=str(res[1]))
@@ -56,26 +56,29 @@ if __name__ == '__main__':
             net.dump('../examples/mnist/net_mnist'+params_str+'_obs'+str(i_obs)+'_pruned.net')
             dataset.close()
 
-        #analyzer = PruningAnalyzer(stats_data=stats_data)
+        analyzer = PruningAnalyzer(stats_data=stats_data)
         #analyzer.analyze()
-        #analyzer.dump_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
+        analyzer.dump_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
     else:
         #analyzer = PruningAnalyzer(stats_data=[])
         #analyzer.load_stats(file_name='../examples/mnist/experiment_mnist'+params_str+'.stats')
         pass
 
-    #analyzer.plot_pruning_process(req_acc=args.req_acc)
+    #analyzer.analyze()
+    #analyzer.plot_pruning_process(req_acc=args.req_acc, pruning_steps=range(11)+[200, 300, 423, 424])
 
     net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
+    #net.load('../examples/mnist/net_mnist_hs[20]_ra05_no1_obs1_pruned.net')
     net.load('../examples/mnist/net_mnist_pruned.net')
-    net.init_tailoring()
-    net.opt['tailoring'].add_neurons(class_labels=(4, 9), h=3)
-    net.compute_feature_energy()
+    net.n_features_init = 784
+    net.opt['feature_energy'].find_paths()
+    net.opt['feature_energy'].compute_energies()
 
     f_analyzer = FeatureAnalyzer(net=net)
     f_analyzer.plot_feature_energy()
 
     exit()
+
     dataset = open_shelve('../examples/mnist/dataset_mnist.ds', 'c')
     n_to_test = 1000
     x_test = list()

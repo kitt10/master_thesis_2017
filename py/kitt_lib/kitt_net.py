@@ -17,7 +17,7 @@ from cPickle import dump as dump_cpickle, load as load_cpickle
 
 class FeedForwardNet(object):
     
-    def __init__(self, hidden, tf_name='Tanh'):
+    def __init__(self, hidden=[], tf_name='Tanh'):
         self.structure = hidden                             # network hidden structure [h1, h2, ..., hk]
         self.tf_name = tf_name                              # string name of the transfer function
         self.tf = getattr(kitt_tf, self.tf_name)()          # transfer function

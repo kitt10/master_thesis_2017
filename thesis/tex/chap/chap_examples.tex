@@ -361,7 +361,7 @@ From \citep{online:mnist} we know the problem can be learnt by a feedforward net
 \hline
 \multicolumn{2}{|c|}{\textit{network parameters}} & \multicolumn{2}{c|}{\textit{learning parameters}} \\ \hline
 structure               & {[}784, 20, 10{]}       & learning rate                  & 0.3              \\ \hline
-transfer function       & Sigmoid                 & number of epochs               & 100              \\ \hline
+transfer function       & sigmoid                 & number of epochs               & 100              \\ \hline
        &                  & batch size               & 10              \\ \hline
 \end{tabular}
 \caption{Settings for learning a dense feedforward net the MNIST dataset.}
@@ -384,9 +384,63 @@ The training results are summarized in \cref{tab:examples:mnist_training_results
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{mnist_training_result_cm.eps}
+\includegraphics[width=0.7\textwidth]{mnist_training_result_cm.eps}
 \caption{MNIST: confusion matrix (testing data).}
 \label{fig:examples:mnist_cm}
+\end{figure}
+
+The rest of this section is devoted to analysis of the pruning method on MNIST database. Parameters of the learning-pruning procedure are listed in \cref{tab:examples:mnist_settings}.
+
+\begin{table}[H]
+\centering
+\scalebox{0.9}{
+\begin{tabular}{|l|c|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{\textit{initial network}} & \multicolumn{2}{c|}{\textit{learning parameters}} & \multicolumn{2}{c|}{\textit{pruning parameters}} \\ \hline
+structure             & {[}784, 20, 10{]}          & learning rate                  & 0.3              & required accuracy             & 0.97             \\ \hline
+n synapses          & 15800                & number of epochs               & 30               & retrain                       & True             \\ \hline
+transfer fcn          & sigmoid                & minibatch size                 & 10                & retraining epochs             & 10               \\ \hline
+\end{tabular}}
+\caption{Experiment settings for the train dataset.}
+\label{tab:examples:mnist_settings}
+\end{table}
+
+The hypothesis is that the initial number of synapses in the network ($ 15800 $) is redundant, as well as the number of features ($ 784 $). In \cref{fig:examples:pruning_process_mnist} we can see a selected observation of the pruning process. The number of synapses was reduced to $ 1259 $ and the number of used features to $ 465 $, while the classification accuracy was kept on $ 97\% $. The selected observation of the pruning procedure in \cref{fig:examples:pruning_process_mnist} finished after $ 424 $ steps (see [PA]).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{pruning_process_mnist.eps}
+\caption{Illustration of the pruning procedure applied on MNIST dataset (selected observation). Required accuracy: $ 96\% $.}
+\label{fig:examples:pruning_process_mnist}
+\end{figure}
+
+In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the evaluation time. We compare a fully-connected (initial) network to a pruned one. Bars are given for the three data groups (training: $ 50000 $ samples, validation: $ 10000 $ samples, testing: $ 10000 $ samples). The processing time was reduced by nearly half after the pruning and corresponding reduction of matrix dimension (see [SHRINK]).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{evaluation_time_mnist.eps}
+\caption{Evaluation (accuracy and error computation) time for all data groups (pruned vs. full net).}
+\label{fig:examples:evaluation_time_mnist}
+\end{figure}
+
+ \cref{fig:examples:mnist_pruning_vs_req_acc} gives the statistics by running 10 observations of the pruning procedure for several values of required classification accuracy. We observed the number of synapses (blue axis) and used features after pruning (red axis).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{pruning_result_vs_req_acc.eps}
+\caption{Minimal number of features and synapses to get required classification accuracy (MNIST data).}
+\label{fig:examples:mnist_pruning_vs_req_acc}
+\end{figure}
+
+The results show that \textit{less than a tenth} of the synapses and \textit{about a half} of the features are needed to keep the maximal classification accuracy ($ 97\% $). It is also worth saying that the MNIST dataset can be learnt to $ 50\% $ using only $ 14 $ features and a network with $ 25 $ synapses. In the following these two results are further analysed.
+
+\subsubsection*{Minimal MNIST network}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{pruned_net_mnist_05.eps}
+\caption{Result of network pruning and pathing (MNIST data, accuracy: $ 50\% $).}
+\label{fig:examples:pruned_net_mnist_05}
 \end{figure}
 
 \section{Phonemes (Speech Data)} \label{sec:dataset_phonemes}

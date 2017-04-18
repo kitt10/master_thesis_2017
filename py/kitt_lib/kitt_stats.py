@@ -8,12 +8,12 @@
 
 from kitt_monkey import print_message
 from cPickle import dump as dump_cpickle, load as load_cpickle
-from numpy import mean, std, var, unique, array
+from numpy import mean, std, var, unique, array, ones, argmax
 from matplotlib import pyplot as plt, rcParams as mpl_params, patches as mpl_patches
 
-mpl_params['axes.labelsize'] = 32
-mpl_params['xtick.labelsize'] = 32
-mpl_params['ytick.labelsize'] = 25
+mpl_params['axes.labelsize'] = 26
+mpl_params['xtick.labelsize'] = 26
+mpl_params['ytick.labelsize'] = 26
 mpl_params['legend.fontsize'] = 30
 
 
@@ -35,7 +35,7 @@ class PruningAnalyzer(object):
             self.pruning_steps = None
 
     def analyze(self):
-        self.stats_data = [self.stats_data[7]]
+        #self.stats_data = [self.stats_data[7]]
         for key in self.stats_data[0].keys():
             for i_obs in range(len(self.stats_data)):
                 tmp = self.stats_data[i_obs][key][-1]
@@ -74,6 +74,7 @@ class PruningAnalyzer(object):
         _, ax1 = plt.subplots()
         ax2 = ax1.twinx()
         #ax1.errorbar(x=self.pruning_steps, y=self.means['acc'], yerr=self.stds['acc'], color='darkgreen')
+
         if pruning_steps:
             self.pruning_steps = pruning_steps
         for i_step, step in enumerate(self.pruning_steps):
@@ -82,7 +83,7 @@ class PruningAnalyzer(object):
             color2 = 'darkgreen' if self.means['retrained'][step] > 0.5 else '#cce0cc'
             ax1.bar(i_step-0.3, width=0.3, height=self.means['n_synapses_total'][step], color=color1, alpha=1.0)
             ax2.bar(i_step, width=0.3, height=self.means['acc'][step], color=color2, alpha=1.0)
-        
+
         ax1.set_xlabel('pruning step')
         ax1.set_ylabel('number of synapses', color='maroon')
         ax1.set_ylim([0, self.means['n_synapses_total'][0]+0.1*self.means['n_synapses_total'][0]])
@@ -97,7 +98,7 @@ class PruningAnalyzer(object):
             tl.set_color('darkgreen')
         
         blue_patch = mpl_patches.Patch(color='darkblue', label='net structure')
-        plt.legend([blue_patch, dashed_line], [p.get_label() for p in [blue_patch, dashed_line]], loc='upper right')
+        #plt.legend([blue_patch, dashed_line], [p.get_label() for p in [blue_patch, dashed_line]], loc='upper right')
 
         for i_step, step in enumerate(self.pruning_steps):
             if self.means['retrained'][step] > 0.5:
@@ -105,8 +106,10 @@ class PruningAnalyzer(object):
                             horizontalalignment='center', verticalalignment='center', fontsize=25, color='white', rotation=75, backgroundcolor='darkblue')
             #alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
             color1 = 'maroon' if self.means['retrained'][step] > 0.5 else '#e5cccc'
+            '''
             plt.annotate(int(self.means['n_synapses_total'][step]), xy=(i_step-0.3, self.means['n_synapses_total'][step]/self.means['n_synapses_total'][0]+0.03),
                         horizontalalignment='center', verticalalignment='center', fontsize=25, color=color1, alpha=1.0)
+            '''
 
         plt.grid()
         plt.xlim([-1, len(self.pruning_steps)])
@@ -218,7 +221,69 @@ class FeatureAnalyzer(object):
         self.fe = self.net.opt['feature_energy']
     
     def plot_feature_energy(self):
-        '''
+        colors = ('red', 'green', 'blue', 'gray', 'magenta', 'cyan', 'yellow', 'lime', 'indigo', 'brown')
+        n_hidden = sum(self.net.b_is[0])
+        n_output = sum(self.net.b_is[1])
+
+        f_x = list()
+        f_y = list()
+        p = 0
+        for r in range(28):
+            plt.plot([-280, 0], [10*r, 10*r], '-', color='#dddddd')
+            for c in range(28):
+                plt.plot([-10*c, -10*c], [0, 280], '-', color='#dddddd')
+                if p in [f[1] for f in self.net.used_features]:
+                    f_x.append(-275+10*c)
+                    f_y.append(275-10*r)
+
+                p += 1
+        plt.plot([-280, 0], [280, 280], '-', color='#dddddd')
+        plt.plot([-280, -280], [0, 280], '-', color='#dddddd')
+
+        # hidden layer
+        for neuron_i in range(n_hidden):
+            plt.gca().add_artist(
+                mpl_patches.Ellipse(xy=(120, -300+(neuron_i+1)*48), width=15, height=15, color='black'))
+
+        # output layer
+        for neuron_i in range(n_output):
+            plt.gca().add_artist(
+                mpl_patches.Ellipse(xy=(250, -300+(n_output-neuron_i)*55), width=15, height=15, color=colors[neuron_i]))
+            plt.annotate(str(neuron_i), xy=(270, -300+(n_output-neuron_i)*55), ha='left', va='center', fontsize=18,
+                         bbox=dict(facecolor=colors[neuron_i], edgecolor='black', boxstyle='round,pad=0.1'))
+
+        # input-hidden connections and features
+        f = 0
+        for r in range(self.net.w_is[0].shape[0]):
+            for c in range(self.net.w_is[0].shape[1]):
+                if self.net.w_is[0][r,c] == 1:
+                    print r, c, f, self.net.used_features[c][1], [path[-1][0] for path in self.fe.paths[self.net.used_features[c][1]]]
+                    if len(self.fe.paths[self.net.used_features[c][1]]) > 1:
+                        plt.plot([f_x[f], 120], [f_y[f], -300+(11-r+1)*48], '-', color='black')
+                        plt.plot(f_x[f], f_y[f], 'ks')
+                    else:
+                        i = self.fe.paths[self.net.used_features[c][1]][0][-1][0]
+                        plt.gca().add_artist(mpl_patches.Ellipse(xy=(120, -300+(11-r+1)*48), width=15, height=15, color=colors[i]))
+                        plt.plot([f_x[f], 120], [f_y[f], -300+(11-r+1)*48], '-', color=colors[i])
+                        plt.plot(f_x[f], f_y[f], 's', color=colors[i])
+                    f += 1
+
+        # hidden-output connections
+        for r in range(self.net.w_is[1].shape[0]):
+            for c in range(self.net.w_is[1].shape[1]):
+                if self.net.w_is[1][r,c] == 1:
+                    plt.plot([120, 250], [-300+(11-c+1)*48, -300+(9-r+1)*55], '-', color=colors[r])
+
+        plt.xlim([-300, 300])
+        plt.xticks((), ())
+        plt.yticks((), ())
+        plt.ylim([-300, 300])
+
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+        exit()
+
         mat = list()
         fe_features = [f_i for f_i in sorted(self.fe.energies.keys()) if abs(self.fe.energies[f_i]['total'])>30]
         fe_classes = self.net.labels+['total']
@@ -243,8 +308,8 @@ class FeatureAnalyzer(object):
             plt.colorbar()
             plt.grid()
             plt.show()
-        '''
 
+        '''
         mat = list()
         counter = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}
         for row_i in range(28):
@@ -276,7 +341,7 @@ class FeatureAnalyzer(object):
         hidden = dict()
         for h in range(20):
             hidden[h] = list()
-        for f_i in range(self.fe.n_features):
+        for f_i in range(self.net.n_features_init):
             for c_i, label in enumerate(self.net.labels):
                 for path in self.fe.paths[f_i]:
                     if path[-1][0] == c_i:
@@ -306,3 +371,4 @@ class FeatureAnalyzer(object):
         plt.colorbar()
         plt.grid()
         plt.show()
+        '''
