@@ -216,6 +216,31 @@
   \field{year}{2006}
 \endentry
 
+\entry{bulin_2016}{thesis}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Bul√≠n}{B.}%
+     {Martin}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BM1}
+  \strng{fullhash}{BM1}
+  \field{labelyear}{2016}
+  \field{sortinit}{2}
+  \field{title}{Classification of Terrain based on Proprioception and Tactile
+  Sensing for Multi-legged Walking Robot}
+  \list{location}{1}{%
+    {Campusvej 55, 5230 Odense M}%
+  }
+  \list{institution}{1}{%
+    {University of Southern Denmark}%
+  }
+  \field{type}{mathesis}
+  \field{year}{2016}
+  \warn{\item Invalid format of field 'month'}
+\endentry
+
 \entry{online:census}{online}{}
   \field{labelyear}{2017}
   \field{sortinit}{2}
@@ -223,6 +248,23 @@
   \verb{url}
   \verb https://www.census.gov/
   \endverb
+  \field{year}{2017}
+\endentry
+
+\entry{smidl_pc}{misc}{}
+  \name{author}{1}{}{%
+    {{}%
+     {≈†m√≠dl}{≈.}%
+     {Lubo≈°}{L.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{≈L1}
+  \strng{fullhash}{≈L1}
+  \field{labelyear}{2017}
+  \field{sortinit}{2}
+  \field{howpublished}{personal communication}
+  \field{note}{supervision of the thesis}
   \field{year}{2017}
 \endentry
 

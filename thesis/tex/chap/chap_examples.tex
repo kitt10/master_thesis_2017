@@ -77,7 +77,7 @@ transfer fcn          & sigmoid                & minibatch size                 
 \label{fig:examples:pruning_process_xor}
 \end{figure}
 
-In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is confirmed. In \cref{fig:examples:pie_xor} we can see that in $ 47 $ out of $ 100 $ cases the pruning algorithm changed the network to $ [2, 2, 2] $ architecture (\cref{fig:examples:xor_min1}), in $ 45\% $ of the cases it resulted with $ [2, 3, 2] $ (\cref{fig:examples:xor_min2}) and only in $ 8\% $ it failed to find the optimal architecture. \cref{fig:examples:result_synapses_xor} gives statistics for the final number of synapses in these three cases.
+In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is confirmed. We ran $ 100 $ observations of the experiment. In \cref{fig:examples:pie_xor} we can see that in $ 47 $ out of $ 100 $ cases the pruning algorithm changed the network to $ [2, 2, 2] $ architecture (\cref{fig:examples:xor_min1}), in $ 45\% $ of the cases it resulted with $ [2, 3, 2] $ (\cref{fig:examples:xor_min2}) and only in $ 8\% $ it failed to find the optimal architecture. \cref{fig:examples:result_synapses_xor} gives statistics for the final number of synapses in these three cases.
 
 \begin{figure}[H]
 \centering
@@ -97,7 +97,7 @@ In \cref{fig:examples:pruning_result_xor} the hypothesis of this experiment is c
 \label{fig:examples:pruning_result_xor}
 \end{figure}
 
-\section{Unbalanced Feature Information (UFI)} \label{sec:example_ufi}
+\section{Unbalanced Feature Information} \label{sec:example_ufi}
 This example is adopted from \citep{karnin}. The problem is again two-dimensional having two non-overlapping classes as depicted in \cref{fig:examples:dataset_unbfea}. The samples are uniformly distributed in $ [-1, 1] $ x $ [-1, 1] $ and the classes are equally probable, separated by two lines in 2D space ($ x_1 = a $ and $ x_2 = b $, where $ a = 0.1 $ and $ b = \frac{2}{a+1} - 1 \approx 0.82 $). Clearly, the problem can be solved by two neurons, similarly as the previous one.
 
 What is interesting about this two-classes layout is that feature $ x_1 $ is much more important for the global classification accuracy than feature $ x_2 $. Having $ x_1 $ information, based on \cref{fig:examples:dataset_unbfea} one could potentially classify more than $ 90\% $ of the samples. Opposite of that, we cannot say much with information from feature $ x_2 $ only. And this is something that also the pruning algorithm should find out.
@@ -148,7 +148,7 @@ transfer fcn          & sigmoid                & minibatch size                 
 The second hypothesis is that the synapse connected to the first feature ($ x_1 $) is more important and therefore, the other synapse (the one connected to feature $ x_2 $) should always be removed first.
 
 \subsection*{Results: Unbalanced Feature Information}
-In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirmed. The pruning of input-hidden synapses finished with the result shown in \cref{fig:examples:unbfea_hypo1} in $ 48 $ out of $ 100 $ observations and with the result in \cref{fig:examples:unbfea_hypo2} in $ 44\% $ of the cases.
+In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirmed. We ran the experiment $ 100 $ times. In $ 48 $ cases, the pruning of input-hidden synapses finished with the result shown in \cref{fig:examples:unbfea_hypo1} and it finished with the result shown in \cref{fig:examples:unbfea_hypo2} in $ 44\% $ of the cases.
 
 \begin{figure}[H]
 \centering
@@ -189,13 +189,13 @@ Out of this we expect a weight magnitude to be greater for more important synaps
 The weight magnitude seems to be a perfect measure to find feature significance factor. However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater weight magnitudes we get. Therefore small initial weight values do not affect the result significantly and so we can state:
 
 \begin{equation}
-|w_{ji}| \approx |w_{ji} - w0_{ji}|
+|w_{ji}(t)| \approx |w_{ji}(t) - w_{ji}(0)|
 \end{equation}
 
-where $ w0_{ji} \in N(0,1) $ is the initial value of weight $ w_{ji} $. Summing it up we can say that the \texttt{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
+where $ w_{ji}(0) \in N(0,1) $ is the initial value of weight $ w_{ji} $ and $ t $ is time. Summing it up we can say that the \texttt{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
 
-\section{Rule-plus-Exception (RPE)} \label{sec:example_rpe}
-This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{ABCD} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}, and it should also be on when the \textit{exception} $ \overline{ABCD} $ occurs.
+\section{Rule-plus-Exception} \label{sec:example_rpe}
+This four-dimensional problem is originally adopted from \citep{mozer_smolensky} and is also used in \citep{karnin}. The task is to learn another Boolean function: $ AB+\overline{A} \, \overline{B} \, \overline{C} \, \overline{D} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}, and it should also be on when the \textit{exception} $ \overline{A} \, \overline{B} \, \overline{C} \, \overline{D} $ occurs.
 
 Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method should suggest the part of network, which deals with the \textit{exception}, to be eliminated first - before network elements dealing with the \textit{rule}.
 
@@ -377,8 +377,8 @@ The training results are summarized in \cref{tab:examples:mnist_training_results
 \begin{tabular}{|l|c|c|}
 \hline
                        & \multicolumn{1}{l|}{\textit{accuracy}} & \multicolumn{1}{l|}{\textit{MSE}} \\ \hline
-\textit{training data} & 0.972                                      & 0.526                                 \\ \hline
-\textit{testing data}  & 0.943                                     & 1.025                                 \\ \hline
+\textit{training data} & $ 97.2\% $                                      & 0.526                                 \\ \hline
+\textit{testing data}  & $ 94.3\% $                                      & 1.025                                 \\ \hline
 \end{tabular}
 \caption{Training results on MNIST dataset.}
 \label{tab:examples:mnist_training_results}
