@@ -9,9 +9,10 @@
 
 from kitt_net import FeedForwardNet
 from kitt_monkey import print_message, print_param
-from kitt_stats import PruningAnalyzer
+from kitt_stats import PruningAnalyzer, FeatureAnalyzer
 from argparse import ArgumentParser
 from shelve import open as open_shelve
+
 
 def parse_arguments():  
     parser = ArgumentParser(description='Run experiments and plot results for XOR dataset.')
@@ -62,7 +63,18 @@ if __name__ == '__main__':
         analyzer.analyze()
         analyzer.dump_stats(file_name='../examples/speech/experiment_speech'+params_str+'.stats')
     else:
-        analyzer = PruningAnalyzer(stats_data=[])
-        analyzer.load_stats(file_name='../examples/speech/experiment_speech'+params_str+'.stats')
+        #analyzer = PruningAnalyzer(stats_data=[])
+        #analyzer.load_stats(file_name='../examples/speech/experiment_speech'+params_str+'.stats')
+        pass
 
-    analyzer.plot_pruning_process(req_acc=args.req_acc, pruning_steps=range(20)+range(113, 117))
+    #analyzer.plot_pruning_process(req_acc=args.req_acc, pruning_steps=range(20)+range(113, 117))
+
+    net = FeedForwardNet(hidden=args.hidden_structure, tf_name='Sigmoid')
+    # net.load('../examples/mnist/net_mnist_hs[20]_ra05_no1_obs1_pruned.net')
+    net.load('../examples/speech/net_simple_cs10_pruned.net')
+    net.n_features_init = 840
+    net.opt['feature_energy'].find_paths()
+    net.opt['feature_energy'].compute_energies()
+
+    f_analyzer = FeatureAnalyzer(net=net)
+    f_analyzer.plot_feature_energy()

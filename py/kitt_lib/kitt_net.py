@@ -72,7 +72,8 @@ class FeedForwardNet(object):
         return [(self.labels[i[0]], i[1][0]) for i in sorted(enumerate(self.forward(a=x)), key=lambda x:x[1], reverse=True)]
 
     def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf,
-            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, nd_der=False, verbose=True):
+            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, nd_der=False, dump_name=None,
+            verbose=True):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()

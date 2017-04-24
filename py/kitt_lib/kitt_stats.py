@@ -284,6 +284,7 @@ class FeatureAnalyzer(object):
         plt.tight_layout()
         plt.show()
         '''
+        ''' MNIST
         fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax_total, ax_none)) = plt.subplots(nrows=4, ncols=3, sharex=True, sharey=True)
         fig.delaxes(ax_none)
         axs = (ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax_total)
@@ -301,6 +302,40 @@ class FeatureAnalyzer(object):
         patches = [mpl_patches.Patch(facecolor='white', label='used', edgecolor='black')]
         patches.append(mpl_patches.Patch(color='black', label='not used'))
         fig.legend(patches, [p.get_label() for p in patches], loc='lower right')
+        plt.tight_layout()
+        plt.show()
+        '''
+
+        ''' SPEECH '''
+
+        img = list()
+        for t in range(21):
+            img.append([sum([self.fe.affects[f_i][ph] for ph in self.net.labels]) for f_i in sorted(self.fe.affects.keys())[t*40:(t+1)*40]])
+        plt.imshow(array(img).T, interpolation='none', aspect='auto')
+        plt.xticks(range(21), range(-10, 11))
+        plt.xlabel('t')
+        plt.yticks(range(5, 40, 5), range(5, 40, 5))
+        plt.ylabel('f')
+        plt.gca().invert_yaxis()
+        plt.colorbar()
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+
+
+        img = list()
+        phoneme = '_sil_'
+        for t in range(21):
+            img.append([self.fe.affects[f_i][phoneme] for f_i in
+                        sorted(self.fe.affects.keys())[t*40:(t+1)*40]])
+        plt.imshow(array(img).T, interpolation='none', aspect='auto', cmap='gray')
+        plt.xticks(range(21), range(-10, 11))
+        plt.xlabel('t')
+        plt.yticks(range(5, 40, 5), range(5, 40, 5))
+        plt.ylabel('f')
+        plt.gca().invert_yaxis()
+        plt.colorbar()
+        plt.grid()
         plt.tight_layout()
         plt.show()
 

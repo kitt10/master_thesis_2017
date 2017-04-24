@@ -69,6 +69,8 @@ def print_and_check_epoch(stats, kw):
         if stats['v_err'][-1] < stats['v_err_best']:
             stats['v_err_best'] = stats['v_err'][-1]
             col = 'red'
+            if kw['dump_name']:
+                kw['self'].dump(kw['dump_name'])
         else:
             col = 'magenta'
         line += '/'+colored(str(format(stats['v_err'][-1], '.4f')), col)
