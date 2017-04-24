@@ -49,11 +49,12 @@ class Backpropagation(object):
 
         self.net.w = [multiply(ww, ww_is) for ww, ww_is in zip([w-self.kw['learning_rate']*nw for w, nw in zip(self.net.w, nabla_w)], self.net.w_is)]
         self.net.b = [multiply(bb, bb_is) for bb, bb_is in zip([b-self.kw['learning_rate']*nb for b, nb in zip(self.net.b, nabla_b)], self.net.b_is)]
-
-        for l, dw in enumerate(nabla_w):
-            if self.net.dw_i > len(self.net.dw_container[l]):
-                self.net.dw_container[l].append(zeros(self.net.w[l].shape))
-            self.net.dw_container[l][self.net.dw_i-1] += dw
+	
+        if self.kw['dw_container']:
+            for l, dw in enumerate(nabla_w):
+                if self.net.dw_i > len(self.net.dw_container[l]):
+                    self.net.dw_container[l].append(zeros(self.net.w[l].shape))
+                self.net.dw_container[l][self.net.dw_i-1] += dw
 
     def backpropagate_error(self, x, y):
         nabla_b = [zeros(b_i.shape) for b_i in self.net.b]
