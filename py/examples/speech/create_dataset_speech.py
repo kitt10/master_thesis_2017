@@ -220,3 +220,4 @@ if __name__ == '__main__':
     dataset['n_records'] = str(args.n_records)
     dataset.close()
     print_message(message='Dataset dumped as '+destination)
+    print len(features['spk-1-1.wav']), features['spk-1-1.wav'][0]

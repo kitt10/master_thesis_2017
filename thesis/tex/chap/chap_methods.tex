@@ -12,5 +12,129 @@ Minimal network structure text...
 \section{Network Visualization} \label{sec:network_visualization}
 Graphical user interface text...
 
+\newpage
 \section{Speech Data Gathering} \label{sec:speech_data_gathering}
-Speech data classification text... \citep{smidl_pc}
+The presented methods are tested on several examples (\cref{chap:examples}) and one of them rests in classification of phonemes. By definition a phoneme is one of the units of sound that distinguish one word from another in a particular language \citep{wiki:mnist}. We focus on Czech language and consider $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet}. This section describes the way of gathering such phonemes and building a dataset for classification.
+
+\begin{table}[H]
+\centering
+\scalebox{0.8}{
+\begin{tabular}{|c|c|c||c|c|c||c|c|c|}
+\hline
+\textit{sound} & \textit{phoneme} & \textit{example} & \textit{sound} & \textit{phoneme} & \textit{example} & \textit{sound} & \textit{phoneme} & \textit{example} \\ \hline \hline
+a  & a                & mám\textbf{a}             & ch & x                & \textbf{ch}yba            & ř     & R                & mo\textbf{ř}e             \\ \hline
+á  & A                & t\textbf{á}ta             & i  & i                & p\textbf{i}vo             & ř     & Q                & t\textbf{ř}i              \\ \hline
+au & Y                & \textbf{au}to             & í  & I                & v\textbf{í}no             & s     & s                & o\textbf{s}el             \\ \hline
+b  & b                & \textbf{b}od              & j  & j                & vo\textbf{j}ák            & š     & S                & po\textbf{š}ta            \\ \hline
+c  & c                & o\textbf{c}el             & k  & k                & o\textbf{k}o              & t     & t                & o\textbf{t}ec             \\ \hline
+č  & C                & o\textbf{č}i              & l  & l                & \textbf{l}oď              & ť     & T                & ku\textbf{t}il            \\ \hline
+d  & d                & \textbf{d}ům              & m  & m                & \textbf{m}ír              & u     & u                & r\textbf{u}m              \\ \hline
+ď  & D                & \textbf{d}ěti             & n  & n                & \textbf{n}os              & ú (ů) & U                & r\textbf{ů}že             \\ \hline
+e  & e                & p\textbf{e}s              & n  & N                & ba\textbf{n}ka            & v     & v                & \textbf{v}lak             \\ \hline
+é  & E                & l\textbf{é}pe             & ň  & J                & la\textbf{ň}              & z     & z                & ko\textbf{z}a             \\ \hline
+eu & F                & \textbf{eu}nuch           & o  & o                & b\textbf{o}k              & ž     & Z                & \textbf{ž}ena             \\ \hline
+f  & f                & \textbf{f}acka            & ou & y                & p\textbf{ou}to            &       & \_sil\_          & (silence)                 \\ \hline
+g  & g                & \textbf{g}uma             & p  & p                & \textbf{p}rak             &       &                  &                           \\ \hline
+h  & h                & \textbf{h}ad              & r  & r                & \textbf{r}ak              &       &                  &                           \\ \hline
+\end{tabular}}
+\caption{Czech phonetic alphabet.}
+\label{tab:methods:phonetic_alphabet}
+\end{table}
+
+The generation of a speech dataset consists of the following steps, where the work done in steps $ 1-3 $ is taken over from \citep{smidl_pc}.
+
+\begin{enumerate}
+\item acquisition of real voice recordings;
+\item feature extraction from the sound signals (parameterization);
+\item labeling the data;
+\item definition of one sample;
+\item splitting samples into training/validation/testing sets.
+\end{enumerate}
+
+\subsection*{Acquisition of Voice Recordings}
+The phoneme dataset is made of real speech recordings from a car interior environment, provided by (Škoda, ?? ref). We are talking about simple voice instructions for a mobile phone or a navigation system, many of them are names of people, streets or towns only. In total $ 14523 $ recordings (\texttt{.wav} files) of various length (and so number of phonemes) were obtained.
+
+\subsection*{Parameterization}
+The goal of parameterization is to represent each recording by a vector of features. A commonly known procedure based on MFCCs is used. A nice detailed explanation of this method can be found e.g. in \citep{online:mfcc}. 
+
+The idea behind MFCCs originates in the fact that a shape of human vocal tract (including tongue, teeth etc.) determines what sound comes out. The shape of the vocal tract manifests itself in the envelope of the short time power spectrum, and the job of MFCCs is to accurately represent this envelope.
+
+The parameterization workflow is summarized by these steps.
+
+\begin{enumerate}
+\item \textit{splitting the signal into short frames};
+
+\cref{fig:methods:mfcc_framing} illustrates how a sound signal is splitted into short frames (windows). The parameters are
+\begin{align*}
+win\_size &= 0.025 s = 25 ms \\
+win\_shift &= 0.01 s = 10 ms
+\end{align*}
+Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 200 $.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{mfcc_framing.png}
+\caption{Framing a sound signal.}
+\label{fig:methods:mfcc_framing}
+\end{figure}
+
+We assume each frame captures one possible shape of the human vocat tract and therefore is capable of carrying one phoneme only. The following steps are applied for every single frame.
+
+\item \textit{calculation of the periodogram estimate of the power spectrum}; 
+
+The aim is to identify which frequencies are present. In order to do so, we apply the Hamming window and perform the discrete Fourier Transform (DFT; \cref{eq:dft}).
+
+\begin{equation} \label{eq:dft}
+S(k) = \displaystyle\sum_{n=0}^{N-1} s_n \cdot e^{-2 \pi i \frac{kn}{N}}, \qquad k = 0, ..., N-1
+\end{equation}
+
+, where $ N $ (in this case $ N = 200 $) is the signal length. Then we take the absolute value $ |S(k)| $.
+
+\item \textit{application of the mel filterbank to the power spectra, summation of the energy in each filter, taking a logarithm of the result};
+
+Next, we use a filterbank (illustrated in \cref{fig:methods:mfcc_filterbank}) predefined on the transmitted band ($ bw = \frac{f_s}{2} = 4kHz $) to represent a frequency presence by a single value. We use $ 40 $ filters, therefore, each frame is now described by a vector of $ 40 $ numbers.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{mfcc_filterbank}
+\caption{Mel Filterbank of 40 filters in Hertz-axis.}
+\label{fig:methods:mfcc_filterbank}
+\end{figure}
+
+Finally, a logarithm of the result is taken and considered as a feature vector describing the frame (phoneme). Usually, a discrete Cosine Transform (DCT) is applied at the end, however, it is not used in this work. The result of a signal parameterization is a matrix shown in \cref{eq:parameterization_result}.
+
+\begin{equation} \label{eq:parameterization_result}
+signal\_parameterized = 
+\begin{bmatrix}
+    f_{11} & f_{12} & f_{13} & \dots  & f_{1F} \\
+    f_{21} & f_{22} & f_{23} & \dots  & f_{2F} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    f_{W1} & f_{W2} & f_{W3} & \dots  & f_{WF}
+\end{bmatrix}
+\end{equation}
+
+, where $ F = 40 $ is the number of filters and $ W $ is the number of frames (windows) depending on the duration of a recording. Value $ f_{12} $ then belongs to the feature obtained from the second filter in the first frame.
+\end{enumerate}
+
+\subsection*{Data Labeling}
+We perform a supervised learning method, hence the data must be labeled. To the so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl_pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\multicolumn{3}{|c|}{recording\_name}                                                                                     \\ \hline
+\multicolumn{1}{|l|}{\textit{frame\_in}} & \multicolumn{1}{l|}{\textit{frame\_out}} & \multicolumn{1}{l|}{\textit{phoneme}} \\ \hline
+0                                       & 16                                      & \_sil\_                               \\ \hline
+16                                      & 25                                      & a                                     \\ \hline
+25                                      & 32                                      & n                                     \\ \hline
+32                                      & 44                                      & o                                     \\ \hline
+44                                      & 65                                      & \_sil\_                               \\ \hline
+\end{tabular}
+\caption{Example of labeled recording.}
+\label{tab:methods:labeling_example}
+\end{table}
+
+From \cref{tab:methods:labeling_example} we see that the recording contains $ 9 $ fourty-dimensional vectors representing phoneme \texttt{a}, $ 7 $ vectors of phoneme \texttt{n}, etc.
+
+\subsection*{Determination of One Sample}

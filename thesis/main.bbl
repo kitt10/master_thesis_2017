@@ -216,6 +216,26 @@
   \field{year}{2006}
 \endentry
 
+\entry{online:mfcc}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Lyons}{L.}%
+     {James}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{LJ1}
+  \strng{fullhash}{LJ1}
+  \field{labelyear}{2009}
+  \field{sortinit}{2}
+  \field{title}{Mel Frequency Cepstral Coefficient (MFCC) tutorial}
+  \verb{url}
+  \verb http://practicalcryptography.com/miscellaneous/machine-learning/guide-m
+  \verb el-frequency-cepstral-coefficients-mfccs/
+  \endverb
+  \field{year}{2009}
+\endentry
+
 \entry{bulin_2016}{thesis}{}
   \name{author}{1}{}{%
     {{}%
