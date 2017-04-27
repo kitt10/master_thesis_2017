@@ -48,7 +48,7 @@ The generation of a speech dataset consists of the following steps, where the wo
 \item feature extraction from the sound signals (parameterization);
 \item labeling the data;
 \item definition of one sample;
-\item splitting samples into training/validation/testing sets.
+\item splitting samples into training/development/testing sets.
 \end{enumerate}
 
 \subsection*{Acquisition of Voice Recordings}
@@ -59,15 +59,15 @@ The goal of parameterization is to represent each recording by a vector of featu
 
 The idea behind MFCCs originates in the fact that a shape of human vocal tract (including tongue, teeth etc.) determines what sound comes out. The shape of the vocal tract manifests itself in the envelope of the short time power spectrum, and the job of MFCCs is to accurately represent this envelope.
 
-The parameterization workflow is summarized by these steps.
+The parameterization workflow is summarized by these steps:
 
 \begin{enumerate}
 \item \textit{splitting the signal into short frames};
 
-\cref{fig:methods:mfcc_framing} illustrates how a sound signal is splitted into short frames (windows). The parameters are
+\cref{fig:methods:mfcc_framing} illustrates how a sound signal is splitted into short frames. The parameters are
 \begin{align*}
-win\_size &= 0.025 s = 25 ms \\
-win\_shift &= 0.01 s = 10 ms
+frame\_size &= 0.025 \,s \,= 25 \,ms \\
+frame\_shift &= 0.01 \,s \,= 10 \,ms
 \end{align*}
 Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 200 $.
 
@@ -78,7 +78,7 @@ Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 200 $.
 \label{fig:methods:mfcc_framing}
 \end{figure}
 
-We assume each frame captures one possible shape of the human vocat tract and therefore is capable of carrying one phoneme only. The following steps are applied for every single frame.
+We assume each frame captures one possible shape of the human vocal tract and therefore is capable of carrying one phoneme only. The next steps are applied for every single frame.
 
 \item \textit{calculation of the periodogram estimate of the power spectrum}; 
 
@@ -92,7 +92,7 @@ S(k) = \displaystyle\sum_{n=0}^{N-1} s_n \cdot e^{-2 \pi i \frac{kn}{N}}, \qquad
 
 \item \textit{application of the mel filterbank to the power spectra, summation of the energy in each filter, taking a logarithm of the result};
 
-Next, we use a filterbank (illustrated in \cref{fig:methods:mfcc_filterbank}) predefined on the transmitted band ($ bw = \frac{f_s}{2} = 4kHz $) to represent a frequency presence by a single value. We use $ 40 $ filters, therefore, each frame is now described by a vector of $ 40 $ numbers.
+Next, we use a filterbank of triangle filters (illustrated in \cref{fig:methods:mfcc_filterbank}) predefined on the transmitted band ($ bw = \frac{f_s}{2} = 4kHz $) to get a single value per filter. We use $ 40 $ filters, therefore, each frame is now described by a vector of $ 40 $ numbers.
 
 \begin{figure}[H]
 \centering
@@ -101,10 +101,10 @@ Next, we use a filterbank (illustrated in \cref{fig:methods:mfcc_filterbank}) pr
 \label{fig:methods:mfcc_filterbank}
 \end{figure}
 
-Finally, a logarithm of the result is taken and considered as a feature vector describing the frame (phoneme). Usually, a discrete Cosine Transform (DCT) is applied at the end, however, it is not used in this work. The result of a signal parameterization is a matrix shown in \cref{eq:parameterization_result}.
+Finally, a logarithm of the result is taken and considered as a description of the frame (phoneme). Usually, a discrete Cosine Transform (DCT) is applied at the end, however, it is not done in this work. The result of a signal parameterization is a matrix shown in \cref{eq:parameterization_result}.
 
 \begin{equation} \label{eq:parameterization_result}
-signal\_parameterized = 
+recording\_params = 
 \begin{bmatrix}
     f_{11} & f_{12} & f_{13} & \dots  & f_{1F} \\
     f_{21} & f_{22} & f_{23} & \dots  & f_{2F} \\
@@ -113,7 +113,7 @@ signal\_parameterized =
 \end{bmatrix}
 \end{equation}
 
-, where $ F = 40 $ is the number of filters and $ W $ is the number of frames (windows) depending on the duration of a recording. Value $ f_{12} $ then belongs to the feature obtained from the second filter in the first frame.
+, where $ F = 40 $ is the number of filters and $ W $ is the number of frames (windows) depending on the duration of a recording. Value $ f_{12} $ then belongs to the feature computed with the second filter in the first frame.
 \end{enumerate}
 
 \subsection*{Data Labeling}
@@ -135,12 +135,12 @@ We perform a supervised learning method, hence the data must be labeled. To the 
 \label{tab:methods:labeling_example}
 \end{table}
 
-From \cref{tab:methods:labeling_example} we see that the recording contains $ 9 $ fourty-dimensional vectors representing phoneme \texttt{"a"}, $ 7 $ vectors of phoneme \texttt{"n"}, etc.
+It says that features extracted from this recording consist of $ 9 $ fourty-dimensional vectors representing phoneme \texttt{"a"}, $ 7 $ vectors of phoneme \texttt{"n"}, etc.
 
 \subsection*{Forming a Sample}
 The $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet} are naturally labels of classes, so we have a fourty-class classification problem. Having the information from previous section, one can match the extracted features with corresponding phonemes (classes). Now the task is to define the form of one sample.
 
-\cref{fig:methods:sample_forming_bs} corresponds to \cref{tab:methods:labeling_example}. The numbers in the first line are frame indices. The second line contains the known frame labels, where each frame is described by a vector of $ 40 $ features.
+\cref{fig:methods:sample_forming_bs} goes with the example in \cref{tab:methods:labeling_example}. The numbers in the first line are frame indices. The second line contains the known frame labels, where each frame is described by a vector of $ 40 $ features.
 
 There is a possibility to take all frames labeled as \texttt{"a"} and consider the corresponding vectors directly as samples. However, as the labeling was not done manually and therefore cannot be considered as $ 100\% $ correct, we introduce a parameter called \texttt{border\textunderscore size}. \cref{fig:methods:sample_forming_bs} shows that we omit the frames on borders with another phoneme label and take only those in the middle.
 
@@ -169,9 +169,9 @@ Based on the chosen context size $ cs $ the previous and subsequent vectors are 
 \label{fig:methods:feature_vector}
 \end{figure}
 
-Talking about \cref{fig:methods:feature_vector}, features $ g_1, g_2, ..., g_{200} $ represents a feature vector of one sample, which takes the label of the base frame.
+Talking about \cref{fig:methods:feature_vector}, features $ g_1, g_2, ..., g_{200} $ represent a feature vector of one sample, which takes the label of the base frame.
 
-The last parameter of speech dataset generation is the number of samples per class (\texttt{n\textunderscore samples}). The rule of thumb is the more samples the better training results, however, getting best possible training results is not the objective of this work. Therefore we often use less samples to speed up the training process.
+The last parameter of the speech dataset generation is the number of samples per class (\texttt{n\textunderscore samples}). The rule of thumb is the more samples the better training results, however, getting best possible training results is not the objective of this work. Therefore we often use less samples to speed up the training process.
 
 To summarize this section, we end up with three parameters of the speech dataset generation process:
 
@@ -182,7 +182,7 @@ To summarize this section, we end up with three parameters of the speech dataset
 \end{itemize}
 
 \subsection*{Splitting data into three disjunctive sets}
-\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all examples in this work. The training data is used to set up model parameters. Development data is then used for testing during the training process, in order to adjust some learning parameters based on test results. Finally, a trained model is tested on never-seen testing data. In this work we split this way: $ 80\% $ training set, $ 10\% $ development set, $ 10\% $ testing set.
+\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all classification problems in this work. The training data is used to set up model parameters. Development data is then used for testing during the training process, in order to adjust some learning parameters based on the test results. Finally, a trained model is tested on never-seen testing data. We use splitting: $ 80\% $ training set; $ 10\% $ development set; $ 10\% $ testing set.
 
 \begin{figure}[H]
 \centering
