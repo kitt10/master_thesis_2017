@@ -471,6 +471,32 @@ Knowing all the remaining synapses are important for classification, we can trac
 Some more ideas about path tracking in pruned networks are further discussed in \cref{sec:future_work}.
 
 \section{Phonemes (Speech Data)} \label{sec:example_speech}
-The process of speech data gathering is described in \cref{sec:speech_data_gathering}. The dataset generation process has three parameters: \texttt{border\textunderscore size}, \texttt{context\textunderscore size} and \texttt{n\textunderscore samples}.
+The process of speech data gathering is described in \cref{sec:speech_data_gathering}. The dataset generation process has three parameters: \texttt{border\textunderscore size} ($ bs $), \texttt{context\textunderscore size} ($ cs $) and \texttt{n\textunderscore samples} ($ ns $).
 
-In this example, at first we try to find optimal parameter settings for the dataset generation, which would lead to the maximal trainability.
+In this example, we first try to find optimal parameter settings, which would lead to a maximal trainability. The general rule is the more samples the better trainability, therefore we fix $ ns = 1000 $ and determine the other parameters first. See \cref{tab:app:speech_datasets} for details of all generated datasets differing in $ bs $ and $ cs $. It reveals that phoneme \texttt{"F"} does not have enough occurrences (less than $ ns = 1000 $) in the data, and of course the number of these occurrences decreases with growing $ bs $. For $ bs >= 6 $ even more phonemes (\texttt{"D"}, \texttt{"F"},\texttt{"N"}, \texttt{"Q"}, \texttt{"R"}, \texttt{"T"}) have less than $ 1000 $ occurrences.
+
+\cref{tab:examples:speech_bs_cs_determination} shows the experiment settings.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{experiment settings}   & \multicolumn{2}{c|}{learning parameters} \\ \hline
+n observations    & 5                       & learning rate            & 0.1           \\ \hline
+observed value    & MSE' (Eq. X)            & n epochs                 & 50            \\ \hline
+network structure & {[}$ 40 \cdot (2cs+1) $, 50, 40{]} & batch size               & 10            \\ \hline
+\end{tabular}
+\caption{Speech dataset: experiment settings for determination of $ bs $ and $ cs $.}
+\label{tab:examples:speech_bs_cs_determination}
+\end{table}
+
+We ran $ 5 $ observations of a simple network training for every combination of $ bs \in [0, 5] $ and $ cs \in [0, 9] $. \cref{fig:examples:speech_bs_cs_test} shows average MSE' (see Eq. X) values, complete results can be found in Table X.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{speech_bs_cs_test.eps}
+\caption{Test MSE' (Eq ref) for various parameters $ bs $ and $ cs $ ($ ns = 1000 $, 5 observations, see \cref{tab:app:speech_datasets}).}
+\label{fig:examples:speech_bs_cs_test}
+\end{figure}
+
+Based on \cref{fig:examples:speech_bs_cs_test} we can state that the \texttt{border\textunderscore size} must be greater than two and we set $ bs = 3 $ for further experiments. The \texttt{context\textunderscore size} was set to $ cs = 3 $.
