@@ -341,7 +341,7 @@ We ran $ 100 $ observations of the experiment and considered the features that w
 
 The result pie in \cref{fig:examples:pruning_result_pie_train} shows that the pruning algorithm found the best possible solution ($ (0, 3) $ - the car length and the load shape) in $ 46\% $ of the cases. We can regard the $ (0, 1, 6) $ and $ (1, 3, 6) $ as another (not best but also good) solutions. The rest we consider as fail cases, as all of them include features $ (0, 3) $ and the other features are redundant. To sum it up, we got a perfect solution: $ 46\% $; a good solution: $ 32\% $; a bad solution: $ 22\% $.
 
-\section{Handwritten digits (MNIST)} \label{sec:example_mnist}
+\section{Handwritten Digits (MNIST)} \label{sec:example_mnist}
 The MNIST (Modified National Institute of Standards and Technology) database \citep{wiki:mnist} is a large database of handwritten digits that is widely used for training and testing methods in the field of machine learning. 
 
 The dataset was downloaded from \citep{online:mnist}. Some of the digits were written by employees of American Census Bureau \citep{online:census} and some by students of an American high school. In total $ 70000 $ samples were collected. Examples are shown in \cref{fig:examples:dataset_mnist}.
@@ -471,4 +471,6 @@ Knowing all the remaining synapses are important for classification, we can trac
 Some more ideas about path tracking in pruned networks are further discussed in \cref{sec:future_work}.
 
 \section{Phonemes (Speech Data)} \label{sec:example_speech}
-PHONES data...
+The process of speech data gathering is described in \cref{sec:speech_data_gathering}. The dataset generation process has three parameters: \texttt{border\textunderscore size}, \texttt{context\textunderscore size} and \texttt{n\textunderscore samples}.
+
+In this example, at first we try to find optimal parameter settings for the dataset generation, which would lead to the maximal trainability.
