@@ -473,7 +473,7 @@ Some more ideas about path tracking in pruned networks are further discussed in 
 \section{Phonemes (Speech Data)} \label{sec:example_speech}
 The process of speech data gathering is described in \cref{sec:speech_data_gathering}. The dataset generation process has three parameters: \texttt{border\textunderscore size} ($ bs $), \texttt{context\textunderscore size} ($ cs $) and \texttt{n\textunderscore samples} ($ ns $).
 
-In this example, we first try to find optimal parameter settings, which would lead to a maximal trainability. The general rule is the more samples the better trainability, therefore we fix $ ns = 1000 $ and determine the other parameters first. See \cref{tab:app:speech_datasets} for details of all generated datasets differing in $ bs $ and $ cs $. It reveals that phoneme \texttt{"F"} does not have enough occurrences (less than $ ns = 1000 $) in the data, and of course the number of these occurrences decreases with growing $ bs $. For $ bs >= 6 $ even more phonemes (\texttt{"D"}, \texttt{"F"},\texttt{"N"}, \texttt{"Q"}, \texttt{"R"}, \texttt{"T"}) have less than $ 1000 $ occurrences.
+In this example, we first try to find optimal parameter settings, which would lead to a maximal trainability. The general rule is the more samples the better trainability, therefore we fix $ ns = 1000 $ and determine the other parameters at first. See \cref{tab:app:speech_datasets} for details of all generated datasets differing in $ bs $ and $ cs $. It reveals that phoneme \texttt{"F"} does not have enough occurrences (less than $ ns = 1000 $) in the data, and of course the number of occurrences decreases with growing $ bs $. For $ bs >= 6 $ even more phonemes (\texttt{"D"}, \texttt{"F"},\texttt{"N"}, \texttt{"Q"}, \texttt{"R"}, \texttt{"T"}) have less than $ 1000 $ occurrences.
 
 \cref{tab:examples:speech_bs_cs_determination} shows the experiment settings.
 
@@ -483,20 +483,62 @@ In this example, we first try to find optimal parameter settings, which would le
 \hline
 \multicolumn{2}{|c|}{experiment settings}   & \multicolumn{2}{c|}{learning parameters} \\ \hline
 n observations    & 5                       & learning rate            & 0.1           \\ \hline
-observed value    & MSE' (Eq. X)            & n epochs                 & 50            \\ \hline
+observed value    & MSE' (\cref{eq:mse_})    & n epochs                 & 50            \\ \hline
 network structure & {[}$ 40 \cdot (2cs+1) $, 50, 40{]} & batch size               & 10            \\ \hline
 \end{tabular}
-\caption{Speech dataset: experiment settings for determination of $ bs $ and $ cs $.}
+\caption{Speech dataset: experiment settings for determination of optimal $ bs $ and $ cs $.}
 \label{tab:examples:speech_bs_cs_determination}
 \end{table}
 
-We ran $ 5 $ observations of a simple network training for every combination of $ bs \in [0, 5] $ and $ cs \in [0, 9] $. \cref{fig:examples:speech_bs_cs_test} shows average MSE' (see Eq. X) values, complete results can be found in Table X.
+We ran $ 5 $ observations of a simple network training for every combination of $ bs \in [0, 5] $ and $ cs \in [0, 9] $. \cref{fig:examples:speech_bs_cs_test} shows average MSE' (see \cref{eq:mse_}) values. Complete results can be tracked in \cref{tab:app:speech_bs_cs_complete_results}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{speech_bs_cs_test.eps}
-\caption{Test MSE' (Eq ref) for various parameters $ bs $ and $ cs $ ($ ns = 1000 $, 5 observations, see \cref{tab:app:speech_datasets}).}
+\caption{Test MSE' (\cref{eq:mse_}) for various parameters $ bs $ and $ cs $ ($ ns = 1000 $, 5 observations, see \cref{tab:app:speech_datasets}).}
 \label{fig:examples:speech_bs_cs_test}
 \end{figure}
 
-Based on \cref{fig:examples:speech_bs_cs_test} we can state that the \texttt{border\textunderscore size} must be greater than two and we set $ bs = 3 $ for further experiments. The \texttt{context\textunderscore size} was set to $ cs = 3 $.
+The experiment result says that a bigger \texttt{context\textunderscore size} ($ cs > 2 $) does not go well together with a low \texttt{border\textunderscore size} ($ bs \leq 2 $). We can state that the \texttt{border\textunderscore size} should better be greater than two. Then the \texttt{context\textunderscore size} does not influence the trainability much. We must keep in mind that the experiment is too simple to give a reliable estimate (simple network structure, few training epochs), however, it gives an initial idea of a general trend, which is enough for the purposes of this work. For the experiments below we consider this settings:
+
+\begin{itemize}
+\item \texttt{border\textunderscore size}: $ bs = 3 $
+\item \texttt{context\textunderscore size}: $ cs = 3 $
+\item \texttt{n\textunderscore samples}: $ ns = 10000 $
+\end{itemize}
+
+\subsection*{Analysis of the Generated Speech Dataset}
+The goal of this section is to show what kind of data we actually work with. In \cref{fig:examples:speech_example_sample_cs0} we can see one randomly selected sample for each phoneme. For a more illustrative view the context is cut out ($ cs = 0 $), hence we see $ 40 $ features corresponding to $ 40 $ frequency filters (see \cref{fig:methods:mfcc_filterbank}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{example_sample_10K_cs0_norm.eps}
+\caption{Randomly selected sample for each phoneme, $ cs = 0 $.}
+\label{fig:examples:speech_example_sample_cs0}
+\end{figure}
+
+\cref{fig:examples:speech_average_sample_cs0} shows an average feature vector out of $ 10000 $ samples for each phoneme. Here we can find some patterns.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{average_sample_10K_cs0_norm.eps}
+\caption{Average sample for each phoneme, $ cs = 0 $.}
+\label{fig:examples:speech_average_sample_cs0}
+\end{figure}
+
+For example, the pause (\texttt{"\_sil\_"}) is very similar to phoneme \texttt{"p"} having low values for all frequencies. Phonemes \texttt{"A"} and \texttt{"a"} also take a similar course, as well as high-frequency groups (\texttt{"Q"}, \texttt{"R"}, \texttt{"S"}) or (\texttt{"c"}, \texttt{"s"}, \texttt{"z"}).
+
+Using the derived parameter settings ($ cs = 3 $) we end up with a feature vector of length $ 280 $. An example for each class is shown in \cref{fig:examples:speech_example_sample_cs3}. Average values can be found in \cref{app:supplementary_data}, \cref{fig:app:speech_average_sample_cs3}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{example_sample_10K_cs3_norm.eps}
+\caption{Randomly selected sample for each phoneme, $ cs = 3 $.}
+\label{fig:examples:speech_example_sample_cs3}
+\end{figure}
+
+\subsection*{Classification Results: Speech Dataset}
+
+\subsection*{Pruning Results: Speech Dataset}
+
+\subsection*{Feature Selection and Pathing: Speech Dataset}
