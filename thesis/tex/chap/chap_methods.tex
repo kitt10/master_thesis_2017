@@ -1,5 +1,26 @@
 \chapter{Methods} \label{chap:methods}
-Methods intro text...
+The methods of this work are introduced here. Section \ref{sec:classification_method} describes the classification model and the learning method. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:feature_selection} comes with the feature selection method using a procedure called \textit{pathing} and additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of speech data gathering.
+
+Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:feature_selection} are partially based on \citep{bulin_2016}, but the methods are further elaborated.
+
+\section{Classification Method} \label{sec:classification_method}
+The classification in this study is performed by dense feedforward neural networks. A general illustration of the structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{ff_neural_net}
+\caption{A general dense feedforward neural network.}
+\label{fig:methods:ff_neural_net}
+\end{figure}
+
+The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ r = 1 $).
+
+\subsection*{Neuron Principle}
+fsfs
+
+\subsection*{Learning Algorithm}
+
+\subsection*{Notations}
 
 \section{Network Pruning} \label{sec:network_pruning}
 Network pruning text...
@@ -12,9 +33,6 @@ Minimal network structure text...
 Pathing in Net (Feature Selection)
 
 Feature Energy computation
-
-\section{Network Visualization} \label{sec:network_visualization}
-Graphical user interface text...
 
 \newpage
 \section{Speech Data Gathering} \label{sec:speech_data_gathering}

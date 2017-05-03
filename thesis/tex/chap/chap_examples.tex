@@ -538,6 +538,55 @@ Using the derived parameter settings ($ cs = 3 $) we end up with a feature vecto
 \end{figure}
 
 \subsection*{Classification Results: Speech Dataset}
+At first we must keep in mind that getting the best possible classification accuracy is not the goal in this work. Rather than spending months of computation time for training huge networks, we choose a simplier network structure and try to get the best out of it. Two different network structures were trained:
+
+\begin{enumerate}
+\item Network \texttt{[280, 50, 2, 50, 40]} (bottleneck\footnote{A bottleneck network contains a layer that consists of few nodes compared to the previous layers. It can be used to get a representation of the network input with reduced dimensionality.} network);
+\item Network \texttt{[280, 100, 50, 40]}.
+\end{enumerate}
+
+The learning parameters for both networks are listed in \cref{tab:examples:speech_learning_parameters}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|c|}
+\hline
+\multicolumn{2}{|c|}{dataset} & \multicolumn{2}{c|}{learning parameters} \\ \hline
+n samples / class    & 5000   & learning rate            & 0.07          \\ \hline
+border size          & 3      & n epochs                 & 100           \\ \hline
+context size         & 3      & batch size               & 10            \\ \hline
+\end{tabular}
+\caption{Phonemes: dataset and learning parameters.}
+\label{tab:examples:speech_learning_parameters}
+\end{table}
+
+\subsubsection*{1. Network (bottleneck)}
+The network with the bottleneck layer was trained to test accuracy $ 30\% $ ($ MSE' = 0.0105 $). A complete confusion matrix can be found in \cref{app:supplementary_data}, \cref{fig:app:speech_bottleneck_cm}. The confusion matrix helped us find phonemes that had been trained better compared to the others. We focused on phonemes with recall\footnote{Recall score is the ability of a classifier to find all the positive samples. It is defined as $ \frac{tp}{tp+fn} $, where $ tp $ is the number of true positives and $ fn $ the number of false negatives.} greater than $ 0.5 $.
+
+The purpose of training a bottleneck network is the reduction of input's dimensionality. Using a layer with just two neurons usually does not lead to a high classification accuracy (also confirmed here), but the adventage is that it can be illustrated in 2D space.
+
+For the selected phonemes, \cref{fig:examples:speech_bottleneck_result} shows the representation of testing samples in the bottleneck layer. We used the \textit{Sigmoid} transfer function, so all samples lie in $ [0,1] x [0,1] $.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{speech_bottleneck_result.eps}
+\caption{Representation of individual phonemes in the 2D bottleneck layer (selected phonemes).}
+\label{fig:examples:speech_bottleneck_result}
+\end{figure}
+
+The figure confirms some intuitive expectations. For example, samples of phoneme \texttt{"I"} are close to representations of phoneme \texttt{"i"} and also not far away from \texttt{"A"} and \texttt{"E"} samples. Another area contains samples of \texttt{"S"} together with \texttt{"s"} and \texttt{"c"} samples.
+
+The bottleneck network with two neurons is a simple example of how the work in networks can be illustrated.
+
+\subsubsection*{2. Network}
+The second network with structure \texttt{[280, 100, 50, 40]} was trained with the same settings (\cref{tab:examples:speech_learning_parameters}). The learning ended with accuracy $ 63.8\% $ and $ MSE' = 0.0063 $. \cref{fig:examples:speech_net_cm} shows the complete confusion matrix.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{speech_net_cm.eps}
+\caption{Confusion matrix of the classification results on the speech dataset.}
+\label{fig:examples:speech_net_cm}
+\end{figure}
 
 \subsection*{Pruning Results: Speech Dataset}
 
