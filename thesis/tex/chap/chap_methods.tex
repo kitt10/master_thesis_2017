@@ -16,11 +16,55 @@ The classification in this study is performed by dense feedforward neural networ
 The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ r = 1 $).
 
 \subsection*{Neuron Principle}
-fsfs
+The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit consists of multiple inputs and a single output. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
+
+\begin{description}
+\item[$ a_k^{(i)} $] : activity of $ k^{th} $ neuron in $ i^{th} $ layer
+\item[$ w_{k,l}^{(i)} $] : weight of synapse connecting $ l^{th} $ neuron in $ (i-1)^{th} $ layer with $ k^{th} $ neuron in $ i^{th} $ layer
+\item[$ neuron_k^{(i)} $] : $ k^{th} $ neuron in $ i^{th} $ layer
+\item[$ b_k^{(i)} $] : bias connected to $ k^{th} $ neuron in $ i^{th} $ layer
+\item[$ z_k^{(i)} $] : activation of $ k^{th} $ neuron in $ i^{th} $ layer
+\item[$ f() $] : transfer function (\cref{eq:sigmoid}; \cref{fig:methods:transfer_functions})
+\end{description}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{neuron_principle.png}
+  \caption{A model neuron}
+  \label{fig:methods:model_neuron}
+\end{figure}
+
+Assuming $ j $ being the number of neurons in $ (i-1)^{th} $ layer, the activation of $ neuron_k^{(i)} $ is computed as in \cref{eq:neuron_activation}
+
+\begin{align} \label{eq:neuron_activation}
+z_k^{(i)} = \displaystyle{\sum_{l=1}^{j} [a_l^{(i-1)} \cdot w_{k,l}^{(i)}]} + b_k^{(i)}
+\end{align}
+
+Then we get the neuron activity by mapping its activation into a finite interval using a transfer function $ f(\cdot) $ - see \cref{eq:neuron_activity}. 
+
+\begin{align} \label{eq:neuron_activity}
+a_k^{(i)} = f(z_k^{(i)})
+\end{align}
+
+The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in a $ [0, 1] $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into a $ [-1, 1] $ interval.
+
+\begin{align} \label{eq:sigmoid}
+f(z) = \frac{1}{1 + e^{-z}}
+\end{align}
+
+The two basic transfer functions are shown in \cref{fig:methods:transfer_functions}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{transfer_functions.eps}
+  \caption{Transfer functions: \textit{Sigmoid} and \textit{Tanh}}
+  \label{fig:methods:transfer_functions}
+\end{figure}
+
+\subsection*{Notation}
+The work of a neural network is all done by matrix calculations. Therefore we need to introduce a notation used in this study.
 
 \subsection*{Learning Algorithm}
-
-\subsection*{Notations}
 
 \section{Network Pruning} \label{sec:network_pruning}
 Network pruning text...
