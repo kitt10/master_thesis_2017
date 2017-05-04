@@ -261,6 +261,25 @@
   \warn{\item Invalid format of field 'month'}
 \endentry
 
+\entry{online:nnanddl}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Nielsen}{N.}%
+     {Michael}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{NM1}
+  \strng{fullhash}{NM1}
+  \field{labelyear}{2017}
+  \field{sortinit}{2}
+  \field{title}{Neural Networks and Deep Learning}
+  \verb{url}
+  \verb http://neuralnetworksanddeeplearning.com/
+  \endverb
+  \field{year}{2017}
+\endentry
+
 \entry{online:census}{online}{}
   \field{labelyear}{2017}
   \field{sortinit}{2}

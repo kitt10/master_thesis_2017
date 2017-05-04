@@ -13,7 +13,7 @@ The classification in this study is performed by dense feedforward neural networ
 \label{fig:methods:ff_neural_net}
 \end{figure}
 
-The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ r = 1 $).
+The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
 
 \subsection*{Neuron Principle}
 The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit consists of multiple inputs and a single output. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
@@ -64,7 +64,82 @@ The two basic transfer functions are shown in \cref{fig:methods:transfer_functio
 \subsection*{Notation}
 The work of a neural network is all done by matrix calculations. Therefore we need to introduce a notation used in this study.
 
+\begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries $ W^{(i)} $}]
+\item[$ n $] : number of input neurons (problem dimension; size of one sample);
+\item[$ m $] : number of output neurons (classes);
+\item[$ p $] : number of samples;
+\item[$ q $] : number of hidden layers;
+\item[$ X $] : network input: $ p $-by-$ n $ matrix;
+\item[$ W^{(i)} $] : $ r $-by-$ s $ matrix of weights for synapses connecting $ s $ neurons in $ (i-1)^{th} $ layer to $ r $ neurons in $ i^{th} $ layer;
+\item[$ B^{(i)} $] : vector of $ r $ biases for $ r $ neurons in $ i^{th} $ layer;
+\item[$ Z^{(i)} $] : $ r $-by-$ p $ matrix of activations for $ r $ neurons in $ i^{th} $ layer;
+\item[$ A^{(i)} $] : $ r $-by-$ p $ matrix of activities of $ r $ neurons in $ i^{th} $ layer;
+\item[$ \delta^{(i)} $] : error vector of length $ r $ for $ r $ neurons in $ i^{th} $ layer;
+\item[$ Y $] : predicted network output: $ m $-by-$ p $ matrix ($ Y = A^{(q)} $)
+\item[$ U $] : desired network output (known targets): $ m $-by-$ p $ matrix
+\end{description}
+
 \subsection*{Learning Algorithm}
+The feedforward networks are trained by the common \textit{Backpropagation} method illustrated by the flowchart in \cref{fig:methods:backpropagation}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{backpropagation.png}
+  \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error. If the error is reduced to be lower, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after a specified number of epochs, no matter how successful the training has been.}
+  \label{fig:methods:backpropagation}
+\end{figure}
+
+In case of feedforward neural networks, the goal is to find optimal values for two groups of parameters - \textit{weights} ($ W $) and \textit{biases} ($ B $). The key idea lies in the optimization method called \textit{Gradient Descent Algorithm (GDA)}.
+
+At first, a batch of samples $ X $ is (forward) propagated through a network to get the network's prediciton $ Y $.
+
+\begin{align}
+A^{(1)} &= f(X \cdot W^{(1)} + B^{(1)}) \\
+A^{(i)} &= f(A^{(i-1)} \cdot W^{(i)} + B^{(i)}) \\
+Y &= A^{(q)} = f(A^{(q-1)} \cdot W^{(q)} + B^{(q)})
+\end{align}
+
+Then, the error of the network's prediction is calculated. The measure used in this study is based on the standard \textit{Mean Squared Error (MSE)} given by \cref{eq:mse}.
+
+\begin{equation} \label{eq:mse}
+MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{i=1} (y_i - u_i)^2}
+\end{equation}
+
+In this study the measure given in \cref{eq:mse_} is used for tuning, because it makes a fair comparison of problems with different number of classes.
+
+\begin{equation} \label{eq:mse_}
+MSE' = \frac{1}{2 p m} \displaystyle \sum^{p}_{i=1} \displaystyle \sum^{m}_{j=1} (y_{i,j} - u_{i,j})^2
+\end{equation}
+
+We consider $ MSE $ measure as a cost function $ J = MSE $. Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ J $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. One can understand it as every sample has a vote on how the parameters should change to get the minimal error and the result is obtained as a compromise. The envelope of the approach consists of these steps:
+
+\begin{enumerate}
+\item find the derivative of the \textit{Sigmoid} transfer function;
+\begin{align} \label{eq:transfer_function_der}
+f'(z) = f(z) \cdot (1-f(z))
+\end{align}
+\item backpropagate the prediction error throught the network;
+\begin{align} \label{eq:error_backprop}
+\delta^{(q+1)} &= \frac{1}{2} (Y - U)^2 \\
+\delta^{(i-1)} &= \delta^{(i)} \cdot (W^{(i)})^T \cdot f'(Z^{(i)})
+\end{align}
+\item find the optimal parameter changes;
+\begin{align} \label{eq:part_derivative}
+\frac{dJ}{dW^{(i)}} &= (a^{(i)})^T \cdot \delta^{(i)} \\
+\frac{dJ}{dB^{(i)}} &= \delta^{(i)}
+\end{align}
+\item update the parameters;
+\begin{align} \label{eq:params_update}
+W^{(i)} (t+1) &= W^{(i)} (t) + \mu \frac{dJ}{dW^{(i)} (t)} \\ 
+B^{(i)} (t+1) &= B^{(i)} (t) + \mu \frac{dJ}{dB^{(i)} (t)}
+\end{align}
+\end{enumerate}
+
+where $ \mu $ is the \texttt{learning\_rate}, which is usually set $ \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}) and is one of the parameters of the learning process.
+
+Another parameter of the learning process is so called \texttt{batch\_size}. It says how many samples are processed together to make one parameter update. If \texttt{batch\_size = 1}, we are talking about a sequential learning, otherwise we call the process batch learning.
+
+The last parameter used in this study is \texttt{n\_epoch}, meaning the maximal number of training epochs that can be ran.
 
 \section{Network Pruning} \label{sec:network_pruning}
 Network pruning text...

@@ -7,6 +7,7 @@ A level-1 auxiliary file: tex/chap/chap_methods.aux
 A level-1 auxiliary file: tex/chap/chap_examples.aux
 A level-1 auxiliary file: tex/chap/chap_discussion.aux
 A level-1 auxiliary file: tex/chap/chap_conclusion.aux
+A level-1 auxiliary file: tex/appx/app_supplementary_data.aux
 A level-1 auxiliary file: tex/appx/app_structure_of_the_workspace.aux
 A level-1 auxiliary file: tex/appx/app_implementation.aux
 A level-1 auxiliary file: tex/appx/app_code_documentation.aux
@@ -26,44 +27,44 @@ Database file #2: bib/thesis_bibliography.bib
 Biblatex version: 3.3
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-You've used 13 entries,
+You've used 14 entries,
             6047 wiz_defined-function locations,
-            1211 strings with 10725 characters,
-and the built_in function-call counts, 50264 in all, are:
-= -- 1902
-> -- 3199
-< -- 613
-+ -- 2269
-- -- 2181
-* -- 2502
-:= -- 4320
+            1216 strings with 10863 characters,
+and the built_in function-call counts, 55335 in all, are:
+= -- 2007
+> -- 3769
+< -- 657
++ -- 2746
+- -- 2662
+* -- 2691
+:= -- 4968
 add.period$ -- 0
-call.type$ -- 13
-change.case$ -- 301
-chr.to.int$ -- 185
-cite$ -- 24
-duplicate$ -- 4786
-empty$ -- 4556
-format.name$ -- 598
-if$ -- 9967
+call.type$ -- 14
+change.case$ -- 311
+chr.to.int$ -- 213
+cite$ -- 26
+duplicate$ -- 5185
+empty$ -- 4923
+format.name$ -- 646
+if$ -- 10695
 int.to.chr$ -- 0
-int.to.str$ -- 30
+int.to.str$ -- 32
 missing$ -- 0
-newline$ -- 281
-num.names$ -- 650
-pop$ -- 3940
+newline$ -- 300
+num.names$ -- 691
+pop$ -- 4272
 preamble$ -- 1
-purify$ -- 329
+purify$ -- 341
 quote$ -- 0
-skip$ -- 2677
+skip$ -- 2871
 stack$ -- 0
-substring$ -- 1854
-swap$ -- 1606
-text.length$ -- 369
-text.prefix$ -- 12
+substring$ -- 1973
+swap$ -- 1730
+text.length$ -- 405
+text.prefix$ -- 13
 top$ -- 1
-type$ -- 481
+type$ -- 519
 warning$ -- 0
-while$ -- 350
+while$ -- 388
 width$ -- 0
-write$ -- 267
+write$ -- 285
