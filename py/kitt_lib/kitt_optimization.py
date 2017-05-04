@@ -31,6 +31,8 @@ class Pruning(object):
         self.vars['net_tmp'].learning.kw['strict_termination'] = self.kw['strict_termination_learning']
         self.vars['net_tmp'].learning.kw['verbose'] = self.kw['verbose_learning']
         self.vars['net_tmp'].learning.kw['nd_der'] = self.kw['measure'] == 'obd'
+        self.vars['net_tmp'].learning.kw['dw_container'] = self.kw['measure'] == 'karnin'
+        self.vars['net_tmp'].learning.kw['dump_name'] = None
         self.prune_()
 
     def prune_(self):

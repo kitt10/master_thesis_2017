@@ -589,5 +589,17 @@ The second network with structure \texttt{[280, 100, 50, 40]} was trained with t
 \end{figure}
 
 \subsection*{Pruning Results: Speech Dataset}
+The second network (\texttt{[280, 100, 50, 40]}) was pruned. In this case we sacrificed a few percent of classification accuracy and required $ req\_acc = 50\% $ only. The pruning process is tracked in \cref{fig:examples:speech_pruning_process}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{pruning_process_speech.eps}
+\caption{Illustration of the pruning procedure applied on SPEECH dataset (selected observation). Required accuracy: $ 50\% $.}
+\label{fig:examples:speech_pruning_process}
+\end{figure}
+
+The initial number of synapses $ 35000 $ was reduced to $ 1344 $. Eight hidden neurons (four in each hidden layer) were cut out. Regarding the input layer $ 26 $ neurons were cut out, which reveals that only $ 254 $ out of $ 280 $ features are neccessarry to obtain the classification accuracy of $ 50\% $ on validation data.
+
+The dimensionality reduction is not that significant for this example compared to the others (e.g. MNIST). Also we require a low classification accuracy. However, one must remember that we work with a $ 40 $-class problem, which is far from trivial. In the following section we try to find some patterns in the results, which could demystify what is going on in the network.
 
 \subsection*{Feature Selection and Pathing: Speech Dataset}

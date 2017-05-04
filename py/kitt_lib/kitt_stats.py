@@ -102,7 +102,7 @@ class PruningAnalyzer(object):
 
         for i_step, step in enumerate(self.pruning_steps):
             if self.means['retrained'][step] > 0.5:
-                plt.annotate(str([int(n) for n in self.means['structure'][step].tolist()]).replace(',', '-').replace(' ', '')[1:-1], xy=(i_step-0.1, 0.5),
+                plt.annotate(str([int(n) for n in self.means['structure'][step].tolist()]).replace(',', '-').replace(' ', '')[1:-1], xy=(i_step-0.1, 0.8),
                             horizontalalignment='center', verticalalignment='center', fontsize=25, color='white', rotation=75, backgroundcolor='darkblue')
             #alpha = 0.8 if self.means['retrained'][step] > 0.5 else 0.2
             color1 = 'maroon' if self.means['retrained'][step] > 0.5 else '#e5cccc'

@@ -1,0 +1,10 @@
+343     1                 [254, 96, 46, 40]   (1343, 182)            no             0              343.0026 s
+
+--------------------------------------------------------------------
+-- Pruning finished in 42514.8791378 s.
+	% net final structure: [254, 96, 46, 40]
+	% net final number of synapses (w/b): (1344, 182)
+	% classification accuracy on training data: 0.500152229657
+	% classification error on training data: 0.0083498298836
+	% classification accuracy on validation data: 0.479729364005
+	% classification error on validation data: 0.00863086683083
