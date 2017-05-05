@@ -1,10 +1,10 @@
 \chapter{Methods} \label{chap:methods}
 The methods of this work are introduced here. Section \ref{sec:classification_method} describes the classification model and the learning method. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:feature_selection} comes with the feature selection method using a procedure called \textit{pathing} and additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of speech data gathering.
 
-Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:feature_selection} are partially based on \citep{bulin_2016}, but the methods are further elaborated.
+Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:feature_selection} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
 
 \section{Classification Method} \label{sec:classification_method}
-The classification in this study is performed by dense feedforward neural networks. A general illustration of the structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
+The classification in this study is performed by dense feedforward neural networks. A general illustration of the network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
 
 \begin{figure}[H]
 \centering
@@ -16,12 +16,12 @@ The classification in this study is performed by dense feedforward neural networ
 The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
 
 \subsection*{Neuron Principle}
-The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit consists of multiple inputs and a single output. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
+The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
 
 \begin{description}
+\item[$ neuron_k^{(i)} $] : $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ a_k^{(i)} $] : activity of $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ w_{k,l}^{(i)} $] : weight of synapse connecting $ l^{th} $ neuron in $ (i-1)^{th} $ layer with $ k^{th} $ neuron in $ i^{th} $ layer
-\item[$ neuron_k^{(i)} $] : $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ b_k^{(i)} $] : bias connected to $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ z_k^{(i)} $] : activation of $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ f() $] : transfer function (\cref{eq:sigmoid}; \cref{fig:methods:transfer_functions})
@@ -46,7 +46,7 @@ Then we get the neuron activity by mapping its activation into a finite interval
 a_k^{(i)} = f(z_k^{(i)})
 \end{align}
 
-The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in a $ [0, 1] $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into a $ [-1, 1] $ interval.
+The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in the $ [0, 1] $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into the $ [-1, 1] $ interval.
 
 \begin{align} \label{eq:sigmoid}
 f(z) = \frac{1}{1 + e^{-z}}
@@ -62,21 +62,21 @@ The two basic transfer functions are shown in \cref{fig:methods:transfer_functio
 \end{figure}
 
 \subsection*{Notation}
-The work of a neural network is all done by matrix calculations. Therefore we need to introduce a notation used in this study.
+The work of a neural network is all done by matrix calculations. Therefore we need to introduce a notation used in this study. Detailed examples of the itemized matrices can be found in \cref{app:implementation}.
 
 \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries $ W^{(i)} $}]
 \item[$ n $] : number of input neurons (problem dimension; size of one sample);
 \item[$ m $] : number of output neurons (classes);
 \item[$ p $] : number of samples;
 \item[$ q $] : number of hidden layers;
-\item[$ X $] : network input: $ p $-by-$ n $ matrix;
+\item[$ X $] : network input: $ n $-by-$ p $ matrix;
 \item[$ W^{(i)} $] : $ r $-by-$ s $ matrix of weights for synapses connecting $ s $ neurons in $ (i-1)^{th} $ layer to $ r $ neurons in $ i^{th} $ layer;
 \item[$ B^{(i)} $] : vector of $ r $ biases for $ r $ neurons in $ i^{th} $ layer;
-\item[$ Z^{(i)} $] : $ r $-by-$ p $ matrix of activations for $ r $ neurons in $ i^{th} $ layer;
-\item[$ A^{(i)} $] : $ r $-by-$ p $ matrix of activities of $ r $ neurons in $ i^{th} $ layer;
-\item[$ \delta^{(i)} $] : error vector of length $ r $ for $ r $ neurons in $ i^{th} $ layer;
-\item[$ Y $] : predicted network output: $ m $-by-$ p $ matrix ($ Y = A^{(q)} $)
-\item[$ U $] : desired network output (known targets): $ m $-by-$ p $ matrix
+\item[$ Z^{(i)} $] : $ r $-by-$ p $ matrix of activations for $ r $ neurons in $ i^{th} $ layer for all samples;
+\item[$ A^{(i)} $] : $ r $-by-$ p $ matrix of activities of $ r $ neurons in $ i^{th} $ layer for all samples;
+\item[$ \Delta^{(i)} $] : $ r $-by-$ p $ matrix of errors on neurons in $ i^{th} $ layer for all samples;
+\item[$ Y $] : predicted network output for all samples: $ m $-by-$ p $ matrix ($ Y = A^{(q)} $)
+\item[$ U $] : desired network output (targets) for all samples: $ m $-by-$ p $ matrix
 \end{description}
 
 \subsection*{Learning Algorithm}
@@ -84,7 +84,7 @@ The feedforward networks are trained by the common \textit{Backpropagation} meth
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{backpropagation.png}
+  \includegraphics[width=0.75\textwidth]{backpropagation.png}
   \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error. If the error is reduced to be lower, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after a specified number of epochs, no matter how successful the training has been.}
   \label{fig:methods:backpropagation}
 \end{figure}
@@ -94,57 +94,188 @@ In case of feedforward neural networks, the goal is to find optimal values for t
 At first, a batch of samples $ X $ is (forward) propagated through a network to get the network's prediciton $ Y $.
 
 \begin{align}
-A^{(1)} &= f(X \cdot W^{(1)} + B^{(1)}) \\
-A^{(i)} &= f(A^{(i-1)} \cdot W^{(i)} + B^{(i)}) \\
-Y &= A^{(q)} = f(A^{(q-1)} \cdot W^{(q)} + B^{(q)})
+Z^{(1)} &= W^{(1)} \cdot X + B^{(1)} \\
+A^{(1)} &= f(Z^{(1)}) \\
+A^{(i)} &= f(W^{(i)} \cdot A^{(i-1)} + B^{(i)}) \\
+Y &= A^{(q)} = f(W^{(q)} \cdot A^{(q-1)} + B^{(q)})
 \end{align}
 
-Then, the error of the network's prediction is calculated. The measure used in this study is based on the standard \textit{Mean Squared Error (MSE)} given by \cref{eq:mse}.
+Then, having the known targets (supervised learning), we compute a prediction error on every output neuron for every sample and store those errors in the $ m $-by-$ p $ matrix $ E $.
 
-\begin{equation} \label{eq:mse}
-MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{i=1} (y_i - u_i)^2}
+\begin{equation} \label{eq:prediction_error}
+E = \frac{1}{2} ||Y - U||^2
 \end{equation}
 
-In this study the measure given in \cref{eq:mse_} is used for tuning, because it makes a fair comparison of problems with different number of classes.
-
-\begin{equation} \label{eq:mse_}
-MSE' = \frac{1}{2 p m} \displaystyle \sum^{p}_{i=1} \displaystyle \sum^{m}_{j=1} (y_{i,j} - u_{i,j})^2
-\end{equation}
-
-We consider $ MSE $ measure as a cost function $ J = MSE $. Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ J $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. One can understand it as every sample has a vote on how the parameters should change to get the minimal error and the result is obtained as a compromise. The envelope of the approach consists of these steps:
+Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ E $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. The envelope of the algorithm includes these steps:
 
 \begin{enumerate}
-\item find the derivative of the \textit{Sigmoid} transfer function;
+\item \textit{find the derivative of the transfer function (assuming Sigmoid)};
 \begin{align} \label{eq:transfer_function_der}
 f'(z) = f(z) \cdot (1-f(z))
 \end{align}
-\item backpropagate the prediction error throught the network;
+\item \textit{backpropagate the prediction error throught the network;}
 \begin{align} \label{eq:error_backprop}
-\delta^{(q+1)} &= \frac{1}{2} (Y - U)^2 \\
-\delta^{(i-1)} &= \delta^{(i)} \cdot (W^{(i)})^T \cdot f'(Z^{(i)})
+\Delta^{(q+1)} &= (Y-U) \times f'[Z^{(q+1)}] \\
+\Delta^{(i)} &= \left[\left[W^{(i+1)}\right]^T \cdot \Delta^{(i+1)}\right] \times f'[Z^{(i)}]
 \end{align}
-\item find the optimal parameter changes;
+\item \textit{find the optimal parameter changes;}
+
+Every sample $ \xi $ has a vote $ dW^{(i)}_{(\xi)} $ (resp. $ dB^{(i)}_{(\xi)} $) on how the parameters $ W^{(i)} $ (resp. $ B^{(i)} $) should change to get the minimal error and the result is then obtained as a compromise of those votes.
+
+The index $ i $ indicates the layer. Consider $ \Delta^{(i)}_{(\xi)} $ be the $ \xi^{th} $ column of the $ \Delta^{(i)} $ matrix, which corresponds to the $ \xi^{th} $ sample. Analogically, $ A^{(i-1)}_{(\xi)} $ is the $ \xi^{th} $ column of the activation matrix $ A^{(i-1)} $ in the $ (i-1)^{th} $ layer. Then we get the votes as:
 \begin{align} \label{eq:part_derivative}
-\frac{dJ}{dW^{(i)}} &= (a^{(i)})^T \cdot \delta^{(i)} \\
-\frac{dJ}{dB^{(i)}} &= \delta^{(i)}
+dW^{(i)}_{(\xi)} &= A^{(i-1)}_{(\xi)} \cdot \left[\Delta^{(i)}_{(\xi)}\right]^T\\
+dB^{(i)}_{(\xi)} &= \Delta^{(i)}_{(\xi)}
 \end{align}
-\item update the parameters;
+\item \textit{update the parameters.}
+
+At this point we introduce the first parameter of the learning process called \texttt{batch\_size}. It states how many votes are processed together to make one update of the parameters. If \texttt{batch\_size = 1}, we are talking about a \textit{sequential learning}. In this case, each vote is applied to update the parameters before any other votes are computed (\cref{eq:sequential_update}; $ t $ refers to a moment in time). 
+
+\begin{align} \label{eq:sequential_update}
+dW^{(i)}(t) = dW^{(i)}_{(\xi)}
+\end{align}
+
+The other approach is \textit{batch learning}, defined by \texttt{batch\_size > 1}
+
+\begin{align} \label{eq:batch_update}
+dW^{(i)}(t) = \displaystyle{\sum_{\xi}^{batch\_size} dW^{(i)}_{(\xi)}}
+\end{align}
+
+Equations \ref{eq:sequential_update} and \ref{eq:batch_update} works analogously for the biases.
+
+The second parameter of the learning procedure is called \texttt{learning\_rate} ($ \mu $) and is usually set $ 0 < \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}). The update of the parameters is then done as follows:
 \begin{align} \label{eq:params_update}
-W^{(i)} (t+1) &= W^{(i)} (t) + \mu \frac{dJ}{dW^{(i)} (t)} \\ 
-B^{(i)} (t+1) &= B^{(i)} (t) + \mu \frac{dJ}{dB^{(i)} (t)}
+W^{(i)} (t+1) &= W^{(i)} (t) + \mu \cdot dW^{(i)} (t) \\ 
+B^{(i)} (t+1) &= B^{(i)} (t) + \mu \cdot dB^{(i)} (t)
 \end{align}
 \end{enumerate}
 
-where $ \mu $ is the \texttt{learning\_rate}, which is usually set $ \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}) and is one of the parameters of the learning process.
+When the votes of all samples are applied, the learning epoch ends (see \cref{fig:methods:backpropagation}). The maximal number of epochs is the last parameter of the learning procedure. To list them all:
 
-Another parameter of the learning process is so called \texttt{batch\_size}. It says how many samples are processed together to make one parameter update. If \texttt{batch\_size = 1}, we are talking about a sequential learning, otherwise we call the process batch learning.
+\begin{itemize}
+\item \texttt{batch\_size}
+\item \texttt{learning\_rate} ($ \mu $)
+\item \texttt{n\_epoch}
+\end{itemize}
 
-The last parameter used in this study is \texttt{n\_epoch}, meaning the maximal number of training epochs that can be ran.
+\subsection*{Network Evaluation}
+We use two measures to evaluate the network training: error and accuracy.
+The error measure is based on the standard \textit{Mean Squared Error (MSE)} given by \cref{eq:mse}.
+
+\begin{equation} \label{eq:mse}
+MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{\xi=1} ||y_{\xi} - u_{\xi}||^2}
+\end{equation}
+
+where $ y_{\xi} $ is the prediction for sample $ \xi $ and $ u_{\xi} $ its corresponding (known) target. Both are vectors of length $ m $ (number of classes).
+
+In this study we rather use the measure given by \cref{eq:mse_}, because it makes a fair comparison of problems with different number of classes.
+
+\begin{equation} \label{eq:mse_}
+MSE' = \frac{1}{2 p m} \displaystyle \sum^{p}_{\xi=1} \displaystyle \sum^{m}_{\theta=1} (y_{\xi,\theta} - u_{\xi,\theta})^2
+\end{equation}
+
+The classification accuracy is computed with \ref{eq:acc}.
+
+\begin{equation} \label{eq:acc}
+acc = \frac{1}{p} \displaystyle \sum^{p}_{\xi=1} \psi, \qquad \psi = \begin{cases}
+    1, & argmax(y_{\xi}) = argmax(u_{\xi}) \\
+    0, & \text{otherwise}
+\end{cases} 
+\end{equation}
+
+The classification result is often shown by a confusion matrix (well explained in \citep{sklearn}. The testing is usually done on different data samples than used for training - see \cref{fig:methods:three_sets}.
 
 \section{Network Pruning} \label{sec:network_pruning}
-Network pruning text...
+The state-of-the-art classification method based on feedforward neural networks uses a fully connected structure by default. This means that each unit is connected to all units in the next layer. The question is if all of these connections are significant and so necessary for classification.
 
-Network Shrinking...
+The hypothesis is that some synapses of a fully connected feedforward network can be removed while the classification accuracy is not influenced significantly. The problem is graphically illustrated in \cref{fig:methods:pruning_problem_formulation}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{pruning_problem_formulation}
+  \caption{Pruning Algorithm: problem formulation}
+  \label{fig:methods:pruning_problem_formulation}
+\end{figure}
+
+The general workflow consists of the following steps:
+\begin{enumerate}
+\item a fully connected network is initialized and trained to as high accuracy as possible;
+\item some of the synapses are removed and a classification ability of the pruned net is tested;
+\item if it has not dropped significantly, the removed synapses were unimportant;
+\end{enumerate}
+
+The task is to identify the unimportant synapses. The way of recognizing the importance of synapses is called \textit{pruning algorithm (PA)}.
+
+The idea behind the PA implemented in this study is based on weight changes during the network training. It is presumed that a synapse, whose weight does not evolve while the network is trained, does not contribute to classification much.
+
+\subsection*{Cutting Synapses}
+The pruning algorithm itself is an iterative process, however, as shown in \cref{img:pa_flowchart}, two important steps are done in advance.
+
+First of all, the following variables are initialized:
+
+\begin{description}
+\item[net] : a fully-connected \textit{KITTNN} \textit{Network()}; (see \cref{app:sec:api_kitt_nn}) with an oversized structure (many hidden neurons) and randomly set weights and biases
+\item[percentile] : algorithm variable, set to $ 75 $ by default
+\item[percentile levels] : array of final variables, set to $ [75, 50, 20, 5, 1] $ by default
+\item[required accuracy] : required classification accuracy for a chosen problem (e.g. 0.95)
+\item[stability threshold] : if the classification does not improve over several learning iterations, this is the number of stable iterations to terminate the training after
+\end{description}
+
+Additionally, some standard learning parameters like the \textit{learning rate}, \textit{number of epochs} and \textit{mini-batch size} can be set and, of course, a dataset is chosen.
+
+Once the initialization is done, the network is trained with some optimal learning parameters until it reaches the required classification success rate. As mentioned above, the pruning algorithm is based on weight changes. Therefore, the initial weights for synapses are kept. Then, the trained network is passed to the pruning phase, which is shown in \cref{img:pruning_algorithm}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{pruning_algorithm}
+  \caption{The Pruning Algorithm: initialized variables are in bold, red marked functions refer to \ref{img:cut_synapses} and \ref{img:accuracy_kept} respectively}
+  \label{img:pruning_algorithm}
+\end{figure}
+
+Initially, a backup of the current network structure is made by creating a network copy. The pruning is then performed using this copy. The pruning method is shown in \cref{img:cut_synapses}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{cut_synapses}
+  \caption{Synaptic pruning based on weight changes and current percentile value}
+  \label{img:cut_synapses}
+\end{figure}
+
+As discussed above, an initial weight value was saved for each synapse before the training. Hence, for $ n $ being the total number of synapses, weight changes $ \Delta w_i $ are known (\ref{eq:weight_change}).
+
+\begin{align} \label{eq:weight_change}
+\Delta w_i = |w\_init_i - w\_current_i|, \quad i = 1, ..., n
+\end{align}
+
+Based on these changes and on the current $ percentile $ value, a threshold ($ th $ in \cref{img:cut_synapses}) is determined. Then, all synapses with a lower change in weight than this threshold are removed, and, if there is a neuron with no connections left, it is removed as well.
+
+If the $ percentile $ variable has been decreased so that it equals zero, the threshold is set to the minimum of all weight changes. In this case, only one synapse is then removed at a time.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{accuracy_kept}
+  \caption{Evaluation of the classification accuracy after pruning}
+  \label{img:accuracy_kept}
+\end{figure}
+
+After cutting some synapses, the network is checked for keeping the required classification accuracy as shown in \cref{img:accuracy_kept}.
+
+The evaluation is performed by testing the network on validation data. If the classification accuracy has dropped, the network is retrained using training data of the dataset.
+
+If the classification accuracy has been kept after the pruning, the current net structure is saved and considered as a reference for the next pruning loop.
+
+If it is not possible to retrain the pruned net and to reach the required accuracy, two possibilities arise:
+
+\begin{enumerate}
+\item Only one synapse has been removed during the last pruning step and the accuracy has been broken. This means that even this single synapse with the least change in weight is important for classification. Therefore, the pruning is stopped and the current net structure (including this last synapse) is saved as the minimal structure.
+\item More synapses have been removed during the last pruning step, and this broke the accuracy. In this case, the percentile level is decreased (based on the initialized array of percentile levels) and so less synapses are removed during the next pruning iteration.
+
+In this manner, at some point of the pruning process, the algorithm will come to removing only one synapse at once and then, finally, only case 1 will remain.
+\end{enumerate}
+
+Therefore, the algorithm is finite. Moreover, it guarantees that the classification success rate does not drop. The method is evaluated in detail in \cref{sec:pruning_algorithm_results} and compared to two different approaches from \citep{article:10:pa} in \cref{ssec:comparison_to_other_pa}.
+
+\subsection*{Dimensionality Reduction}
 
 \section{Feature Selection} \label{sec:feature_selection}
 Minimal network structure text...

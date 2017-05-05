@@ -236,6 +236,96 @@
   \field{year}{2009}
 \endentry
 
+\entry{sklearn}{inproceedings}{}
+  \name{author}{15}{}{%
+    {{}%
+     {Buitinck}{B.}%
+     {Lars}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Louppe}{L.}%
+     {Gilles}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Blondel}{B.}%
+     {Mathieu}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pedregosa}{P.}%
+     {Fabian}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mueller}{M.}%
+     {Andreas}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Grisel}{G.}%
+     {Olivier}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Niculae}{N.}%
+     {Vlad}{V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Prettenhofer}{P.}%
+     {Peter}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gramfort}{G.}%
+     {Alexandre}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Grobler}{G.}%
+     {Jaques}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Layton}{L.}%
+     {Robert}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {VanderPlas}{V.}%
+     {Jake}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Joly}{J.}%
+     {Arnaud}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Holt}{H.}%
+     {Brian}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Varoquaux}{V.}%
+     {Ga{\"{e}}l}{G.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BL+1}
+  \strng{fullhash}{BLLGBMPFMAGONVPPGAGJLRVJJAHBVG1}
+  \field{labelyear}{2013}
+  \field{sortinit}{2}
+  \field{booktitle}{ECML PKDD Workshop: Languages for Data Mining and Machine
+  Learning}
+  \field{pages}{108\bibrangedash 122}
+  \field{title}{{API} design for machine learning software: experiences from
+  the scikit-learn project}
+  \field{year}{2013}
+\endentry
+
 \entry{bulin_2016}{thesis}{}
   \name{author}{1}{}{%
     {{}%
