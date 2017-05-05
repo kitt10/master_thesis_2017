@@ -174,7 +174,7 @@ In this study we rather use the measure given by \cref{eq:mse_}, because it make
 MSE' = \frac{1}{2 p m} \displaystyle \sum^{p}_{\xi=1} \displaystyle \sum^{m}_{\theta=1} (y_{\xi,\theta} - u_{\xi,\theta})^2
 \end{equation}
 
-The classification accuracy is computed with \ref{eq:acc}.
+The classification accuracy is computed with \cref{eq:acc}.
 
 \begin{equation} \label{eq:acc}
 acc = \frac{1}{p} \displaystyle \sum^{p}_{\xi=1} \psi, \qquad \psi = \begin{cases}
@@ -186,16 +186,27 @@ acc = \frac{1}{p} \displaystyle \sum^{p}_{\xi=1} \psi, \qquad \psi = \begin{case
 The classification result is often shown by a confusion matrix (well explained in \citep{sklearn}. The testing is usually done on different data samples than used for training - see \cref{fig:methods:three_sets}.
 
 \section{Network Pruning} \label{sec:network_pruning}
-The state-of-the-art classification method based on feedforward neural networks uses a fully connected structure by default. This means that each unit is connected to all units in the next layer. The question is if all of these connections are significant and so necessary for classification.
+The rule of thumb in classification with feedforward neural networks is using a fully connected structure - every unit is connected to all units in the next layer. 
 
-The hypothesis is that some synapses of a fully connected feedforward network can be removed while the classification accuracy is not influenced significantly. The problem is graphically illustrated in \cref{fig:methods:pruning_problem_formulation}.
+Pruning methods work with the hypothesis that some of the synapses in fully connected networks do not contribute to the classification and so their removal would not cause an accuracy drop. The problem (graphically illustrated in \cref{fig:methods:pruning_problem_formulation}) is to distinguish those redundant synapses from the important ones.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\textwidth]{pruning_problem_formulation}
-  \caption{Pruning Algorithm: problem formulation}
+  \includegraphics[width=\textwidth]{pruning_problem_formulation}
+  \caption{Pruning Algorithm: problem formulation.}
   \label{fig:methods:pruning_problem_formulation}
 \end{figure}
+
+There are several ways of how to estimate the importance of synapses (see \cref{sec:state_of_the_art}). In this study we introduce a measure called "\textit{weight significance factor (WSF)} given by \cref{eq:weight_significance_factor}.
+
+\begin{equation} \label{eq:weight_significance_factor}
+WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
+\end{equation}
+
+where $ w_{k,l}^{(i)} (t_f) $ is the weight of synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
+
+\subsection*{Realization of the Pruning Proceeder}
+
 
 The general workflow consists of the following steps:
 \begin{enumerate}
