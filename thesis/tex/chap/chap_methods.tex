@@ -192,7 +192,7 @@ Pruning methods work with the hypothesis that some of the synapses in fully conn
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{pruning_problem_formulation}
+  \includegraphics[width=0.9\textwidth]{pruning_problem_formulation}
   \caption{Pruning Algorithm: problem formulation.}
   \label{fig:methods:pruning_problem_formulation}
 \end{figure}
@@ -206,74 +206,20 @@ WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
 where $ w_{k,l}^{(i)} (t_f) $ is the weight of synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
 
 \subsection*{Realization of the Pruning Proceeder}
-
-
-The general workflow consists of the following steps:
-\begin{enumerate}
-\item a fully connected network is initialized and trained to as high accuracy as possible;
-\item some of the synapses are removed and a classification ability of the pruned net is tested;
-\item if it has not dropped significantly, the removed synapses were unimportant;
-\end{enumerate}
-
-The task is to identify the unimportant synapses. The way of recognizing the importance of synapses is called \textit{pruning algorithm (PA)}.
-
-The idea behind the PA implemented in this study is based on weight changes during the network training. It is presumed that a synapse, whose weight does not evolve while the network is trained, does not contribute to classification much.
-
-\subsection*{Cutting Synapses}
-The pruning algorithm itself is an iterative process, however, as shown in \cref{img:pa_flowchart}, two important steps are done in advance.
-
-First of all, the following variables are initialized:
-
-\begin{description}
-\item[net] : a fully-connected \textit{KITTNN} \textit{Network()}; (see \cref{app:sec:api_kitt_nn}) with an oversized structure (many hidden neurons) and randomly set weights and biases
-\item[percentile] : algorithm variable, set to $ 75 $ by default
-\item[percentile levels] : array of final variables, set to $ [75, 50, 20, 5, 1] $ by default
-\item[required accuracy] : required classification accuracy for a chosen problem (e.g. 0.95)
-\item[stability threshold] : if the classification does not improve over several learning iterations, this is the number of stable iterations to terminate the training after
-\end{description}
-
-Additionally, some standard learning parameters like the \textit{learning rate}, \textit{number of epochs} and \textit{mini-batch size} can be set and, of course, a dataset is chosen.
-
-Once the initialization is done, the network is trained with some optimal learning parameters until it reaches the required classification success rate. As mentioned above, the pruning algorithm is based on weight changes. Therefore, the initial weights for synapses are kept. Then, the trained network is passed to the pruning phase, which is shown in \cref{img:pruning_algorithm}.
+The general workflow of the pruning procedure is illustrated in \cref{fig:methods:network_pruning_flowchart}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{pruning_algorithm}
-  \caption{The Pruning Algorithm: initialized variables are in bold, red marked functions refer to \ref{img:cut_synapses} and \ref{img:accuracy_kept} respectively}
-  \label{img:pruning_algorithm}
+  \includegraphics[width=0.85\textwidth]{network_pruning_flowchart}
+  \caption{The flowchart of network pruning proceeder.}
+  \label{fig:methods:network_pruning_flowchart}
 \end{figure}
 
-Initially, a backup of the current network structure is made by creating a network copy. The pruning is then performed using this copy. The pruning method is shown in \cref{img:cut_synapses}.
+\cref{fig:methods:network_pruning_flowchart} introduced the first parameter of the pruning process called \texttt{retrain}. We make it $ True $ if we want to retrain the pruned network (without the cut synapse) before checking the accuracy drop. In practice, we are able to set the exact number of epochs we want the net to retrain.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\textwidth]{cut_synapses}
-  \caption{Synaptic pruning based on weight changes and current percentile value}
-  \label{img:cut_synapses}
-\end{figure}
+The required accuracy (\texttt{req\_acc}) is the second parameter. In some cases we want to give up some of the accuracy in exchange for well pruned network in order to see some patterns in it. This parameter sets the minimal accuracy the network must have so that we can treat the lastly cut synapses as unimportant. The accuracy is checked on development data, while the training is performed on training data (see \cref{fig:methods:three_sets}).
 
-As discussed above, an initial weight value was saved for each synapse before the training. Hence, for $ n $ being the total number of synapses, weight changes $ \Delta w_i $ are known (\ref{eq:weight_change}).
-
-\begin{align} \label{eq:weight_change}
-\Delta w_i = |w\_init_i - w\_current_i|, \quad i = 1, ..., n
-\end{align}
-
-Based on these changes and on the current $ percentile $ value, a threshold ($ th $ in \cref{img:cut_synapses}) is determined. Then, all synapses with a lower change in weight than this threshold are removed, and, if there is a neuron with no connections left, it is removed as well.
-
-If the $ percentile $ variable has been decreased so that it equals zero, the threshold is set to the minimum of all weight changes. In this case, only one synapse is then removed at a time.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\textwidth]{accuracy_kept}
-  \caption{Evaluation of the classification accuracy after pruning}
-  \label{img:accuracy_kept}
-\end{figure}
-
-After cutting some synapses, the network is checked for keeping the required classification accuracy as shown in \cref{img:accuracy_kept}.
-
-The evaluation is performed by testing the network on validation data. If the classification accuracy has dropped, the network is retrained using training data of the dataset.
-
-If the classification accuracy has been kept after the pruning, the current net structure is saved and considered as a reference for the next pruning loop.
+So far we gave a recipe of how to prune one synapse. In practise, network pruning is an iterative procedure.
 
 If it is not possible to retrain the pruned net and to reach the required accuracy, two possibilities arise:
 
