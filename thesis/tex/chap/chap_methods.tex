@@ -4,7 +4,7 @@ The methods of this work are introduced here. Section \ref{sec:classification_me
 Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:feature_selection} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
 
 \section{Classification Method} \label{sec:classification_method}
-The classification in this study is performed by dense feedforward neural networks. A general illustration of the network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
+The classification in this study is performed by dense feedforward neural networks. An illustration of a general network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
 
 \begin{figure}[H]
 \centering
@@ -13,10 +13,10 @@ The classification in this study is performed by dense feedforward neural networ
 \label{fig:methods:ff_neural_net}
 \end{figure}
 
-The number of input units ($ n $) is determined by the problem dimension. The number of classes gives the number of output units ($ m $). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
+The number of input units $ n $ is determined by the problem dimension. The number of classes gives the number of output units $ m $ (see the established conventions in \cref{app:implementation}). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
 
 \subsection*{Neuron Principle}
-The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
+The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output \citep{article:perceptron}. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
 
 \begin{description}
 \item[$ neuron_k^{(i)} $] : $ k^{th} $ neuron in $ i^{th} $ layer
@@ -80,12 +80,12 @@ The work of a neural network is all done by matrix calculations. Therefore we ne
 \end{description}
 
 \subsection*{Learning Algorithm}
-The feedforward networks are trained by the common \textit{Backpropagation} method illustrated by the flowchart in \cref{fig:methods:backpropagation}.
+Feedforward networks are trained by the common \textit{Backpropagation} method illustrated by the flowchart in \cref{fig:methods:backpropagation}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{backpropagation.png}
-  \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error. If the error is reduced to be lower, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after a specified number of epochs, no matter how successful the training has been.}
+  \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error (\cref{eq:mse_}). If the error is reduced to be lower $ T_1 $, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after $ T_2 $ epochs, no matter how successful the training has been.}
   \label{fig:methods:backpropagation}
 \end{figure}
 
@@ -103,7 +103,7 @@ Y &= A^{(q)} = f(W^{(q)} \cdot A^{(q-1)} + B^{(q)})
 Then, having the known targets (supervised learning), we compute a prediction error on every output neuron for every sample and store those errors in the $ m $-by-$ p $ matrix $ E $.
 
 \begin{equation} \label{eq:prediction_error}
-E = \frac{1}{2} ||Y - U||^2
+E = \frac{1}{2} ||U - Y||^2
 \end{equation}
 
 Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ E $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. The envelope of the algorithm includes these steps:
@@ -115,14 +115,14 @@ f'(z) = f(z) \cdot (1-f(z))
 \end{align}
 \item \textit{backpropagate the prediction error throught the network;}
 \begin{align} \label{eq:error_backprop}
-\Delta^{(q+1)} &= (Y-U) \times f'[Z^{(q+1)}] \\
+\Delta^{(q+1)} &= (U-Y) \times f'[Z^{(q+1)}] \\
 \Delta^{(i)} &= \left[\left[W^{(i+1)}\right]^T \cdot \Delta^{(i+1)}\right] \times f'[Z^{(i)}]
 \end{align}
 \item \textit{find the optimal parameter changes;}
 
 Every sample $ \xi $ has a vote $ dW^{(i)}_{(\xi)} $ (resp. $ dB^{(i)}_{(\xi)} $) on how the parameters $ W^{(i)} $ (resp. $ B^{(i)} $) should change to get the minimal error and the result is then obtained as a compromise of those votes.
 
-The index $ i $ indicates the layer. Consider $ \Delta^{(i)}_{(\xi)} $ be the $ \xi^{th} $ column of the $ \Delta^{(i)} $ matrix, which corresponds to the $ \xi^{th} $ sample. Analogically, $ A^{(i-1)}_{(\xi)} $ is the $ \xi^{th} $ column of the activation matrix $ A^{(i-1)} $ in the $ (i-1)^{th} $ layer. Then we get the votes as:
+Index $ (i) $ indicates the layer. Consider $ \Delta^{(i)}_{(\xi)} $ be the $ \xi^{th} $ column of the $ \Delta^{(i)} $ matrix, which corresponds to the $ \xi^{th} $ sample. Analogically, $ A^{(i-1)}_{(\xi)} $ is the $ \xi^{th} $ column of the activation matrix $ A^{(i-1)} $ in the $ (i-1)^{th} $ layer. Then we get the votes as:
 \begin{align} \label{eq:part_derivative}
 dW^{(i)}_{(\xi)} &= A^{(i-1)}_{(\xi)} \cdot \left[\Delta^{(i)}_{(\xi)}\right]^T\\
 dB^{(i)}_{(\xi)} &= \Delta^{(i)}_{(\xi)}
@@ -135,13 +135,13 @@ At this point we introduce the first parameter of the learning process called \t
 dW^{(i)}(t) = dW^{(i)}_{(\xi)}
 \end{align}
 
-The other approach is \textit{batch learning}, defined by \texttt{batch\_size > 1}
+In this work, we usually use \textit{batch learning} ( \texttt{batch\_size > 1}).
 
 \begin{align} \label{eq:batch_update}
 dW^{(i)}(t) = \displaystyle{\sum_{\xi}^{batch\_size} dW^{(i)}_{(\xi)}}
 \end{align}
 
-Equations \ref{eq:sequential_update} and \ref{eq:batch_update} works analogously for the biases.
+Equations \ref{eq:sequential_update} and \ref{eq:batch_update} works analogically for the biases.
 
 The second parameter of the learning procedure is called \texttt{learning\_rate} ($ \mu $) and is usually set $ 0 < \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}). The update of the parameters is then done as follows:
 \begin{align} \label{eq:params_update}
@@ -150,12 +150,13 @@ B^{(i)} (t+1) &= B^{(i)} (t) + \mu \cdot dB^{(i)} (t)
 \end{align}
 \end{enumerate}
 
-When the votes of all samples are applied, the learning epoch ends (see \cref{fig:methods:backpropagation}). The maximal number of epochs is the last parameter of the learning procedure. To list them all:
+When the votes of all samples are applied, the learning epoch ends (see \cref{fig:methods:backpropagation}). The maximal number of epochs and the maximal required error (see \cref{fig:methods:backpropagation}) are also parameters of the learning procedure. To list them all:
 
 \begin{itemize}
 \item \texttt{batch\_size}
 \item \texttt{learning\_rate} ($ \mu $)
 \item \texttt{n\_epoch}
+\item \texttt{max\_error} ($ MSE' $; \cref{eq:mse_})
 \end{itemize}
 
 \subsection*{Network Evaluation}
@@ -188,7 +189,7 @@ The classification result is often shown by a confusion matrix (well explained i
 \section{Network Pruning} \label{sec:network_pruning}
 The rule of thumb in classification with feedforward neural networks is using a fully connected structure - every unit is connected to all units in the next layer. 
 
-Pruning methods work with the hypothesis that some of the synapses in fully connected networks do not contribute to the classification and so their removal would not cause an accuracy drop. The problem (graphically illustrated in \cref{fig:methods:pruning_problem_formulation}) is to distinguish those redundant synapses from the important ones.
+Pruning methods work with the hypothesis that some of the synapses in fully connected networks do not contribute to the classification and so their removal would not cause a significant accuracy drop. The problem (graphically illustrated in \cref{fig:methods:pruning_problem_formulation}) is to distinguish those redundant synapses from the important ones.
 
 \begin{figure}[H]
   \centering
@@ -197,7 +198,7 @@ Pruning methods work with the hypothesis that some of the synapses in fully conn
   \label{fig:methods:pruning_problem_formulation}
 \end{figure}
 
-There are several ways of how to estimate the importance of synapses (see \cref{sec:state_of_the_art}). In this study we introduce a measure called "\textit{weight significance factor (WSF)} given by \cref{eq:weight_significance_factor}.
+There are several ways of how to estimate the importance of synapses (see \cref{sec:state_of_the_art}). In this study we introduce a measure called \textit{weight significance factor} (\texttt{WSF}) given by \cref{eq:weight_significance_factor}.
 
 \begin{equation} \label{eq:weight_significance_factor}
 WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
@@ -206,12 +207,12 @@ WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
 where $ w_{k,l}^{(i)} (t_f) $ is the weight of synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
 
 \subsection*{Realization of the Pruning Proceeder}
-The general workflow of the pruning procedure is illustrated in \cref{fig:methods:network_pruning_flowchart}.
+The general recipe of how to prune a synapse is illustrated in \cref{fig:methods:network_pruning_flowchart}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.85\textwidth]{network_pruning_flowchart}
-  \caption{The flowchart of network pruning proceeder.}
+  \includegraphics[width=0.75\textwidth]{network_pruning_flowchart}
+  \caption{The flowchart of pruning one synapse, demonstration of parameter \texttt{retrain}.}
   \label{fig:methods:network_pruning_flowchart}
 \end{figure}
 
@@ -219,20 +220,34 @@ The general workflow of the pruning procedure is illustrated in \cref{fig:method
 
 The required accuracy (\texttt{req\_acc}) is the second parameter. In some cases we want to give up some of the accuracy in exchange for well pruned network in order to see some patterns in it. This parameter sets the minimal accuracy the network must have so that we can treat the lastly cut synapses as unimportant. The accuracy is checked on development data, while the training is performed on training data (see \cref{fig:methods:three_sets}).
 
-So far we gave a recipe of how to prune one synapse. In practise, network pruning is an iterative procedure.
+So far we gave a recipe of how to prune one synapse. Of course, we cannot check all the synapses one by one using the approach in \cref{fig:methods:network_pruning_flowchart}. Instead we cut out multiple synapses at once before checking the accuracy drop. In fact, network pruning is an iterative procedure with some guessing. The first guess is the order in which we prune the synapses and the second guess is how many should we prune at once.
 
-If it is not possible to retrain the pruned net and to reach the required accuracy, two possibilities arise:
+The order of the synapses is dermined by the \texttt{WSF} (\cref{eq:weight_significance_factor}) - the key idea of our pruning algorithm. Each time before pruning, all the synapses are sorted by their \texttt{WSF} values.
 
-\begin{enumerate}
-\item Only one synapse has been removed during the last pruning step and the accuracy has been broken. This means that even this single synapse with the least change in weight is important for classification. Therefore, the pruning is stopped and the current net structure (including this last synapse) is saved as the minimal structure.
-\item More synapses have been removed during the last pruning step, and this broke the accuracy. In this case, the percentile level is decreased (based on the initialized array of percentile levels) and so less synapses are removed during the next pruning iteration.
+To estimate the number of synapses to cut at once we use percentiles - see \cref{fig:methods:network_pruning_proceeder}.
 
-In this manner, at some point of the pruning process, the algorithm will come to removing only one synapse at once and then, finally, only case 1 will remain.
-\end{enumerate}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{network_pruning_algorithm}
+  \caption{Network pruning proceeder.}
+  \label{fig:methods:network_pruning_proceeder}
+\end{figure}
 
-Therefore, the algorithm is finite. Moreover, it guarantees that the classification success rate does not drop. The method is evaluated in detail in \cref{sec:pruning_algorithm_results} and compared to two different approaches from \citep{article:10:pa} in \cref{ssec:comparison_to_other_pa}.
+The percentile level is set to $ P = 75 $ at the beginning. Hence the algorithm tries to prune $ 75\% $ of the synapses (those with low \texttt{WSF}) in the first pruning step. Then the accuracy drop is checked (with or without retraining). If the accuracy dropped, we decrease the percentile level $ P $ and try to delete less synapses in the next step.
+
+At this point we introduce another parameter of the pruning procedure called \texttt{percentile\_levels}, which is an array specifying the levels we try (e.g.  $percentile\_levels = (75, 50, 30, 20, 0) $). The last level in this array is always zero. When $ P = 0 $ we delete only the one synapse; the one with the lowest \texttt{WSF}. In this manner, at some point of the pruning process, the algorithm will come to removing only one synapse at once and if only a single synapse has been removed during the last pruning step and the accuracy has been broken, it means that even this single synapse with the least change in weight is important for classification. Therefore, the pruning is stopped and the current net structure (including this last synapse) is saved as the minimal structure. Therefore, the algorithm is finite and it also guarantees that the classification accuracy does not drop.
+
+To sum up the parameters of the pruning procedure:
+
+\begin{itemize}
+\item \texttt{retrain}
+\item \texttt{req\_acc}
+\item \texttt{percentile\_levels}
+\end{itemize}
 
 \subsection*{Dimensionality Reduction}
+
+
 
 \section{Feature Selection} \label{sec:feature_selection}
 Minimal network structure text...
