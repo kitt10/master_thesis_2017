@@ -228,16 +228,14 @@ To estimate the number of synapses to cut at once we use percentiles - see \cref
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.85\textwidth]{network_pruning_algorithm}
+  \includegraphics[width=0.75\textwidth]{network_pruning_algorithm}
   \caption{Network pruning proceeder.}
   \label{fig:methods:network_pruning_proceeder}
 \end{figure}
 
 The percentile level is set to $ P = 75 $ at the beginning. Hence the algorithm tries to prune $ 75\% $ of the synapses (those with low \texttt{WSF}) in the first pruning step. Then the accuracy drop is checked (with or without retraining). If the accuracy dropped, we decrease the percentile level $ P $ and try to delete less synapses in the next step.
 
-At this point we introduce another parameter of the pruning procedure called \texttt{percentile\_levels}, which is an array specifying the levels we try (e.g.  $percentile\_levels = (75, 50, 30, 20, 0) $). The last level in this array is always zero. When $ P = 0 $ we delete only the one synapse; the one with the lowest \texttt{WSF}. In this manner, at some point of the pruning process, the algorithm will come to removing only one synapse at once and if only a single synapse has been removed during the last pruning step and the accuracy has been broken, it means that even this single synapse with the least change in weight is important for classification. Therefore, the pruning is stopped and the current net structure (including this last synapse) is saved as the minimal structure. Therefore, the algorithm is finite and it also guarantees that the classification accuracy does not drop.
-
-To sum up the parameters of the pruning procedure:
+At this point we introduce another parameter of the pruning procedure called \texttt{percentile\_levels}, which is an array specifying the levels we try (e.g.  $percentile\_levels = (75, 50, 30, 20, 0) $). The last level in this array is always zero. When $ P = 0 $ we delete only the one synapse; the one with the lowest \texttt{WSF}. In this manner, at some point of the pruning process, the algorithm will come to removing only one synapse at once and if only a single synapse has been removed during the last pruning step and the accuracy has been broken, it means that even this single synapse with the least change in weight is important for classification. Therefore, the pruning is stopped and the current net structure (including this last synapse) is saved as the minimal structure. Therefore, the algorithm is finite and it also guarantees that the classification accuracy does not drop. To sum up the parameters of the pruning procedure:
 
 \begin{itemize}
 \item \texttt{retrain}
@@ -282,13 +280,37 @@ W_{shrinked}^{(i)} =
     0 & -0.45 & 0.24
 \end{bmatrix}
 \end{align*}
+After the removal of a specified neuron, a corresponding bias is also removed. When we shrink the first hidden layer, we must also adjust the feature vectors accordingly.
 
-\section{Feature Selection} \label{sec:feature_selection}
-Minimal network structure text...
+\section{Insight of Neural Network} \label{sec:insight_of_neural_network}
+We know that state-of-the-art fully-connected networks can be trained to work very well for several tasks, however hardly ever we know why they work so well. Pruned networks come with some advantages that help demystify these black-box models.
 
-Pathing in Net (Feature Selection)
+\subsection*{Pathing in Networks}
+Based on the PA (\cref{sec:network_pruning}) we assume that every single synapse left in the pruned network is somehow important for classification. Therefore it makes sense to track these connections from the input to the output of a network to find out some patterns among features and classes. We define $ path_f^{(c)} $ as a sorted list of synapses that connects feature $ f $ with class $ c $ (\cref{fig:methods:path_explanation}).
 
-Feature Energy computation
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.45\textwidth]{path_explanation}
+  \caption{Explanation of a path.}
+  \label{fig:methods:path_explanation}
+\end{figure}
+
+If there is a path from feature $ f_1 $ to class $ c_1 $, we assume that $ f_1 $ is interesting for the class. Otherwise, if there is no path, the feature is probably not needed for class $ c_1 $ at all. This leads to a promising idea of how to do feature selection.
+
+\subsection*{Feature Energy}
+Moreover, we also know the weights of the remaining synapses. Hence, besides the information if or if not a feature influences some class, we can also state how big the influence is. We introduce a measure called \textit{feature energy} (\texttt{E}).
+
+\begin{equation}
+E(f,c) = \displaystyle{\sum_{p=1}^{P} \displaystyle{\prod_{s=1}^{S_p} \frac{w_s^{(p)}}{|b_s^{(p)}|}}}
+\end{equation}
+
+where $ E(f,c) $ is the energy of feature $ f $ for class $ c $, $ P $ is the number of paths from feature $ f $ to class $ c $, $ S_p $ is the number of synapses in the $ p^{th} $ path, $ w_s^{(p)} $ is the weight of the $ s^{th} $ synapse in the $ p^{th} $ path and $ b_s^{(p)} $ is the bias of the neuron this synapse is connected to.
+
+A total energy $ E(f) $ of feature $ f $ for a classification problem is given as:
+
+\begin{equation}
+E(f) = \displaystyle{\sum_{k=1}^{m} | E(f,c_k)} |
+\end{equation}
 
 \newpage
 \section{Speech Data Gathering} \label{sec:speech_data_gathering}
