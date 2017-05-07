@@ -246,8 +246,42 @@ To sum up the parameters of the pruning procedure:
 \end{itemize}
 
 \subsection*{Dimensionality Reduction}
+In practise, neural networks are usually represented by matrices ($ W $ and $ B $) and the learning and prediction are performed by matrix calculations. The pruning algorithm cuts out some synapses which leads to the reduction of matrix dimensions if we restructure the matrices after pruning.
 
+If a synapse is pruned, the corresponding weight in the $ W $ matrix takes zero value. Consider the following weight matrix $ W^{(i)} $, where the $ i^{th} $ layer consists of $ 3 $ neurons and the $ (i-1)^{th} $ layer has $ 4 $ neurons.
+\begin{align*}
+W_{full}^{(i)} = 
+\begin{bmatrix}
+    w_{11}^{(i)} & w_{12}^{(i)} & w_{13}^{(i)} & w_{14}^{(i)} \\
+    w_{21}^{(i)} & w_{22}^{(i)} & w_{23}^{(i)} & w_{24}^{(i)} \\
+    w_{31}^{(i)} & w_{32}^{(i)} & w_{33}^{(i)} & w_{34}^{(i)}
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -0.02 & 0.32 & -0.28 & -0.91 \\
+    -0.72 & 0.9 & 0.81 & 0.54 \\
+    0.13 & -0.45 & 0.62 & 0.24
+\end{bmatrix}
+\end{align*}
+Now, let's assume that synapses corresponding to weights $ w_{13}^{(i)} $, $ w_{14}^{(i)} $, $ w_{21}^{(i)} $, $ w_{22}^{(i)} $, $ w_{23}^{(i)} $, $ w_{24}^{(i)} $, $ w_{31}^{(i)} $, $ w_{33}^{(i)} $ were pruned. The weight matrix $ W^{(i)} $ changes to:
+\begin{align*}
+W_{pruned}^{(i)} = 
+\begin{bmatrix}
+    -0.02 & 0.32 & 0 & 0 \\
+    0 & 0 & 0 & 0 \\
+    0 & -0.45 & 0 & 0.24
+\end{bmatrix}
+\end{align*}
+We know that each row of the matrix corresponds to inputs of one neuron in the $ i^{th} $ layer and each column maps the outputs of one neuron in the $ (i-1)^{th} $ layer. Therefore, if we find a row of zeros, we can safely remove the corresponding ($ 2^{nd} $) neuron from the network, as it has no inputs. Moreover, we can (better said we must) also remove the $ 2^{nd} $ column in the weight matrix $ W^{(i+1)} $ responsible for the outputs of the removed neuron.
 
+Analogically, if the $ 3^{rd} $ neuron in the $ (i-1)^{th} $ layer has no outputs ($ 3^{rd} $ column of zeros in $ W^{(i)} $), it is useless for classification. Hence we can also delete this column in $ W^{(i)} $ and must remove corresponding inputs of the removed neuron, which is the $ 3^{rd} $ row of the weight matrix $ W^{(i-1)} $. We call the process network shrinking.
+\begin{align*}
+W_{shrinked}^{(i)} = 
+\begin{bmatrix}
+    -0.02 & 0.32 & 0 \\
+    0 & -0.45 & 0.24
+\end{bmatrix}
+\end{align*}
 
 \section{Feature Selection} \label{sec:feature_selection}
 Minimal network structure text...
