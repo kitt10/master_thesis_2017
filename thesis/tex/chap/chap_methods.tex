@@ -1,10 +1,10 @@
 \chapter{Methods} \label{chap:methods}
-The methods of this work are introduced here. Section \ref{sec:classification_method} describes the classification model and the learning method. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of speech data gathering.
+The methods are introduced in this chapter. Section \ref{sec:classification_method} describes how classification, learning and evaluation procedures are performed. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and, additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of how the speech data was gathered.
 
 Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
 
 \section{Classification Method} \label{sec:classification_method}
-The classification in this study is performed by dense feedforward neural networks. An illustration of a general network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
+The classification in this study is performed by dense feedforward neural networks. An illustration of a general feedforward network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
 
 \begin{figure}[H]
 \centering
@@ -13,7 +13,7 @@ The classification in this study is performed by dense feedforward neural networ
 \label{fig:methods:ff_neural_net}
 \end{figure}
 
-The number of input units $ n $ is determined by the problem dimension. The number of classes gives the number of output units $ m $ (see the established conventions in \cref{app:implementation}). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
+The number of input units $ n $ is determined by the problem dimension. The number of classes $ m $ gives the number of output units (see the established conventions in \cref{app:implementation}). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
 
 \subsection*{Neuron Principle}
 The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output \citep{article:perceptron}. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
@@ -24,7 +24,7 @@ The behaviour of artificial neurons follows our understanding of how biological 
 \item[$ w_{k,l}^{(i)} $] : weight of synapse connecting $ l^{th} $ neuron in $ (i-1)^{th} $ layer with $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ b_k^{(i)} $] : bias connected to $ k^{th} $ neuron in $ i^{th} $ layer
 \item[$ z_k^{(i)} $] : activation of $ k^{th} $ neuron in $ i^{th} $ layer
-\item[$ f() $] : transfer function (\cref{eq:sigmoid}; \cref{fig:methods:transfer_functions})
+\item[$ f(\cdot) $] : transfer function (\cref{eq:sigmoid}; \cref{fig:methods:transfer_functions})
 \end{description}
 
 \begin{figure}[H]
@@ -46,7 +46,7 @@ Then we get the neuron activity by mapping its activation into a finite interval
 a_k^{(i)} = f(z_k^{(i)})
 \end{align}
 
-The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in the $ [0, 1] $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into the $ [-1, 1] $ interval.
+The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in the $ \langle0, 1\rangle $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into the $ \langle-1, 1\rangle $ interval.
 
 \begin{align} \label{eq:sigmoid}
 f(z) = \frac{1}{1 + e^{-z}}

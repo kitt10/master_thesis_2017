@@ -1,1 +1,62 @@
 \chapter{Conventions} \label{app:implementation}
+Here we introduce some notation conventions used in this study. It is an extension of the notation presented in \cref{sec:classification_method}.
+
+First of all, we define a dataset consisting of samples $ X $ and labels $ Y' $.
+\begin{align*}
+\underset{n\times p}{X} &= 
+\begin{bmatrix}
+    X_1 & X_2 & \cdots & X_p
+\end{bmatrix} =
+\begin{bmatrix}
+    x_{11} & x_{12} & \cdots & x_{1p} \\
+    x_{21} & x_{22} & \cdots & x_{2p} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x_{n1} & x_{n2} & \cdots & x_{np} \\      
+\end{bmatrix}\\
+\underset{1\times p}{Y'} &= 
+\begin{bmatrix}
+    Y_{1}' & Y_{2}' & \cdots & Y_{p}'
+\end{bmatrix}
+\end{align*}
+
+
+where $ X_1 $ is the first sample, $ p $ is the number of samples and $ n $ is the problem dimension. $ Y' $ is the vector of labels. A label can be represented as a number or a string. For example, we can set $ Y_1' = "a" $ be a label of sample $ X_1 $, which is a sample of phoneme \texttt{"a"}. To make it work together with our neural network implementation, each label has a transcript, which is unique for every class. The transcript is so called one-hot vector, a zero vector of length $ m $ (number of classes), which has the only one \texttt{"1"} at the position corresponding to its class. For example, if we classify $ 5 $ phonemes and the class \texttt{"a"} was assigned to position $ 2 $, its transcript $ Y_1 $ would be:
+\begin{align*}
+\underset{5\times 1}{Y_1} &= 
+\begin{bmatrix}
+    y_{11} \\ y_{21} \\ y_{31} \\ y_{41} \\ y_{51}
+\end{bmatrix} = 
+\begin{bmatrix}
+    0 \\ 1 \\ 0 \\ 0 \\ 0 
+\end{bmatrix}
+\end{align*}
+
+A general matrix of these transcripts $ Y $ is then:
+\begin{align*}
+\underset{m\times p}{Y} &= 
+\begin{bmatrix}
+    Y_1 & Y_2 & \cdots & Y_p
+\end{bmatrix} =
+\begin{bmatrix}
+    y_{11} & y_{12} & \cdots & y_{1p} \\
+    y_{21} & y_{22} & \cdots & y_{2p} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    y_{m1} & y_{m2} & \cdots & y_{mp} \\      
+\end{bmatrix}
+\end{align*}
+
+As described in \cref{sec:classification_method} we consider $ Y $ to be the predicted output of our neural network. Analogically, we get a general matrix of desired output of the network and those two can then be item-wise compared.
+\begin{align*}
+\underset{m\times p}{U} &= 
+\begin{bmatrix}
+    U_1 & U_2 & \cdots & U_p
+\end{bmatrix} =
+\begin{bmatrix}
+    u_{11} & u_{12} & \cdots & u_{1p} \\
+    u_{21} & u_{22} & \cdots & u_{2p} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    u_{m1} & u_{m2} & \cdots & u_{mp} \\      
+\end{bmatrix}
+\end{align*}
+
+Moreover, we decipher the matrices of weights and biases. The shape of weight matrix $ W $ reveals the network structure.
