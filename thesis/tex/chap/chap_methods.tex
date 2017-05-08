@@ -46,13 +46,13 @@ Then we get the neuron activity by mapping its activation into a finite interval
 a_k^{(i)} = f(z_k^{(i)})
 \end{align}
 
-The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in the $ \langle0, 1\rangle $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function, which maps the input into the $ \langle-1, 1\rangle $ interval.
+The \textit{Sigmoid} function (\cref{eq:sigmoid}) keeps neuron activities in the $ \langle0, 1\rangle $ interval and is used by default in this work. Alternatively, one could use the hyperbolic tangent ($ tanh(\cdot) $) function which maps the input into the $ \langle-1, 1\rangle $ interval.
 
 \begin{align} \label{eq:sigmoid}
 f(z) = \frac{1}{1 + e^{-z}}
 \end{align}
 
-The two basic transfer functions are shown in \cref{fig:methods:transfer_functions}.
+Two basic transfer functions are shown in \cref{fig:methods:transfer_functions}.
 
 \begin{figure}[H]
   \centering
@@ -106,7 +106,7 @@ Then, having the known targets (supervised learning), we compute a prediction er
 E = \frac{(U - Y) \times (U - Y)}{2}
 \end{equation}
 
-Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ E $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. The envelope of the algorithm includes these steps:
+Now it is time to use \textit{GDA} to find such $ W $ and $ B $ that make $ E $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. The envelope of the algorithm includes these steps:
 
 \begin{enumerate}
 \item \textit{find the derivative of the transfer function (assuming Sigmoid)};
@@ -129,7 +129,7 @@ dB^{(i)}_{(\xi)} &= \Delta^{(i)}_{(\xi)}
 \end{align}
 \item \textit{update the parameters.}
 
-At this point we introduce the first parameter of the learning process called \texttt{batch\_size}. It states how many votes are processed together to make one update of the parameters. If \texttt{batch\_size = 1}, we are talking about a \textit{sequential learning}. In this case, each vote is applied to update the parameters before any other votes are computed (\cref{eq:sequential_update}). 
+At this point we introduce the first parameter of the learning process called \texttt{batch\_size}. It states how many votes are processed together to make one update of the parameters. If \texttt{batch\_size = 1}, we are talking about \textit{sequential learning}. In this case, each vote is applied to update the parameters before any other votes are computed (\cref{eq:sequential_update}). 
 
 \begin{align} \label{eq:sequential_update}
 dW^{(i)} = dW^{(i)}_{(\xi)}
@@ -141,7 +141,7 @@ In this work, we usually use \textit{batch learning} ( \texttt{batch\_size > 1})
 dW^{(i)} = \displaystyle{\sum_{\xi}^{batch\_size} dW^{(i)}_{(\xi)}}
 \end{align}
 
-Equations \ref{eq:sequential_update} and \ref{eq:batch_update} works analogically for the biases.
+Equations \ref{eq:sequential_update} and \ref{eq:batch_update} work analogically for the biases.
 
 The second parameter of the learning procedure is called \texttt{learning\_rate} ($ \mu $) and is usually set $ 0 < \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}). The update of the parameters is then done as follows ($ t $ refers to a moment in time):
 \begin{align} \label{eq:params_update}
@@ -169,7 +169,7 @@ MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{\xi=1} ||y_{\xi} - u_{\xi}||^2}
 
 where $ y_{\xi} $ is the prediction for sample $ \xi $ and $ u_{\xi} $ its corresponding (known) target. Both are vectors of length $ m $ (number of classes).
 
-In this study we rather use the measure given by \cref{eq:mse_}, because it makes a fair comparison of problems with different number of classes.
+In this study we rather use the measure given by \cref{eq:mse_}, because it makes a fair comparison of problems with a different number of classes.
 
 \begin{equation} \label{eq:mse_}
 MSE' = \frac{1}{2 p m} \displaystyle \sum^{p}_{\xi=1} \displaystyle \sum^{m}_{\theta=1} (y_{\xi,\theta} - u_{\xi,\theta})^2
@@ -204,7 +204,7 @@ There are several ways of how to estimate the importance of synapses (see \cref{
 WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
 \end{equation}
 
-where $ w_{k,l}^{(i)} (t_f) $ is the weight of synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
+where $ w_{k,l}^{(i)} (t_f) $ is the weight of the synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
 
 \subsection*{Realization of the Pruning Proceeder}
 The general recipe of how to prune a synapse is illustrated in \cref{fig:methods:network_pruning_flowchart}.
@@ -218,9 +218,9 @@ The general recipe of how to prune a synapse is illustrated in \cref{fig:methods
 
 \cref{fig:methods:network_pruning_flowchart} introduced the first parameter of the pruning process called \texttt{retrain}. We make it $ True $ if we want to retrain the pruned network (without the cut synapse) before checking the accuracy drop. In practice, we are able to set the exact number of epochs we want the net to retrain.
 
-The required accuracy (\texttt{req\_acc}) is the second parameter. In some cases we want to give up some of the accuracy in exchange for well pruned network in order to see some patterns in it. This parameter sets the minimal accuracy the network must have so that we can treat the lastly cut synapses as unimportant. The accuracy is checked on development data, while the training is performed on training data (see \cref{fig:methods:three_sets}).
+The required accuracy (\texttt{req\_acc}) is the second parameter. In some cases we want to give up some of the accuracy in exchange for a well pruned network in order to see some patterns in it. This parameter sets the minimal accuracy the network must have so that we can treat the lastly cut synapses as unimportant. The accuracy is checked on the development data, while the training is performed on the training data (see \cref{fig:methods:three_sets}).
 
-So far we gave a recipe of how to prune one synapse. Of course, we cannot check all the synapses one by one using the approach in \cref{fig:methods:network_pruning_flowchart}. Instead we cut out multiple synapses at once before checking the accuracy drop. In fact, network pruning is an iterative procedure with some guessing. The first guess is the order in which we prune the synapses and the second guess is how many should we prune at once.
+So far we gave a recipe of how to prune one synapse. Of course, we cannot check all the synapses one by one using the approach in \cref{fig:methods:network_pruning_flowchart}. Instead, we cut out multiple synapses at once before checking the accuracy drop. In fact, network pruning is an iterative procedure with some guessing. The first guess is the order in which we prune the synapses and the second guess is how many of them we should prune at once.
 
 The order of the synapses is dermined by the \texttt{WSF} (\cref{eq:weight_significance_factor}) - the key idea of our pruning algorithm. Each time before pruning, all the synapses are sorted by their \texttt{WSF} values.
 
@@ -272,7 +272,7 @@ W_{pruned}^{(i)} =
 \end{align*}
 We know that each row of the matrix corresponds to inputs of one neuron in the $ i^{th} $ layer and each column maps the outputs of one neuron in the $ (i-1)^{th} $ layer. Therefore, if we find a row of zeros, we can safely remove the corresponding ($ 2^{nd} $) neuron from the network, as it has no inputs. Moreover, we can (better said we must) also remove the $ 2^{nd} $ column in the weight matrix $ W^{(i+1)} $ responsible for the outputs of the removed neuron.
 
-Analogically, if the $ 3^{rd} $ neuron in the $ (i-1)^{th} $ layer has no outputs ($ 3^{rd} $ column of zeros in $ W^{(i)} $), it is useless for classification. Hence we can also delete this column in $ W^{(i)} $ and must remove corresponding inputs of the removed neuron, which is the $ 3^{rd} $ row of the weight matrix $ W^{(i-1)} $. We call the process network shrinking.
+Analogically, if the $ 3^{rd} $ neuron in the $ (i-1)^{th} $ layer has no outputs ($ 3^{rd} $ column of zeros in $ W^{(i)} $), it is useless for classification. Hence we can also delete this column in $ W^{(i)} $ and must remove corresponding inputs of the removed neuron, which is the $ 3^{rd} $ row of the weight matrix $ W^{(i-1)} $. We call the process \textit{the network shrinking}.
 \begin{align*}
 W_{shrinked}^{(i)} = 
 \begin{bmatrix}
@@ -283,7 +283,7 @@ W_{shrinked}^{(i)} =
 After the removal of a specified neuron, a corresponding bias is also removed. When we shrink the first hidden layer, we must also adjust the feature vectors accordingly.
 
 \section{Insight of Neural Network} \label{sec:insight_of_neural_network}
-We know that state-of-the-art fully-connected networks can be trained to work very well for several tasks, however hardly ever we know why they work so well. Pruned networks come with some advantages that help demystify these black-box models.
+We know that state-of-the-art fully-connected networks can be trained to work very well for several tasks, however, hardly ever we know why they work so well. Pruned networks come with some advantages that help demystify these black-box models.
 
 \subsection*{Pathing in Networks}
 Based on the PA (\cref{sec:network_pruning}) we assume that every single synapse left in the pruned network is somehow important for classification. Therefore it makes sense to track these connections from the input to the output of a network to find out some patterns among features and classes. We define $ path_f^{(c)} $ as a sorted list of synapses that connects feature $ f $ with class $ c $ (\cref{fig:methods:path_explanation}).
@@ -295,10 +295,10 @@ Based on the PA (\cref{sec:network_pruning}) we assume that every single synapse
   \label{fig:methods:path_explanation}
 \end{figure}
 
-If there is a path from feature $ f_1 $ to class $ c_1 $, we assume that $ f_1 $ is interesting for the class. Otherwise, if there is no path, the feature is probably not needed for class $ c_1 $ at all. This leads to a promising idea of how to do feature selection.
+If there is a path from feature $ f_1 $ to class $ c_1 $, we assume that $ f_1 $ is interesting for the class. Otherwise, if there is no path, the feature is probably not needed for class $ c_1 $ at all. This leads to a promising idea of how to do a feature selection.
 
 \subsection*{Feature Energy}
-Moreover, we also know the weights of the remaining synapses. Hence, besides the information if or if not a feature influences some class, we can also state how big the influence is. We introduce a measure called \textit{feature energy} (\texttt{E}).
+Moreover, we also know the weights of the remaining synapses. Hence, besides the information if or if not a feature influences a class, we can also state how big the influence is. We introduce a measure called \textit{feature energy} (\texttt{E}).
 
 \begin{equation} \label{eq:feature_energy}
 E(f,c) = \displaystyle{\sum_{p=1}^{P} \displaystyle{\prod_{s=1}^{S_p} \frac{w_s^{(p)}}{|b_s^{(p)}|}}}
@@ -314,7 +314,7 @@ E(f) = \displaystyle{\sum_{k=1}^{m} | E(f,c_k)} |
 
 \newpage
 \section{Speech Data Gathering} \label{sec:speech_data_gathering}
-The presented methods are tested on several examples (\cref{chap:examples}) and one of them rests in classification of phonemes. By definition a phoneme is one of the units of sound that distinguish one word from another in a particular language \citep{wiki:mnist}. We focus on Czech language and consider $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet}. This section describes the way of gathering such phonemes and building a dataset for classification.
+The presented methods are tested on several examples (\cref{chap:examples}) and one of them rests in a classification of phonemes. By definition a phoneme is one of the units of sound that distinguish one word from another in a particular language \citep{wiki:mnist}. We focus on Czech language and consider $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet}. This section describes the way of gathering such phonemes and building a dataset for the classification.
 
 \begin{table}[H]
 \centering
@@ -378,7 +378,7 @@ Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 200 $.
 \label{fig:methods:mfcc_framing}
 \end{figure}
 
-We assume each frame captures one possible shape of the human vocal tract and therefore is capable of carrying one phoneme only. The next steps are applied for every single frame.
+We assume each frame captures one possible shape of the human vocal tract and therefore it is capable of carrying one phoneme only. The next steps are applied for every single frame.
 
 \item \textit{calculation of the periodogram estimate of the power spectrum}; 
 
@@ -417,7 +417,7 @@ recording\_params =
 \end{enumerate}
 
 \subsection*{Data Labeling}
-We perform a supervised learning method, hence the data must be labeled. To the so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl_pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
+We perform a supervised learning method, hence the data must be labeled. To do so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl_pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
 
 \begin{table}[H]
 \centering
@@ -460,16 +460,16 @@ Moreover, in \cref{fig:methods:sample_forming_cs} parameter \texttt{context\text
 \label{fig:methods:sample_forming_cs}
 \end{figure}
 
-Based on the chosen context size $ cs $ the previous and subsequent vectors are added one by one and forms one feature vector of length $ 40 \cdot (2cs+1) $. An example for $ cs = 2 $ is illustrated in \cref{fig:methods:feature_vector}.
+Based on the chosen context size $ cs $ the previous and subsequent vectors are added one by one and form one feature vector of length $ 40 \cdot (2cs+1) $. An example for $ cs = 2 $ is illustrated in \cref{fig:methods:feature_vector}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{feature_vector}
+\includegraphics[width=0.75\textwidth]{feature_vector}
 \caption{Example of building a feature vector with \texttt{context\textunderscore size} $ cs = 2 $.}
 \label{fig:methods:feature_vector}
 \end{figure}
 
-Talking about \cref{fig:methods:feature_vector}, features $ g_1, g_2, ..., g_{200} $ gives the final feature vector of one sample, which takes the label of the base frame.
+Talking about \cref{fig:methods:feature_vector}, features $ g_1, g_2, ..., g_{200} $ give the final feature vector of one sample, which takes the label of the base frame.
 
 The last parameter of the speech dataset generation is the number of samples per class (\texttt{n\textunderscore samples}). The rule of thumb is the more samples the better training results, however, getting best possible training results is not the objective of this work. Therefore we often use less samples to speed up the training process.
 
@@ -482,11 +482,11 @@ To summarize this section, we end up with three parameters of the speech dataset
 \end{itemize}
 
 \subsection*{Splitting data into three disjunctive sets}
-\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all classification problems in this work. The training data is used to set up model parameters. Development data is then used for testing during the training process, in order to adjust some learning parameters based on the test results. Finally, a trained model is tested on never-seen testing data. We use splitting: $ 80\% $ training set; $ 10\% $ development set; $ 10\% $ testing set.
+\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all classification problems in this work. The training data is used to set up model parameters. The development data is then used for testing during the training process, in order to adjust some learning parameters based on the test results. Finally, a trained model is tested on never-seen testing data. We use splitting: $ 80\% $ training set; $ 10\% $ development set; $ 10\% $ testing set.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{three_sets}
+\includegraphics[width=0.65\textwidth]{three_sets}
 \caption{Using three disjunctive sets of data for a general machine learning process.}
 \label{fig:methods:three_sets}
 \end{figure}
