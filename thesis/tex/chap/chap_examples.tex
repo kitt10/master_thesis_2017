@@ -602,4 +602,35 @@ The initial number of synapses $ 35000 $ was reduced to $ 1344 $. Eight hidden n
 
 The dimensionality reduction is not that significant for this example compared to the others (e.g. MNIST). Also we require a low classification accuracy. However, one must remember that we work with a $ 40 $-class problem, which is far from trivial. In the following section we try to find some patterns in the results, which could demystify what is going on in the network.
 
-\subsection*{Feature Selection and Pathing: Speech Dataset}
+\subsection*{Pathing and Feature Energy: Speech Dataset}
+Section \ref{sec:insight_of_neural_network} presents a method called \textit{pathing}. It finds paths from features to classes in pruned networks. We applied this method on the pruned network from the previous paragraph and got the following results. The input layer of the network consists of $ 280 $ neurons. The context of size $ 3 $ was used (see forming of a feature vector in \cref{fig:methods:sample_forming_cs}). Therefore we can split the input into $ 7 $ moments in time and at each of these moments we have $ 40 $ features representing frequency filters (described by \cref{fig:methods:mfcc_filterbank}).
+
+\cref{fig:examples:speech_n_phonemes_affected} shows the number of phonemes (classes) influenced by individual features, where the features are illustrated in the time-frequency space. For example, if there is no path from a feature to any of the classes, it got zero score (dark blue). In contrary, if it is connected to all possible phonemes ($ 40 $), it is dark red in the figure.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{n_phonemes_affected_speech.eps}
+\caption{Number of phonemes affected by individual features. Features are displayed in a time-frequency space.}
+\label{fig:examples:speech_n_phonemes_affected}
+\end{figure}
+
+One can note that low frequencies are used more in general. Interestingly there also might be a hint that the context features $ cs_{(-3)} $ and $ cs_{(+3)} $ uses also some higher frequencies compared to the "middle" of the feature vector.
+
+In the following, we consider no context size ($ cs = 0 $) and analyse just the $ 40 $ features corresponding to the frequency filters. \cref{fig:examples:speech_fe_set1} shows energies of these features based on \cref{eq:feature_energy}. It tells us how much (and in which way) a feature (frequency) influences the class.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{fe_speech_set1.eps}
+\caption{Feature energies for selected phonemes, phoneme set 1.}
+\label{fig:examples:speech_fe_set1}
+\end{figure}
+
+For example, phonemes \texttt{"z"} and \texttt{"Z"} have a similar pattern and differ just in the amount of the energy (see colorbars). The same figures for the other phonemes are in \cref{app:supplementary_data}.
+
+\cref{fig:examples:speech_fe_total} comes with the total energy of individual features (frequencies in this case) based on \cref{eq:feature_energy_total}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{fe_total_speech.eps}
+\caption{Total feature energy, speech dataset, $ cs = 0 $.}
+\label{fig:examples:speech_fe_total}
+\end{figure}

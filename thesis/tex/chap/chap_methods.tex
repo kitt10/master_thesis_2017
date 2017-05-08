@@ -1,7 +1,7 @@
 \chapter{Methods} \label{chap:methods}
-The methods of this work are introduced here. Section \ref{sec:classification_method} describes the classification model and the learning method. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:feature_selection} comes with the feature selection method using a procedure called \textit{pathing} and additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of speech data gathering.
+The methods of this work are introduced here. Section \ref{sec:classification_method} describes the classification model and the learning method. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of speech data gathering.
 
-Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:feature_selection} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
+Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
 
 \section{Classification Method} \label{sec:classification_method}
 The classification in this study is performed by dense feedforward neural networks. An illustration of a general network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
@@ -300,7 +300,7 @@ If there is a path from feature $ f_1 $ to class $ c_1 $, we assume that $ f_1 $
 \subsection*{Feature Energy}
 Moreover, we also know the weights of the remaining synapses. Hence, besides the information if or if not a feature influences some class, we can also state how big the influence is. We introduce a measure called \textit{feature energy} (\texttt{E}).
 
-\begin{equation}
+\begin{equation} \label{eq:feature_energy}
 E(f,c) = \displaystyle{\sum_{p=1}^{P} \displaystyle{\prod_{s=1}^{S_p} \frac{w_s^{(p)}}{|b_s^{(p)}|}}}
 \end{equation}
 
@@ -308,7 +308,7 @@ where $ E(f,c) $ is the energy of feature $ f $ for class $ c $, $ P $ is the nu
 
 A total energy $ E(f) $ of feature $ f $ for a classification problem is given as:
 
-\begin{equation}
+\begin{equation} \label{eq:feature_energy_total}
 E(f) = \displaystyle{\sum_{k=1}^{m} | E(f,c_k)} |
 \end{equation}
 

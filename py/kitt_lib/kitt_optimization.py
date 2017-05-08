@@ -185,9 +185,18 @@ class FeatureEnergy(object):
                 for k in ks:
                     qs = nonzero(self.net.w_is[1][:, k])[0]
                     for q in qs:
-                        self.paths[f_i].append(list())
-                        self.paths[f_i][-1].append((k, self.net.w[0][k, f], self.net.b[0][k][0]))
-                        self.paths[f_i][-1].append((q, self.net.w[1][q, k], self.net.b[1][q][0]))
+                        if len(self.net.structure) == 4:
+                            ps = nonzero(self.net.w_is[2][:, q])[0]
+                            for p in ps:
+                                self.paths[f_i].append(list())
+                                self.paths[f_i][-1].append((k, self.net.w[0][k, f], self.net.b[0][k][0]))
+                                self.paths[f_i][-1].append((q, self.net.w[1][q, k], self.net.b[1][q][0]))
+                                self.paths[f_i][-1].append((p, self.net.w[2][p, q], self.net.b[2][p][0]))
+                        else:
+                            self.paths[f_i].append(list())
+                            self.paths[f_i][-1].append((k, self.net.w[0][k, f], self.net.b[0][k][0]))
+                            self.paths[f_i][-1].append((q, self.net.w[1][q, k], self.net.b[1][q][0]))
+
                 f += 1
 
     def compute_energies(self):
@@ -201,7 +210,7 @@ class FeatureEnergy(object):
                     if c_i == path[-1][0]:
                         self.energies[f_i][label] += float(path[0][1])/abs(path[0][2]) * float(path[1][1])/abs(path[1][2])
                         self.affects[f_i][label] = True
-            self.energies[f_i]['total'] = sum([e for e in self.energies[f_i].values()])
+            self.energies[f_i]['total'] = sum([abs(e) for e in self.energies[f_i].values()])
             self.affects[f_i]['total'] = True in self.affects[f_i].values()
             self.affects[f_i]['none'] = True not in self.affects[f_i].values()
             self.affects[f_i]['all'] = False not in self.affects[f_i].values()
