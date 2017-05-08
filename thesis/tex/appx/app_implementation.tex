@@ -45,7 +45,7 @@ A general matrix of these transcripts $ Y $ is then:
 \end{bmatrix}
 \end{align*}
 
-As described in \cref{sec:classification_method} we consider $ Y $ to be the predicted output of our neural network. Analogically, we get a general matrix of desired output of the network and those two can then be item-wise compared.
+As described in \cref{sec:classification_method} we consider $ Y $ to be a predicted output of our neural network. Analogically, we get a general matrix of a desired output of a network and those two can be item-wise compared.
 \begin{align*}
 \underset{m\times p}{U} &= 
 \begin{bmatrix}
@@ -59,7 +59,7 @@ As described in \cref{sec:classification_method} we consider $ Y $ to be the pre
 \end{bmatrix}
 \end{align*}
 
-Moreover, we decipher the matrices of weights and biases. The call $ W $ the vector of weight matrices $ W^{(i)} $, where $ W $ is always of length $ (q+1) $, where $ q $ is the number of hidden layers.
+Moreover, we decipher the matrices of weights and biases. We have a vector $ W $ of weight matrices $ W^{(i)} $, which is always of length $ (q+1) $, where $ q $ is the number of hidden layers.
 \begin{align*}
 \underset{1\times (q+1)}{W} &= 
 \begin{bmatrix}

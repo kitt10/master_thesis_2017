@@ -1,5 +1,5 @@
 \chapter{Methods} \label{chap:methods}
-The methods are introduced in this chapter. Section \ref{sec:classification_method} describes how classification, learning and evaluation procedures are performed. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and, additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of how the speech data was gathered.
+This chapter opens a collection of recipes of how the work in this study is done. Section \ref{sec:classification_method} describes the classification, learning and evaluation procedures. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and, additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of how the speech data was gathered.
 
 Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
 
@@ -103,7 +103,7 @@ Y &= A^{(q)} = f(W^{(q)} \cdot A^{(q-1)} + B^{(q)})
 Then, having the known targets (supervised learning), we compute a prediction error on every output neuron for every sample and store those errors in the $ m $-by-$ p $ matrix $ E $.
 
 \begin{equation} \label{eq:prediction_error}
-E = \frac{1}{2} ||U - Y||^2
+E = \frac{(U - Y) \times (U - Y)}{2}
 \end{equation}
 
 Now it is time to use \textit{GDA} to find such settings of $ W $ and $ B $ that makes $ E $ minimal. The details of the \textit{Backpropagation} procedure are well described in \citep{online:nnanddl}. The envelope of the algorithm includes these steps:
@@ -122,35 +122,35 @@ f'(z) = f(z) \cdot (1-f(z))
 
 Every sample $ \xi $ has a vote $ dW^{(i)}_{(\xi)} $ (resp. $ dB^{(i)}_{(\xi)} $) on how the parameters $ W^{(i)} $ (resp. $ B^{(i)} $) should change to get the minimal error and the result is then obtained as a compromise of those votes.
 
-Index $ (i) $ indicates the layer. Consider $ \Delta^{(i)}_{(\xi)} $ be the $ \xi^{th} $ column of the $ \Delta^{(i)} $ matrix, which corresponds to the $ \xi^{th} $ sample. Analogically, $ A^{(i-1)}_{(\xi)} $ is the $ \xi^{th} $ column of the activation matrix $ A^{(i-1)} $ in the $ (i-1)^{th} $ layer. Then we get the votes as:
+Index $ (i) $ indicates the layer. Consider $ \Delta^{(i)}_{(\xi)} $ be the $ \xi^{th} $ column of the $ \Delta^{(i)} $ matrix, which corresponds to the $ \xi^{th} $ sample (see \cref{app:implementation}). Analogically, $ A^{(i-1)}_{(\xi)} $ is the $ \xi^{th} $ column of the activation matrix $ A^{(i-1)} $ in the $ (i-1)^{th} $ layer. Then we get the votes as:
 \begin{align} \label{eq:part_derivative}
 dW^{(i)}_{(\xi)} &= A^{(i-1)}_{(\xi)} \cdot \left[\Delta^{(i)}_{(\xi)}\right]^T\\
 dB^{(i)}_{(\xi)} &= \Delta^{(i)}_{(\xi)}
 \end{align}
 \item \textit{update the parameters.}
 
-At this point we introduce the first parameter of the learning process called \texttt{batch\_size}. It states how many votes are processed together to make one update of the parameters. If \texttt{batch\_size = 1}, we are talking about a \textit{sequential learning}. In this case, each vote is applied to update the parameters before any other votes are computed (\cref{eq:sequential_update}; $ t $ refers to a moment in time). 
+At this point we introduce the first parameter of the learning process called \texttt{batch\_size}. It states how many votes are processed together to make one update of the parameters. If \texttt{batch\_size = 1}, we are talking about a \textit{sequential learning}. In this case, each vote is applied to update the parameters before any other votes are computed (\cref{eq:sequential_update}). 
 
 \begin{align} \label{eq:sequential_update}
-dW^{(i)}(t) = dW^{(i)}_{(\xi)}
+dW^{(i)} = dW^{(i)}_{(\xi)}
 \end{align}
 
 In this work, we usually use \textit{batch learning} ( \texttt{batch\_size > 1}).
 
 \begin{align} \label{eq:batch_update}
-dW^{(i)}(t) = \displaystyle{\sum_{\xi}^{batch\_size} dW^{(i)}_{(\xi)}}
+dW^{(i)} = \displaystyle{\sum_{\xi}^{batch\_size} dW^{(i)}_{(\xi)}}
 \end{align}
 
 Equations \ref{eq:sequential_update} and \ref{eq:batch_update} works analogically for the biases.
 
-The second parameter of the learning procedure is called \texttt{learning\_rate} ($ \mu $) and is usually set $ 0 < \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}). The update of the parameters is then done as follows:
+The second parameter of the learning procedure is called \texttt{learning\_rate} ($ \mu $) and is usually set $ 0 < \mu << 1 $ in order to deal with GDA problems (see \citep{online:nnanddl}). The update of the parameters is then done as follows ($ t $ refers to a moment in time):
 \begin{align} \label{eq:params_update}
 W^{(i)} (t+1) &= W^{(i)} (t) + \mu \cdot dW^{(i)} (t) \\ 
 B^{(i)} (t+1) &= B^{(i)} (t) + \mu \cdot dB^{(i)} (t)
 \end{align}
 \end{enumerate}
 
-When the votes of all samples are applied, the learning epoch ends (see \cref{fig:methods:backpropagation}). The maximal number of epochs and the maximal required error (see \cref{fig:methods:backpropagation}) are also parameters of the learning procedure. To list them all:
+When the votes of all samples are applied, the learning epoch ends. The maximal number of epochs and the maximal required error (see \cref{fig:methods:backpropagation}) are also parameters of the learning procedure. To list them all:
 
 \begin{itemize}
 \item \texttt{batch\_size}
