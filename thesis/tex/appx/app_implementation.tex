@@ -59,4 +59,44 @@ As described in \cref{sec:classification_method} we consider $ Y $ to be the pre
 \end{bmatrix}
 \end{align*}
 
-Moreover, we decipher the matrices of weights and biases. The shape of weight matrix $ W $ reveals the network structure.
+Moreover, we decipher the matrices of weights and biases. The call $ W $ the vector of weight matrices $ W^{(i)} $, where $ W $ is always of length $ (q+1) $, where $ q $ is the number of hidden layers.
+\begin{align*}
+\underset{1\times (q+1)}{W} &= 
+\begin{bmatrix}
+    W^{(1)} & W^{(2)} & \cdots & W^{(q+1)}
+\end{bmatrix}
+\end{align*}
+Shapes of matrices $ W^{(i)} $ then reveals the network structure. For example we itemize $ W^{(1)} $, which carries the information about problem dimension $ n $. Let's assume we have $ j $ neurons in the first hidden layer.
+\begin{align*}
+\underset{j\times n}{W^{(1)}} &=
+\begin{bmatrix}
+    w_{11}^{(1)} & w_{12}^{(1)} & \cdots & w_{1n}^{(1)} \\
+    w_{21}^{(1)} & w_{22}^{(1)} & \cdots & w_{2n}^{(1)} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{j1}^{(1)} & w_{j2}^{(1)} & \cdots & w_{jn}^{(1)} \\      
+\end{bmatrix}
+\end{align*}
+Clearly, the first (row) index indicates the neuron we are going to and the second (column) index indicates the neuron we are coming from. A corresponding bias vector would look as follows.
+\begin{align*}
+\underset{j\times 1}{B^{(1)}} &=
+\begin{bmatrix}
+    b_{1}^{(1)} \\
+    b_{2}^{(1)} \\
+    \vdots \\
+    b_{j}^{(1)} \\      
+\end{bmatrix}
+\end{align*}
+Finally, to help understand \cref{eq:part_derivative}, we itemize the error matrix in the output layer of $ m $ neurons for $ p $ samples.
+\begin{align*}
+\underset{m\times p}{\Delta^{(q+1)}} &=
+\begin{bmatrix}
+    \delta_{11}^{(q+1)} & \delta_{12}^{(q+1)} & \cdots & \delta_{1p}^{(q+1)} \\
+    \delta_{21}^{(q+1)} & \delta_{22}^{(q+1)} & \cdots & \delta_{2p}^{(q+1)} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \delta_{m1}^{(q+1)} & \delta_{m2}^{(q+1)} & \cdots & \delta_{mp}^{(q+1)} \\      
+\end{bmatrix}
+\end{align*}
+Then for $ \xi = 1 $, the errors corresponding to the first sample $ X_1 $ are:
+\begin{align*}
+\Delta_{(1)}^{(q+1)} = \begin{bmatrix} \delta_{11}^{(q+1)} \\ \delta_{21}^{(q+1)} \\ \vdots \\ \delta_{m1}^{(q+1)} \end{bmatrix}
+\end{align*}
