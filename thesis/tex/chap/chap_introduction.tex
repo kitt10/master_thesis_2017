@@ -112,13 +112,20 @@ We introduce own measure for the determination of how important individual synap
 Moreover, this study also suggests some ideas of how to take the advantages of pruned networks.
 
 \section{Mater Thesis Objectives} \label{sec:thesis_objectives}
-Thesis objectives text...
+The objectives of this study are:
+
+\begin{enumerate}
+\item To implement a classification library based on feedforward neural networks, capable of learning a general classification problem;
+\item To develop a network pruning proceeder equipped by a tool for dimensionality reduction after pruning;
+\item To implement state-of-the-art pruning methods and compare them to the developed method;
+\item To suggest applications of pruned networks.
+\end{enumerate}
 
 \section{Thesis Outline} \label{sec:thesis_outline}
-The thesis consists of 5 chapters following the standard skeleton of scientific publications. Chapter \ref{chap:methods} describes the methodology used in the study. At first, in \cref{sec:classification_method} we give a general description of the used classification method and highlight some important design choices and conventions (a detailed description of the established conventions is then put in \cref{app:implementation}). Then the developed network pruning algorithm is introduced in \cref{sec:network_pruning}, which also contains the recipe of how to reduce weight dimensionality after pruning. Then we put a section called "Insight of Neural Network" containing some ideas of how to use pruned networks. \cref{sec:speech_data_gathering} is also included among the methods, because it describes the approach of how the speech data was collected.
+The thesis consists of 5 chapters following the standard skeleton of scientific publications. Chapter \ref{chap:methods} describes the methodology used in the study. At first, in \cref{sec:classification_method} we give a general description of the used classification method and highlight some important design choices and conventions (a detailed description of the established conventions is then put in \cref{app:implementation}). Then the developed network pruning algorithm is introduced in \cref{sec:network_pruning}, which also contains the recipe of how to reduce weight dimensionality after pruning. Then we put a section called "Insight of Neural Network" containing some ideas of how to use a derived minimal structure to understand the workflow in the network. Section \ref{sec:speech_data_gathering} is also included among the methods, because it describes the approach of how the speech data was collected.
 
 In \cref{chap:examples}, six examples are presented. Each of the examples shows the pruning algorithm from a different point of view and basically each finds a new application for it.
 
-\cref{chap:discussion} comes with the discussion about the results. It also contains a comparison of the developed pruning method to the presented state-of-the-art-methods from \cref{sec:state_of_the_art}. Some ideas for the future work are also suggested. The study is then concluded in \cref{chap:conclusion}.
+Chapter \ref{chap:discussion} comes with the discussion about the results. It also contains a comparison of the developed pruning method to the presented state-of-the-art methods from \cref{sec:state_of_the_art}. Then, ideas for the future work are suggested. The study is concluded in \cref{chap:conclusion}.
 
 Appendix \ref{app:supplementary_data} contains figures and tables that did not fit to the main text, but still can be interesting for some readers. Then, the structure of the workspace is provided in \cref{app:structure_of_the_workspace} and the attached code is documented in \cref{app:code_documentation}.
