@@ -107,10 +107,18 @@ where $ w^f $ is the final value of the weight after training and $ w^i $ its ra
 The $ \Delta w $ values are calculated by backpropagation, hence, each weight has an estimated sensitivity after training. The lowest sensitivity weights are then deleted.
 
 \subsection*{Contribution of This Work} \label{ssec:contribution_of_this_work}
-This study introduces own measure for the determination of how important individual synapses are. It is presented in \cref{sec:network_pruning} and tested on several examples in \cref{chap:examples}. The results are then discussed and compared the other listed measures in \cref{chap:discussion}.
+We introduce own measure for the determination of how important individual synapses are. It is believed to work equally well or better than the others, while the principle is based on a nice simple idea. It leads to a better performance in terms of computational demands, which is discussed and compared the other listed methods in \cref{chap:discussion}.
 
-\section{Thesis Objectives} \label{sec:thesis_objectives}
+Moreover, this study also suggests some ideas of how to take the advantages of pruned networks.
+
+\section{Mater Thesis Objectives} \label{sec:thesis_objectives}
 Thesis objectives text...
 
 \section{Thesis Outline} \label{sec:thesis_outline}
-Thesis outline text...
+The thesis consists of 5 chapters following the standard skeleton of scientific publications. Chapter \ref{chap:methods} describes the methodology used in the study. At first, in \cref{sec:classification_method} we give a general description of the used classification method and highlight some important design choices and conventions (a detailed description of the established conventions is then put in \cref{app:implementation}). Then the developed network pruning algorithm is introduced in \cref{sec:network_pruning}, which also contains the recipe of how to reduce weight dimensionality after pruning. Then we put a section called "Insight of Neural Network" containing some ideas of how to use pruned networks. \cref{sec:speech_data_gathering} is also included among the methods, because it describes the approach of how the speech data was collected.
+
+In \cref{chap:examples}, six examples are presented. Each of the examples shows the pruning algorithm from a different point of view and basically each finds a new application for it.
+
+\cref{chap:discussion} comes with the discussion about the results. It also contains a comparison of the developed pruning method to the presented state-of-the-art-methods from \cref{sec:state_of_the_art}. Some ideas for the future work are also suggested. The study is then concluded in \cref{chap:conclusion}.
+
+Appendix \ref{app:supplementary_data} contains figures and tables that did not fit to the main text, but still can be interesting for some readers. Then, the structure of the workspace is provided in \cref{app:structure_of_the_workspace} and the attached code is documented in \cref{app:code_documentation}.
