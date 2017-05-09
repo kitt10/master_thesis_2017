@@ -68,16 +68,47 @@ E^l = \sum |t_{pj} - o_{pj}|
 
 The authors claim the method works well for understanding the behaviour of a network in terms of "rules", which is shown on the RPE problem and on Michalski's trains (both these examples are also adopted in this study for comparison).
 
-
 \subsection*{Optimal Brain Damage} \label{ssec:optimal_brain_damage}
-\citep{lecun:obd}
+In \citep{lecun:obd} they use this ambitious title for a study that also tries to identify the unimportant weights and remove them from a network. Their measure is called "saliency" of a weight and it is estimated by the second derivative of the error with respect to the weight.
+
+They compute the Hessian matrix $ H $ containing elements $ h_{ij} $.
+
+\begin{equation}
+h_{ij} = \frac{\partial^2 E}{\partial w_i \partial w_j}
+\end{equation}
+
+Since H is a very large matrix, they make a simplifying assumption that the off-diagonal terms of $ H $ are zero. This leaves
+
+\begin{equation}
+\delta E \approx \frac{1}{2} \displaystyle{\sum_i h_{ii} \cdot \delta \cdot w_i^2}
+\end{equation}
+
+It turns out that the second derivatives $ h_{kk} $ can be calculated by a modified back-propagation rule. The "saliency" $ s_k $ of weight $ w_k $ is then
+
+\begin{equation}
+s_k = h_{kk} \cdot \frac{w_k^2}{2}
+\end{equation}
+
+In each pruning step, weights with low saliencies are deleted. The method is tested on the MNIST dataset \citep{lecun:mnist}, which is also used to show the developed method in this study.
 
 \subsection*{Karnin's Measure} \label{ssec:karnins_measure}
-\citep{karnin:pa}
+The measure published in \citep{karnin:pa} is the most similar to the one used by the developed PA. The author also used the change in weight during the pruning process to compute a measure called "sensitivity" for each synapse. The sensitivity $ S_{ij} $ of weight $ w_{ij} $ is given as
+
+\begin{equation}
+S_{ij} = - \frac{E(w^f) - E(w^i)}{w^f - w^i} \cdot w^f
+\end{equation}
+
+where $ w^f $ is the final value of the weight after training and $ w^i $ its randomly chosen initial value. Rather than removing every weight and calculating the errors directly, the author approximates $ S $ by monitoring the sum of all the changes experienced by the weight during training. The estimated sensitivity is
+
+\begin{equation}
+\hat{S_{ij}} = \displaystyle{\sum_{n=0}^{N-1} \left[\Delta w_{ij} (n)\right]^2 \frac{w_{ij}^f}{\eta \cdot (w_{ij}^f - w_{ij}^i)}}
+\end{equation}
+
+The $ \Delta w $ values are calculated by backpropagation, hence, each weight has an estimated sensitivity after training. The lowest sensitivity weights are then deleted.
 
 \subsection*{Contribution of This Work} \label{ssec:contribution_of_this_work}
-hohoho
-\newpage
+This study introduces own measure for the determination of how important individual synapses are. It is presented in \cref{sec:network_pruning} and tested on several examples in \cref{chap:examples}. The results are then discussed and compared the other listed measures in \cref{chap:discussion}.
+
 \section{Thesis Objectives} \label{sec:thesis_objectives}
 Thesis objectives text...
 
