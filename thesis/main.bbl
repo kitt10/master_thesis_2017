@@ -16,7 +16,7 @@
   {}
 \endgroup
 
-\entry{article:perceptron}{article}{}
+\entry{rosenblatt:perceptron}{article}{}
   \name{author}{1}{}{%
     {{}%
      {Rosenblatt}{R.}%
@@ -24,52 +24,81 @@
      {}{}%
      {}{}}%
   }
+  \list{publisher}{1}{%
+    {American Psychological Association}%
+  }
   \strng{namehash}{RF1}
   \strng{fullhash}{RF1}
   \field{labelyear}{1958}
   \field{sortinit}{1}
-  \field{pages}{386\bibrangedash 408}
+  \field{number}{6}
+  \field{pages}{386}
   \field{title}{The perceptron: A probabilistic model for information storage
-  and organization in the brain}
+  and organization in the brain.}
   \field{volume}{65}
-  \field{journaltitle}{Psychological Review}
+  \field{journaltitle}{Psychological review}
   \field{year}{1958}
 \endentry
 
-\entry{michalski}{inproceedings}{}
+\entry{michalski:trains}{article}{}
   \name{author}{2}{}{%
     {{}%
      {Larson}{L.}%
-     {J.}{J.}%
+     {James}{J.}%
      {}{}%
      {}{}}%
     {{}%
      {Michalski}{M.}%
-     {R.~S.}{R.~S.}%
+     {Ryszard~S}{R.~S.}%
      {}{}%
      {}{}}%
   }
   \list{publisher}{1}{%
-    {ACM SIGAI}%
+    {ACM}%
   }
   \strng{namehash}{LJMRS1}
   \strng{fullhash}{LJMRS1}
   \field{labelyear}{1977}
   \field{sortinit}{1}
-  \field{booktitle}{ACM SIGART Bulletin}
+  \field{number}{63}
   \field{pages}{38\bibrangedash 44}
-  \field{title}{Inductive Inference of VL Decision Rules}
-  \list{location}{1}{%
-    {New York, USA}%
-  }
+  \field{title}{Inductive inference of VL decision rules}
+  \field{journaltitle}{ACM SIGART Bulletin}
   \field{year}{1977}
 \endentry
 
-\entry{mozer_smolensky}{inproceedings}{}
+\entry{sietsma:why_and_how}{inproceedings}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Sietsma}{S.}%
+     {Jocelyn}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Dow}{D.}%
+     {Robert~JF}{R.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{organization}{1}{%
+    {IEEE San Diego}%
+  }
+  \strng{namehash}{SJDRJ1}
+  \strng{fullhash}{SJDRJ1}
+  \field{labelyear}{1988}
+  \field{sortinit}{1}
+  \field{booktitle}{IEEE International Conference on Neural Networks}
+  \field{pages}{325\bibrangedash 333}
+  \field{title}{Neural net pruning-why and how}
+  \field{volume}{1}
+  \field{year}{1988}
+\endentry
+
+\entry{mozer:skeletonization}{article}{}
   \name{author}{2}{}{%
     {{}%
      {Mozer}{M.}%
-     {Michael~C.}{M.~C.}%
+     {Michael~C}{M.~C.}%
      {}{}%
      {}{}}%
     {{}%
@@ -79,104 +108,93 @@
      {}{}}%
   }
   \list{publisher}{1}{%
-    {CO 80309-0430}%
+    {University of Colorado, Boulder, Department of Computer Science}%
   }
   \strng{namehash}{MMCSP1}
   \strng{fullhash}{MMCSP1}
   \field{labelyear}{1989}
   \field{sortinit}{1}
-  \field{booktitle}{Boulder}
-  \field{pages}{107\bibrangedash 115}
-  \field{title}{Skeletonization: A Technique for Trimming the Fat from a
-  Network via Relevance Assessment}
-  \list{location}{1}{%
-    {Institute of Cognitive Science, University of Colorado}%
-  }
+  \field{title}{Skeletonization: A technique for trimming the fat from a
+  network via relevance assessment}
   \field{year}{1989}
 \endentry
 
-\entry{karnin}{inproceedings}{}
+\entry{karnin:pa}{article}{}
   \name{author}{1}{}{%
     {{}%
      {Karnin}{K.}%
-     {Ehud~D.}{E.~D.}%
+     {Ehud~D}{E.~D.}%
      {}{}%
      {}{}}%
   }
   \list{publisher}{1}{%
-    {IEEE Transaction on Neural Networks}%
+    {IEEE}%
   }
   \strng{namehash}{KED1}
   \strng{fullhash}{KED1}
   \field{labelyear}{1990}
   \field{sortinit}{1}
-  \field{booktitle}{Letters}
+  \field{number}{2}
   \field{pages}{239\bibrangedash 242}
-  \field{title}{A Simple Procedure for Pruning Back-Propagation Trained Neural
-  Networks}
+  \field{title}{A simple procedure for pruning back-propagation trained neural
+  networks}
+  \field{volume}{1}
+  \field{journaltitle}{IEEE Transactions on Neural Networks}
   \field{year}{1990}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
-\entry{article:pruning_algorithms}{article}{}
-  \name{author}{1}{}{%
-    {{}%
-     {Reed}{R.}%
-     {R.}{R.}%
-     {}{}%
-     {}{}}%
-  }
-  \strng{namehash}{RR1}
-  \strng{fullhash}{RR1}
-  \field{labelyear}{1993}
-  \field{sortinit}{1}
-  \field{abstract}{%
-  A rule of thumb for obtaining good generalization in systems trained by
-  examples is that one should use the smallest system that will fit the data.
-  Unfortunately, it usually is not obvious what size is best; a system that is
-  too small will not be able to learn the data while one that is just big
-  enough may learn very slowly and be very sensitive to initial conditions and
-  learning parameters. This paper is a survey of neural network pruning
-  algorithms. The approach taken by the methods described here is to train a
-  network that is larger than necessary and then remove the parts that are not
-  needed.%
-  }
-  \field{pages}{740\bibrangedash 747}
-  \field{title}{Pruning Algorithms - A Survey}
-  \verb{url}
-  \verb http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=248452
-  \endverb
-  \field{journaltitle}{IEEE Transactions on Neural Networks (Volume:4 , Issue:
-  5)}
-  \field{month}{09}
-  \field{year}{1993}
-\endentry
-
-\entry{online:mnist}{online}{}
-  \name{author}{2}{}{%
+\entry{lecun:obd}{inproceedings}{}
+  \name{author}{3}{}{%
     {{}%
      {LeCun}{L.}%
      {Yann}{Y.}%
      {}{}%
      {}{}}%
     {{}%
-     {Cortes}{C.}%
-     {Corinna}{C.}%
+     {Denker}{D.}%
+     {John~S}{J.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Solla}{S.}%
+     {Sara~A}{S.~A.}%
      {}{}%
      {}{}}%
   }
-  \strng{namehash}{LYCC1}
-  \strng{fullhash}{LYCC1}
-  \field{labelyear}{1998}
+  \strng{namehash}{LYDJSSSA1}
+  \strng{fullhash}{LYDJSSSA1}
+  \field{labelyear}{1990}
   \field{sortinit}{1}
-  \field{title}{The MNIST database of handwritten digits}
-  \verb{url}
-  \verb http://yann.lecun.com/exdb/mnist/
-  \endverb
-  \field{year}{1998}
+  \field{booktitle}{Advances in neural information processing systems}
+  \field{pages}{598\bibrangedash 605}
+  \field{title}{Optimal brain damage}
+  \field{year}{1990}
 \endentry
 
-\entry{wiki:mnist}{misc}{}
+\entry{reed:pa_survey}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Reed}{R.}%
+     {Russell}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {IEEE}%
+  }
+  \strng{namehash}{RR1}
+  \strng{fullhash}{RR1}
+  \field{labelyear}{1993}
+  \field{sortinit}{1}
+  \field{number}{5}
+  \field{pages}{740\bibrangedash 747}
+  \field{title}{Pruning algorithms-a survey}
+  \field{volume}{4}
+  \field{journaltitle}{IEEE transactions on Neural Networks}
+  \field{year}{1993}
+\endentry
+
+\entry{wiki}{misc}{}
   \name{author}{1}{}{%
     {{}%
      {Wikipedia}{W.}%
@@ -191,7 +209,7 @@
   \field{note}{[Online; accessed 15-April-2017]}
   \field{title}{Plagiarism --- {W}ikipedia{,} The Free Encyclopedia}
   \verb{url}
-  \verb https://en.wikipedia.org/wiki/MNIST_database
+  \verb https://en.wikipedia.org/
   \endverb
   \field{year}{2004}
 \endentry
@@ -234,6 +252,32 @@
   \verb el-frequency-cepstral-coefficients-mfccs/
   \endverb
   \field{year}{2009}
+\endentry
+
+\entry{lecun:mnist}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {LeCun}{L.}%
+     {Yann}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cortes}{C.}%
+     {Corinna}{C.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{MSc _checked character_recognition mnist network neural}
+  \strng{namehash}{LYCC1}
+  \strng{fullhash}{LYCC1}
+  \field{labelyear}{2010}
+  \field{sortinit}{2}
+  \field{howpublished}{http://yann.lecun.com/exdb/mnist/}
+  \field{title}{{MNIST} handwritten digit database}
+  \verb{url}
+  \verb http://yann.lecun.com/exdb/mnist/
+  \endverb
+  \field{year}{2010}
 \endentry
 
 \entry{sklearn}{inproceedings}{}
@@ -326,7 +370,7 @@
   \field{year}{2013}
 \endentry
 
-\entry{bulin_2016}{thesis}{}
+\entry{bulin:2016}{thesis}{}
   \name{author}{1}{}{%
     {{}%
      {Bulín}{B.}%
@@ -338,8 +382,8 @@
   \strng{fullhash}{BM1}
   \field{labelyear}{2016}
   \field{sortinit}{2}
-  \field{title}{Classification of Terrain based on Proprioception and Tactile
-  Sensing for Multi-legged Walking Robot}
+  \field{title}{Classification of terrain based on proprioception and tactile
+  sensing for multi-legged walking robot}
   \list{location}{1}{%
     {Campusvej 55, 5230 Odense M}%
   }
@@ -347,8 +391,8 @@
     {University of Southern Denmark}%
   }
   \field{type}{mathesis}
+  \field{month}{06}
   \field{year}{2016}
-  \warn{\item Invalid format of field 'month'}
 \endentry
 
 \entry{online:nnanddl}{online}{}
@@ -370,6 +414,23 @@
   \field{year}{2017}
 \endentry
 
+\entry{orhan:symmetry}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Orhan}{O.}%
+     {A~Emin}{A.~E.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{OAE1}
+  \strng{fullhash}{OAE1}
+  \field{labelyear}{2017}
+  \field{sortinit}{2}
+  \field{title}{Skip Connections as Effective Symmetry-Breaking}
+  \field{journaltitle}{arXiv preprint arXiv:1701.09175}
+  \field{year}{2017}
+\endentry
+
 \entry{online:census}{online}{}
   \field{labelyear}{2017}
   \field{sortinit}{2}
@@ -380,7 +441,7 @@
   \field{year}{2017}
 \endentry
 
-\entry{smidl_pc}{misc}{}
+\entry{smidl:pc}{misc}{}
   \name{author}{1}{}{%
     {{}%
      {Šmídl}{�.}%

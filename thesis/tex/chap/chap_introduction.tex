@@ -1,16 +1,82 @@
 \chapter{Introduction} \label{chap:introduction}
 Introduction text...
 
+\citep{sietsma:why_and_how}
+The group of classification methods applicable in supervised machine learning systems is wide. To list some commonly known methods, we can use \textit{Support Vector Machines (SVMs)}, \textit{Decision trees}, probability-based \textit{Bayes classifiers} or archaic but still effective \textit{k-Nearest Neighbours}. Yet, neural networks are frequently prefered to the others and take the state-of-the-art part in many domains. Clearly it is due to their great performance. 
+
+When we deal with a real problem (e.g. in industry), one often comes to the point when his or her network works well (let's say with accuracy of $ 90\% $), but a customer asks for a performance of $ 98\% $ for example. Then we encounter the problem when we need to know what is 
+
 \newpage
 \section{State of the Art} \label{sec:state_of_the_art}
-State of the art text...  \citep{article:pruning_algorithms}
+In this work, we focus on the optimization of a feedforward neural network with a goal of understanding its overall functionality, which could possibly lead to a general knowledge of how to design networks and tailor them for a challenged problem.
 
-Karnin method principle
+Optimization is a wide term. In \citep{orhan:symmetry}, they try to break symmetries in a network in order to improve its performance. They do it by adding so-called "skip connections", which can also be considered as a kind of optimization.
 
-OBD method principle
+In this study we rather focus on making networks small and simple. Having the smallest model that perfectly fits the classified data has two crucial advantages: 1) good generalization; 2) a good chance that we will understand how the model works.
 
-\newpage
-...
+There are two ways of how to end up with a small model that fits the data:
+
+\begin{enumerate}
+\item build a network from scratch by adding single parts (neurons, synapses) until a required performance is reached;
+\item train a network that is larger than necessary and then remove the parts that are not needed.
+\end{enumerate}
+
+The first approach is left out for the future work, and we focus on the second course of action, which is called network \textit{pruning}. The general approach of a pruning procedure consists of these steps:
+
+\begin{enumerate}
+\item choose an oversized network architecture;
+\item train the network until a reasonable solution is obtained;
+\item delete a network part (synapse or neuron);
+\item if the classification error has not grown go to step 2), otherwise finish.
+\end{enumerate}
+
+The key question is how to identify the parts that can be deleted without an error growth. A good survey of published pruning methods is done by \citep{reed:pa_survey}. The author starts with some hypothetical calculations of what would happen if we use a brute force and remove the elements one by one. It ends up with a complexity of $ O(MW^3) $, where $ M $ is the number of samples and $ W $ is the number of network elements - slow for large networks. 
+
+The pruning methods described below take a less direct approach and they basically differ one from each other in how they identify the unimportant network parts. In \citep{reed:pa_survey}, he splits the methods into two groups:
+\begin{itemize}
+\item \textit{sensitivity calculation methods};
+
+These methods estimate the sensitivity of the error function to removal of an element; the elements with the least effect can then be removed.
+ 
+\item \textit{penalty-term methods}.
+
+These methods modify the cost function so that backpropagation based on the function drives unnecessary parameters zero and, in effect, removes them during training.
+\end{itemize}
+
+Since the cost function could include sensitivity terms, there is some overlap in these groups and as the developed method would fit better to the first group, we focus on three published methods based on sensitivity calculations.
+
+\subsection*{Skeletonization} \label{ssec:skeletonization}
+In \citep{mozer:skeletonization} they introduce a measure called relevance $ \rho $ of a unit, which is an error when the unit is removed minus the error when the unit is left in place.
+
+The value is approximated using a gating term $ \alpha $ for each unit such that
+
+\begin{equation}
+o_j = f(\displaystyle{\sum_i w_{ji} \cdot \alpha_i \cdot o_i})
+\end{equation}
+
+where $ o_j $ is the activity of unit $ j $, $ w_{ji} $ is the weight from neuron $ i $ to neuron $ j $ and $ f(\cdot) $ is the \textit{Sigmoid} function. If $ \alpha = 0 $, the unit has no influence on the network; if $ \alpha = 1 $, the unit behaves normally. The relevance estimation is then given by the derivative from backpropagation
+
+\begin{equation}
+\hat{\rho_i} = - \left.\frac{\partial E^l}{\partial \alpha_i}\right\rvert_{\alpha_i = 1}
+\end{equation}
+
+Rather than the usual sum of squared errors, the error $ E^l $ (\cref{eq:skeletonization_error}) is used to measure relevance, bacause it works better when the error is small.
+
+\begin{equation} \label{eq:skeletonization_error}
+E^l = \sum |t_{pj} - o_{pj}|
+\end{equation}
+
+The authors claim the method works well for understanding the behaviour of a network in terms of "rules", which is shown on the RPE problem and on Michalski's trains (both these examples are also adopted in this study for comparison).
+
+
+\subsection*{Optimal Brain Damage} \label{ssec:optimal_brain_damage}
+\citep{lecun:obd}
+
+\subsection*{Karnin's Measure} \label{ssec:karnins_measure}
+\citep{karnin:pa}
+
+\subsection*{Contribution of This Work} \label{ssec:contribution_of_this_work}
+hohoho
 \newpage
 \section{Thesis Objectives} \label{sec:thesis_objectives}
 Thesis objectives text...

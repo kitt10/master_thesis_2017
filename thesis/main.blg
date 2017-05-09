@@ -7,9 +7,9 @@ A level-1 auxiliary file: tex/chap/chap_methods.aux
 A level-1 auxiliary file: tex/chap/chap_examples.aux
 A level-1 auxiliary file: tex/chap/chap_discussion.aux
 A level-1 auxiliary file: tex/chap/chap_conclusion.aux
+A level-1 auxiliary file: tex/appx/app_implementation.aux
 A level-1 auxiliary file: tex/appx/app_supplementary_data.aux
 A level-1 auxiliary file: tex/appx/app_structure_of_the_workspace.aux
-A level-1 auxiliary file: tex/appx/app_implementation.aux
 A level-1 auxiliary file: tex/appx/app_code_documentation.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -24,49 +24,49 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: main-blx.bib
 Database file #2: bib/thesis_bibliography.bib
-Warning--I didn't find a database entry for "article:10:pa"
+Warning--I didn't find a database entry for "bulin_2016"
 Biblatex version: 3.3
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-You've used 15 entries,
+You've used 18 entries,
             6047 wiz_defined-function locations,
-            1223 strings with 11333 characters,
-and the built_in function-call counts, 60645 in all, are:
-= -- 2171
-> -- 3963
-< -- 687
-+ -- 2831
-- -- 2757
-* -- 3354
-:= -- 5334
+            1236 strings with 11081 characters,
+and the built_in function-call counts, 67432 in all, are:
+= -- 2421
+> -- 3815
+< -- 771
++ -- 2462
+- -- 2441
+* -- 4115
+:= -- 5390
 add.period$ -- 0
-call.type$ -- 15
-change.case$ -- 321
-chr.to.int$ -- 217
-cite$ -- 28
-duplicate$ -- 5839
-empty$ -- 5428
-format.name$ -- 862
-if$ -- 11751
+call.type$ -- 18
+change.case$ -- 353
+chr.to.int$ -- 203
+cite$ -- 34
+duplicate$ -- 6799
+empty$ -- 6367
+format.name$ -- 1070
+if$ -- 13732
 int.to.chr$ -- 0
-int.to.str$ -- 34
+int.to.str$ -- 41
 missing$ -- 0
-newline$ -- 388
-num.names$ -- 732
-pop$ -- 4654
+newline$ -- 458
+num.names$ -- 856
+pop$ -- 5609
 preamble$ -- 1
-purify$ -- 367
+purify$ -- 411
 quote$ -- 0
-skip$ -- 3117
+skip$ -- 3632
 stack$ -- 0
-substring$ -- 2039
-swap$ -- 1961
-text.length$ -- 443
-text.prefix$ -- 14
+substring$ -- 2048
+swap$ -- 2302
+text.length$ -- 518
+text.prefix$ -- 17
 top$ -- 1
-type$ -- 557
+type$ -- 671
 warning$ -- 0
-while$ -- 407
+while$ -- 437
 width$ -- 0
-write$ -- 372
+write$ -- 439
 (There was 1 warning)

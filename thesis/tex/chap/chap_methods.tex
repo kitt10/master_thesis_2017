@@ -1,7 +1,7 @@
 \chapter{Methods} \label{chap:methods}
 This chapter opens a collection of recipes of how the work in this study is done. Section \ref{sec:classification_method} describes the classification, learning and evaluation procedures. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and, additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of how the speech data was gathered.
 
-Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin_2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl_pc}.
+Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin:2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl:pc}.
 
 \section{Classification Method} \label{sec:classification_method}
 The classification in this study is performed by dense feedforward neural networks. An illustration of a general feedforward network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
@@ -16,7 +16,7 @@ The classification in this study is performed by dense feedforward neural networ
 The number of input units $ n $ is determined by the problem dimension. The number of classes $ m $ gives the number of output units (see the established conventions in \cref{app:implementation}). In this study, we mostly use a simple hidden structure, usually with one hidden layer ($ q = 1 $).
 
 \subsection*{Neuron Principle}
-The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output \citep{article:perceptron}. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
+The behaviour of artificial neurons follows our understanding of how biological neurons work. One unit has multiple inputs and a single output \citep{rosenblatt:perceptron}. A model of neuron is shown in \cref{fig:methods:model_neuron}. The diagram complies with the following notation:
 
 \begin{description}
 \item[$ neuron_k^{(i)} $] : $ k^{th} $ neuron in $ i^{th} $ layer
@@ -313,8 +313,8 @@ E(f) = \displaystyle{\sum_{k=1}^{m} | E(f,c_k)} |
 \end{equation}
 
 \newpage
-\section{Speech Data Gathering} \label{sec:speech_data_gathering}
-The presented methods are tested on several examples (\cref{chap:examples}) and one of them rests in a classification of phonemes. By definition a phoneme is one of the units of sound that distinguish one word from another in a particular language \citep{wiki:mnist}. We focus on Czech language and consider $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet}. This section describes the way of gathering such phonemes and building a dataset for the classification.
+\section{Gathering of Speech Data} \label{sec:speech_data_gathering}
+The presented methods are tested on several examples (\cref{chap:examples}) and one of them rests in a classification of phonemes. By definition a phoneme is one of the units of sound that distinguish one word from another in a particular language \citep{wiki}. We focus on Czech language and consider $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet}. This section describes the way of gathering such phonemes and building a dataset for the classification.
 
 \begin{table}[H]
 \centering
@@ -341,7 +341,7 @@ h  & h                & \textbf{h}ad              & r  & r                & \tex
 \label{tab:methods:phonetic_alphabet}
 \end{table}
 
-The generation of a speech dataset consists of the following steps, where the work done in steps $ 1-3 $ is taken over from \citep{smidl_pc}.
+The generation of a speech dataset consists of the following steps, where the work done in steps $ 1-3 $ is taken over from \citep{smidl:pc}.
 
 \begin{enumerate}
 \item acquisition of real voice recordings;
@@ -417,7 +417,7 @@ recording\_params =
 \end{enumerate}
 
 \subsection*{Data Labeling}
-We perform a supervised learning method, hence the data must be labeled. To do so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl_pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
+We perform a supervised learning method, hence the data must be labeled. To do so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl:pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
 
 \begin{table}[H]
 \centering
@@ -431,7 +431,7 @@ We perform a supervised learning method, hence the data must be labeled. To do s
 32                                      & 44                                      & o                                     \\ \hline
 44                                      & 65                                      & \_sil\_                               \\ \hline
 \end{tabular}
-\caption{Example of labeled recording.}
+\caption{Example of a labeled recording.}
 \label{tab:methods:labeling_example}
 \end{table}
 
