@@ -55,7 +55,39 @@ Again, two hypotheses were put and subsequently have been confirmed.
 \textit{Result}: generally confirmed by a mean value out of 100 cases (\cref{fig:examples:pruning_result_rpe}).
 \end{enumerate}
 
+\subsection*{The Michalski's Trains}
+Section \ref{sec:example_trains} presents a simplification of the well known problem of feature selection from \citep{michalski:trains}. There are two classes and six-dimensional samples, where some of the features are obviously redundant for classification.
 
+The pruning algorithm does the feature selection by pruning synapses coming from features. \cref{fig:examples:pruning_result_pie_train} shows that out of 100 observations we got a perfect solution in $ 46\% $ of cases, a good but not optimal solution in $ 32\% $ of cases and in $ 22\% $ of cases the features were not pruned well.
+
+\subsection*{Handwritten Digits}
+The MNIST dataset from \citep{lecun:mnist} was included in order to present the pruning process on a network with many synapses (see \cref{fig:examples:pruning_process_mnist}). The results are summarized in \cref{tab:discussion:pruning_results_mnist}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+                                 & \textit{fully-connected} & \textit{pruned}   \\ \hline
+\textit{structure}               & {[}784, 20, 10{]}        & {[}465, 20, 10{]} \\ \hline
+\textit{n features}              & 784                      & 465               \\ \hline
+\textit{n synapses}              & 15880                    & 1259              \\ \hline
+\textit{accuracy}                & 97\%                     & 97\%              \\ \hline
+\textit{evaluation time {[}s{]}} & 5.64                     & 2.85              \\ \hline
+\end{tabular}
+\caption{Summarized pruning results on MNIST dataset.}
+\label{tab:discussion:pruning_results_mnist}
+\end{table}
+
+We also performed an alalysis of how many synapses we need to produce a particular classification accuracy - see \cref{fig:examples:mnist_pruning_vs_req_acc}. For example, a network with $ 38 $ synapses is able to reach the classification accuracy of $ 50\% $ using only $ 20 $ features (see \cref{fig:examples:pruned_net_mnist_05}). The feature selection procedure was then also done for every digit (class) separately (\cref{fig:examples:fs_mnist}).
+
+\subsection*{Classification of Phonemes}
+Regarding the speech data, the first task was to determine optimal parameters, which led to maximal trainability of the dataset. Then we showed how the classified samples look like (\cref{fig:examples:speech_example_sample_cs0}).
+
+Next, we trained a network with a 2D-bottleneck layer and plotted this layer's activity for several phonemes (see \cref{fig:examples:speech_bottleneck_result}). Interestingly, phonetically similar phonemes (e.g. \texttt{"a"} and \texttt{"A"} or \texttt{"s"} and \texttt{"c"}) took places close together. 
+
+Then, we trained a classical network and performed the pruning process (\cref{fig:examples:speech_pruning_process}). Finally, we computed feature energies (see \cref{eq:feature_energy}) based on \textit{pathing} in the pruned network. Results for all phonemes are given in Figures \ref{fig:examples:speech_fe_set1}, \ref{fig:app:speech_fe_set2} and \ref{fig:app:speech_fe_set3}.
+
+\newpage
 \section{Comparison to SoA Pruning Methods} \label{sec:comparison_of_pruning_methods}
 Comparison of results text...
 
@@ -68,7 +100,6 @@ Karnin
 OBD
 
 Kitt
-\newpage
 
 accuracy, convergence time, computation time, number of synapses/features (viz Tomas)
 
@@ -79,22 +110,4 @@ accuracy, convergence time, computation time, number of synapses/features (viz T
 \label{fig:discussion:pa_comparison_retraining5}
 \end{figure}
 
-\newpage
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{pa_comparison_noretraining.eps}
-\caption{MNIST, req\_acc = 0.95, no retraining}
-\label{fig:discussion:pa_comparison_noretraining}
-\end{figure}
-
-\section{Future Work} \label{sec:future_work}
-Outlook...
-
-Shrinking of layers
-
-Tailoring
-
-Building net from zero
-
-Sphere neuron
+\section{Looking for Empirical Rules}
