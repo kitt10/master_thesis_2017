@@ -16,6 +16,34 @@
   {}
 \endgroup
 
+\entry{mcculloch:neuron}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {McCulloch}{M.}%
+     {Warren~S}{W.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pitts}{P.}%
+     {Walter}{W.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Springer}%
+  }
+  \strng{namehash}{MWSPW1}
+  \strng{fullhash}{MWSPW1}
+  \field{labelyear}{1943}
+  \field{sortinit}{1}
+  \field{number}{4}
+  \field{pages}{115\bibrangedash 133}
+  \field{title}{A logical calculus of the ideas immanent in nervous activity}
+  \field{volume}{5}
+  \field{journaltitle}{The bulletin of mathematical biophysics}
+  \field{year}{1943}
+\endentry
+
 \entry{rosenblatt:perceptron}{article}{}
   \name{author}{1}{}{%
     {{}%
@@ -228,8 +256,7 @@
   \field{sortinit}{2}
   \field{title}{The XOR Problem and Solution}
   \verb{url}
-  \verb http://www.mind.ilstu.edu/curriculum/artificial_neural_net/xor_problem_
-  \verb and_solution.php
+  \verb http://mind.ilstu.edu/
   \endverb
   \field{year}{2006}
 \endentry
@@ -248,8 +275,7 @@
   \field{sortinit}{2}
   \field{title}{Mel Frequency Cepstral Coefficient (MFCC) tutorial}
   \verb{url}
-  \verb http://practicalcryptography.com/miscellaneous/machine-learning/guide-m
-  \verb el-frequency-cepstral-coefficients-mfccs/
+  \verb http://practicalcryptography.com/
   \endverb
   \field{year}{2009}
 \endentry
@@ -436,7 +462,7 @@
   \field{sortinit}{2}
   \field{title}{United States Census Bureau}
   \verb{url}
-  \verb https://www.census.gov/
+  \verb http://census.gov/
   \endverb
   \field{year}{2017}
 \endentry
