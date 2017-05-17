@@ -1,13 +1,18 @@
 \chapter{Conclusion} \label{chap:conclusion}
-We introduced a new measure
+This thesis is about pruning synapses in fully-connected feedforward neural networks. The purpose is to understand individual network parts in order to increase capabilities of using NNs for classification.
+
+We introduced a new measure called \texttt{WSF} (\textit{weight significance factor}) to identify unimportant synapses in a fully-connected network. We found out that generally over $ 90\% $ of the synapses are redundant for classification.
+
+Next, we implemented a network pruning proceeder and tested it on six examples. The experiments confirmed its ability to drive a network to a structure that is minimal for the given data. The minimal structures then lead to partial demystification of even complicated networks. As a side effect of network pruning we got a rapid (over a half) reduction of computation time, which could possibly be useful for low-cost embedded systems.
+
+To sum up the thesis, it is a good start and some of the results are promising, however, I think we have opened some new questions and so there is still a lot of space to work on in this field.
 
 \section{Future Work} \label{sec:future_work}
-Outlook...
+Some of the ideas for the future work are listed here.
 
-Shrinking of layers
-
-Tailoring
-
-Building net from zero
-
-Sphere neuron
+\begin{itemize}
+\item \textit{Shrinking layers.} In this study, we usually work with one hidden layer only. We have not tried to reduce a network in terms of layers yet.
+\item \textit{Building a network.} As mentioned in the introduction, there are two ways of getting optimal network structure. In this study, we trained oversized networks and then reduced them. The other way around would be to start from zero and build a network step by step.
+\item \textit{Tailoring a network.} This could be the way how to take advantages of pruned networks. The idea is to develop a method that would connect individual network parts (possibly differently trained) into one network in order to perfectly fit the given data. The goal would be to get the (almost) $ 100\% $ accuracy for any classification problem.
+\item \textit{Finding applications.} All the methods are general. It is up to our fantasy to find a good application.
+\end{itemize}

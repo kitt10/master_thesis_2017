@@ -1,1 +1,62 @@
-\chapter{Code Documentation} \label{app:code_documentation}
+\chapter{Code Documentation (API)} \label{app:code_documentation}
+The
+
+% NeuralNetwork
+\noindent\fcolorbox{lightblue}{lightyellow}{
+\begin{minipage}{\textwidth}
+  \small {\fontfamily{pcr}\selectfont class kitt\_lib.kitt\_net.\textbf{FeedForwardNet()}}
+\end{minipage}}
+\\
+\noindent\fcolorbox{lightblue}{lightgray}{
+\footnotesize
+\begin{minipage}{\textwidth}
+  The main class representing a feedforward neural network.
+\begin{itemize}
+\item[\textbf{@}] \textbf{hidden} (array-like) : hidden network structure (e.g. [10, 5]); 
+\item[\textbf{@}] \textbf{tf\_name} (str) : transfer function name (e.g. 'sigmoid'); 
+\end{itemize}
+\begin{tcolorbox}[boxsep=0pt,top=10pt,left=10pt,right=10pt, bottom=10pt, arc=0pt, auto outer arc, colback=white, colframe=lightgray]
+\begin{itemize}
+\item[\textbf{def}] \textbf{fit} : Fits the network to given data and trains the model.
+\begin{itemize}
+\item[@] X    \hspace{50pt}	: array-like, shape (n\_features, n\_samples)
+\item[@] y    \hspace{52pt}	: array-like, shape (n\_classes, 1)
+\item[@] val\_x      \hspace{34pt}	: array-like, shape (n\_features, n\_samples)
+\item[@] val\_y      \hspace{34pt}	: array-like, shape (n\_classes, 1)
+\item[@] learning\_rate      \hspace{2pt}	: learning rate for backpropagation
+\item[@] batch\_size      \hspace{14pt}	: mini-batch size for backpropagation
+\item[@] n\_epoch      \hspace{22pt}	: number of epochs for backpropagation
+\end{itemize}
+\item[\textbf{def}] \textbf{predict} : Predicts the probability for each class.
+\begin{itemize}
+\item[@] x    	\hspace{50pt}	: array-like, shape (n\_features, n\_samples)  
+\item[returns] y\_pred\_list \hspace{7pt}	: list, sorted tuples (class, prob) by probability
+\end{itemize}
+\item[\textbf{def}] \textbf{evaluate} : Returns accuracy and error for given data.
+\begin{itemize}
+\item[@] x    	\hspace{22pt}	: array-like, shape (n\_features, n\_samples)
+\item[@] y    	\hspace{22pt}	: array-like, shape (n\_classes, 1)  
+\item[returns] (err, acc) \hspace{23pt}	: MSE' error and accuracy
+\end{itemize}
+\item[\textbf{def}] \textbf{prune} : Prunes the network.
+\begin{itemize}
+\item[@] req\_acc    	\hspace{22pt}	: float, required accuracy to be kept
+\item[@] n\_epoch    	\hspace{19pt}	: int, number of retraining epochs
+\item[@] levels    	\hspace{35pt}	: array-like, pruning levels
+\end{itemize}
+\item[\textbf{def}] \textbf{copy} : Creates a copy of self.
+\begin{itemize} 
+\item[returns] net\_copy \hspace{15pt}	: kitt\_net.FeedForwardNet
+\end{itemize}
+\item[\textbf{def}] \textbf{dump} : Saves the network.
+\begin{itemize} 
+\item[@] net\_filename \hspace{15pt}	: str, the path to save network as
+\end{itemize}
+\item[\textbf{def}] \textbf{load} : Loads a network.
+\begin{itemize} 
+\item[@] net\_filename \hspace{15pt}	: str, the path to network to be loaded
+\end{itemize}
+\end{itemize}
+\normalsize
+\end{tcolorbox}
+\end{minipage}}
