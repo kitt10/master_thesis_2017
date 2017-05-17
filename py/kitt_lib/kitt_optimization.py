@@ -32,6 +32,7 @@ class Pruning(object):
         self.vars['net_tmp'].learning.kw['verbose'] = self.kw['verbose_learning']
         self.vars['net_tmp'].learning.kw['nd_der'] = self.kw['measure'] == 'obd'
         self.vars['net_tmp'].learning.kw['dw_container'] = self.kw['measure'] == 'karnin'
+        self.vars['net_tmp'].learning.kw['compute_relevance'] = self.kw['measure'] == 'relevance'
         self.vars['net_tmp'].learning.kw['dump_name'] = None
         self.prune_()
 
@@ -77,6 +78,8 @@ class Pruning(object):
                     changes_[l_i] += self.vars['net_tmp'].dw_container[l_i][ep_i]**2*(self.vars['net_tmp'].w[l_i]/den)
         elif self.kw['measure'] == 'obd':
             changes_ = [(hkk_i*(w_i**2))/2 for w_i, hkk_i in zip(self.vars['net_tmp'].w, self.vars['net_tmp'].saliency)]
+        elif self.kw['measure'] == 'relevance':
+            changes_ = self.vars['net_tmp'].relevance
 
         changes_active_ = list()
         for ch_mat, w_is_mat in zip(changes_, self.vars['net_tmp'].w_is):
@@ -116,6 +119,9 @@ class Pruning(object):
             elif self.kw['measure'] == 'obd':
                 self.vars['net_tmp'].saliency[l_i] = delete(self.vars['net_tmp'].saliency[l_i], neurons_to_delete, axis=0)
                 self.vars['net_tmp'].saliency[l_i+1] = delete(self.vars['net_tmp'].saliency[l_i+1], neurons_to_delete, axis=1)
+            elif self.kw['measure'] == 'relevance':
+                self.vars['net_tmp'].relevance[l_i] = delete(self.vars['net_tmp'].relevance[l_i], neurons_to_delete, axis=0)
+                self.vars['net_tmp'].relevance[l_i+1] = delete(self.vars['net_tmp'].relevance[l_i+1], neurons_to_delete, axis=1)
 
         # Delete neurons with no outputs
         f_ind_to_delete = where(~self.vars['net_tmp'].w_is[0].any(axis=0))[0]
@@ -143,6 +149,8 @@ class Pruning(object):
                 self.vars['net_tmp'].dw_container[0][ep_i] = delete(self.vars['net_tmp'].dw_container[0][ep_i], f_ind_to_delete, axis=1)
         elif self.kw['measure'] == 'obd':
             self.vars['net_tmp'].saliency[0] = delete(self.vars['net_tmp'].saliency[0], f_ind_to_delete, axis=1)
+        elif self.kw['measure'] == 'relevance':
+            self.vars['net_tmp'].relevance[0] = delete(self.vars['net_tmp'].relevance[0], f_ind_to_delete, axis=1)
 
         for l_i in range(1, len(self.vars['net_tmp'].structure)-1):
             neurons_to_delete = where(~self.vars['net_tmp'].w_is[l_i].any(axis=0))[0]
@@ -163,6 +171,9 @@ class Pruning(object):
             elif self.kw['measure'] == 'obd':
                 self.vars['net_tmp'].saliency[l_i] = delete(self.vars['net_tmp'].saliency[l_i], neurons_to_delete, axis=1)
                 self.vars['net_tmp'].saliency[l_i-1] = delete(self.vars['net_tmp'].saliency[l_i-1], neurons_to_delete, axis=0)
+            elif self.kw['measure'] == 'relevance':
+                self.vars['net_tmp'].relevance[l_i] = delete(self.vars['net_tmp'].relevance[l_i], neurons_to_delete, axis=1)
+                self.vars['net_tmp'].relevance[l_i-1] = delete(self.vars['net_tmp'].relevance[l_i-1], neurons_to_delete, axis=0)
 
         # update net structure
         self.vars['net_tmp'].structure = [self.vars['net_tmp'].w[0].shape[1]]+[w.shape[0] for w in self.vars['net_tmp'].w]

@@ -40,7 +40,7 @@ This problem serves perfectly for a demonstration of network optimization method
 
 With this knowledge we can prove that the pruning algorithm is (or is not) able to find the optimal solution. If the method is correct, it should end up with one of the shown architectures (\cref{fig:examples:xor_min1} or \cref{fig:examples:xor_min2}).
 
-The truth \cref{tab:examples:xor_function} ruled the generation of a 2D dataset illustrated in \cref{fig:examples:dataset_xor}. The two classes can be linearly separated by two lines (corresponding to two neurons, see \cref{fig:examples:xor_min1}) and each class consists of 1000 samples. Each sample was randomly assigned to one of the two possible points belonging to its class (e.g. (0,0) or (1,1) for class 0) and then randomly placed in the surounding area within a specified range ($ r = \frac{\sqrt{2}}{4} $).
+The truth \cref{tab:examples:xor_function} ruled the generation of a 2D dataset illustrated in \cref{fig:examples:dataset_xor}. The two classes can be linearly separated by two lines (corresponding to two neurons, see \cref{fig:examples:xor_min1}) and each class consists of 1000 samples. Each sample was randomly assigned to one of the two possible points belonging to its class (e.g. (0,0) or (1,1) for class 0) and then randomly placed in the surrounding area within a specified range ($ r = \frac{\sqrt{2}}{4} $).
 
 The samples of each class were then splitted into three sets in the following manner: $ 80\% $ to a training set, $ 10\% $ to a validation set and $ 10\% $ to a testing set.
 
@@ -159,7 +159,7 @@ In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirm
 
 In other words, with a probability of $ 92\% $ the algorithm is able to find the axis-parallel lines and reveals that each of the lines needs the information from corresponding feature only. In the remaining $ 8\% $ of the cases the pruning resulted with more than two input-hidden synapses.
 
-The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. The synapses's significance factor was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low significance factors first, therefore the information coming from feature $ x_1 $ would live longer in the network than the $ x_2 $ information.
+The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. The \texttt{WSF} was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low significance factors first, therefore the information coming from feature $ x_1 $ would live longer in the network than the $ x_2 $ information.
 
 Let's try to explain this result. Consider $ w_{r1} $ to be the weight of the synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ to be the weight of the synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{rosenblatt:perceptron} we created two lines, perpendicular one to each other, as follows.
 \begin{align}
@@ -199,7 +199,7 @@ This four-dimensional problem is originally adopted from \citep{mozer:skeletoniz
 
 Clearly, the \textit{rule} occurs more often than the \textit{exception}, therefore the samples corresponding with the \textit{rule} should be more important for the global classification accuracy. The hypothesis is that the pruning method should suggest the part of network, which deals with the \textit{exception}, to be eliminated first - before network elements dealing with the \textit{rule}.
 
-To test this hypothesis, a dataset of $ 10000 $ samples was generated. Each sample consists of four features: $ [a, b, c, d] $. Each of these features (for every sample) was randomly set to be \textit{on} ($ 1 $) or \textit{off} ($ 0 $). Then, whenever the \textit{rule} occured ($ a = 1 \wedge b = 1 $), the sample was assigned to class $ 1 $ (as a \textit{rule} sample). If the \textit{exception} occured ($ a = 0 \wedge b = 0 \wedge c = 0 \wedge d = 0 $), the sample was also labeled as $ 1 $ (as an \textit{exception} sample). Otherwise, the sample was assigned to class $ 0 $. Thereby the generated dataset consisted of:
+To test this hypothesis, a dataset of $ 10000 $ samples was generated. Each sample consists of four features: $ [a, b, c, d] $. Each of these features (for every sample) was randomly set to be \textit{on} ($ 1 $) or \textit{off} ($ 0 $). Then, whenever the \textit{rule} occurred ($ a = 1 \wedge b = 1 $), the sample was assigned to class $ 1 $ (as a \textit{rule} sample). If the \textit{exception} occurred ($ a = 0 \wedge b = 0 \wedge c = 0 \wedge d = 0 $), the sample was also labeled as $ 1 $ (as an \textit{exception} sample). Otherwise, the sample was assigned to class $ 0 $. Thereby the generated dataset consisted of:
 
 \begin{itemize}
 \item $ 2511 $ \textit{rule} samples (class $ 1 $);
@@ -355,7 +355,7 @@ The dataset was downloaded from \citep{lecun:mnist}. Some of the digits were wri
 
 Each sample is a grayscale image (normalised to $ [0, 1] $) of size $ 28x28 $ pixels. This gives row-by-row a vector of $ 784 $ features. The data was splitted into a training set of $ 50000 $ samples, a validation set of $ 10000 $ samples and a testing set of $ 10000 $ samples.
 
-From \citep{lecun:mnist} we know the problem can be learnt by a feedforward network with one hidden layer up to high accuracy ($ 98-99\% $). The first task is to achieve similar results with the implemented neural net framework. We tested the following learning settings (\cref{tab:examples:mnist_training_settings}).
+From \citep{lecun:mnist} we know the problem can be learned by a feedforward network with one hidden layer up to high accuracy ($ 98-99\% $). The first task is to achieve similar results with the implemented neural net framework. We tested the following learning settings (\cref{tab:examples:mnist_training_settings}).
 
 \begin{table}[H]
 \centering
@@ -434,10 +434,10 @@ In \cref{fig:examples:evaluation_time_mnist}, we can see a comparison of the eva
 \label{fig:examples:mnist_pruning_vs_req_acc}
 \end{figure}
 
-The results show that \textit{less than a tenth} of the synapses and \textit{about a half} of the features are needed to keep the maximal classification accuracy ($ 97\% $). It is also worth saying that the MNIST dataset can be learnt to $ 50\% $ using only $ 20 $ features and a network with $ 38 $ synapses. In the following, these two results are further analysed.
+The results show that \textit{less than a tenth} of the synapses and \textit{about a half} of the features are needed to keep the maximal classification accuracy ($ 97\% $). It is also worth saying that the MNIST dataset can be learned to $ 50\% $ using only $ 20 $ features and a network with $ 38 $ synapses. In the following, these two results are further analysed.
 
 \subsubsection*{Minimal MNIST network}
-At first, we focus on a pruned network capable of MNIST classification with accuracy of $ 50\% $ (\cref{fig:examples:pruned_net_mnist_05}). This example is simple enough to show the feature selection method described in [ref FS].
+At first, we focus on a pruned network capable of MNIST classification with accuracy of $ 50\% $ (\cref{fig:examples:pruned_net_mnist_05}). This example is simple enough to show the feature selection method described in \cref{sec:insight_of_neural_network}.
 
 \begin{figure}[H]
 \centering
@@ -538,7 +538,7 @@ Using the derived parameter settings ($ cs = 3 $) we end up with a feature vecto
 \end{figure}
 
 \subsection*{Classification Results: Speech Dataset}
-At first we must keep in mind that getting the best possible classification accuracy is not the goal of this work. Rather than spending months of computation time for training huge networks, we choose a simplier network structure and try to get the best out of it. Two different network structures were trained:
+At first we must keep in mind that getting the best possible classification accuracy is not the goal of this work. Rather than spending months of computation time for training huge networks, we choose a smaller network structure and try to get the best out of it. Two different network structures were trained:
 
 \begin{enumerate}
 \item Network \texttt{[280, 50, 2, 50, 40]} (bottleneck\footnote{A bottleneck network contains a layer that consists of few nodes compared to the previous layers. It can be used to get a representation of the network input with reduced dimensionality.} network);
@@ -563,7 +563,7 @@ context size         & 3      & batch size               & 10            \\ \hli
 \subsubsection*{1. Network (bottleneck)}
 The network with the bottleneck layer was trained to test accuracy $ 30\% $ ($ MSE' = 0.0105 $). A complete confusion matrix can be found in \cref{app:supplementary_data}, \cref{fig:app:speech_bottleneck_cm}. The confusion matrix helped us find phonemes that had been trained better compared to the others. We focused on phonemes with recall\footnote{Recall score is the ability of a classifier to find all the positive samples. It is defined as $ \frac{tp}{tp+fn} $, where $ tp $ is the number of true positives and $ fn $ the number of false negatives.} greater than $ 0.5 $.
 
-The purpose of training a bottleneck network is the reduction of input's dimensionality. Using a layer with just two neurons usually does not lead to a high classification accuracy (also confirmed here), but the adventage is that it can be illustrated in 2D space.
+The purpose of training a bottleneck network is the reduction of input's dimensionality. Using a layer with just two neurons usually does not lead to a high classification accuracy (also confirmed here), but the advantage is that it can be illustrated in 2D space.
 
 For the selected phonemes, \cref{fig:examples:speech_bottleneck_result} shows the representation of testing samples in the bottleneck layer. We used the \textit{Sigmoid} transfer function, so all samples lie in $ \langle 0,1\rangle \times \langle 0,1\rangle $.
 

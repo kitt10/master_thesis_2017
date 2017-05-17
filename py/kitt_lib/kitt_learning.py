@@ -25,6 +25,7 @@ class Backpropagation(object):
         for self.stats['i_epoch'] in xrange(1, self.kw['n_epoch']+1):
             self.net.dw_i += 1                                                      # Karnin
             self.net.saliency = [zeros(w.shape) for w in self.net.w]                # OBD
+            self.net.relevance = [zeros(w.shape) for w in self.net.w]               # Skeletonization
             shuffle(self.net.t_data)
             t0 = time()
             for mini_batch in [self.net.t_data[k:k+self.kw['batch_size']] for k in xrange(0, len(self.net.t_data), self.kw['batch_size'])]:
@@ -66,13 +67,17 @@ class Backpropagation(object):
             z_.append(dot(w, a_[-1])+b)
             a_.append(self.net.tf.fire(z_[-1]))
 
-        delta = (a_[-1]-y)*self.net.tf.prime(z_[-1])
-        nabla_b[-1] = delta
-        nabla_w[-1] = dot(delta, a_[-2].transpose())
+        if self.kw['compute_relevance']:
+            for i, (ar, wr) in enumerate(zip(a_[:-1], self.net.w)):
+                self.net.relevance[i] += abs(multiply(ar.ravel(), wr))
 
         if self.kw['nd_der']:
             delta2 = (y-a_[-1])*self.net.tf.prime2(z_[-1])+self.net.tf.prime(z_[-1])**2
             self.net.saliency[-1] += dot(delta2, (a_[-2]**2).transpose())
+
+        delta = (a_[-1]-y)*self.net.tf.prime(z_[-1])
+        nabla_b[-1] = delta
+        nabla_w[-1] = dot(delta, a_[-2].transpose())
 
         for i_layer in xrange(2, len(self.net.structure)): 
             delta = dot(self.net.w[-i_layer+1].transpose(), delta) * self.net.tf.prime(z_[-i_layer])

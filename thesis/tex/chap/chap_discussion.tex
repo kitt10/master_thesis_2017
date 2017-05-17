@@ -3,7 +3,7 @@ The overall objective of the thesis consisted of four subtasks:
 
 \begin{enumerate}
 \item to design a neural network framework capable of learning a general classification problem;
-\item to develop a pruning proceeder equipped by a tool for dimensionality reduction after pruning;
+\item to develop a pruning proceeder equipped by a tool for a dimensionality reduction after pruning;
 \item to demonstrate the developed methods on appropriate examples and suggest possible applications for pruned networks;
 \item to implement state-of-the-art pruning methods and compare them to the developed method.
 \end{enumerate}
@@ -28,10 +28,10 @@ The pruning algorithm was applied on a highly oversized network with a goal to e
 \subsection*{The 2D Problem with Unbalanced Feature Information}
 The example adopted from \citep{karnin:pa} comes with two features, where one of them is obviously more important for the classification accuracy than the other one (see \cref{fig:examples:dataset_unbfea}). Moreover, the separating lines between two classes are parallel to the coordinate axes.
 
-Two hypotheses were put forward and then have been confirmed.
+Two hypotheses have been put forward and then confirmed.
 
 \begin{enumerate}
-\item Two synapses can be deleted from the input-hidden layer, because, due to the axes parallelism to the discriminatory lines, each hidden neuron needs information from one feature only. 
+\item Two synapses can be deleted from the input-hidden layer, because, due to the axes parallelism to the discriminatory lines, each hidden neuron needs the information from one feature only. 
 
 \textit{Result}: this behaviour was observed in $ 92\% $ of 100 cases (\cref{fig:examples:pruning_result_pie_unbfea}).
 
@@ -43,7 +43,7 @@ Two hypotheses were put forward and then have been confirmed.
 \subsection*{The Rule-plus-Exception Problem}
 This four-dimensional problem adopted from \citep{mozer:skeletonization} has been included because it contains samples of two kinds ("rule" and "exception"). The "rule" samples occur more often in the training set compared to "exception" samples. Therefore fitting the "rule" pattern to the model is more important for the classification accuracy than learning the "exception" samples.
 
-Again, two hypotheses were put and subsequently have been confirmed.
+Again, two hypotheses have been put and subsequently confirmed.
 
 \begin{enumerate}
 \item Having two neurons in the hidden layer, one deals with the "rule" samples and the other one with the "exception" samples (\cref{fig:examples:rpe_hypos}).
@@ -56,7 +56,7 @@ Again, two hypotheses were put and subsequently have been confirmed.
 \end{enumerate}
 
 \subsection*{The Michalski's Trains}
-Section \ref{sec:example_trains} presents a simplification of the well known problem of feature selection from \citep{michalski:trains}. There are two classes and six-dimensional samples, where some of the features are obviously redundant for classification.
+Section \ref{sec:example_trains} presents a simplification of the well known problem of a feature selection from \citep{michalski:trains}. There are two classes and six-dimensional samples, where some of the features are obviously redundant for the classification.
 
 The pruning algorithm does the feature selection by pruning synapses coming from features. \cref{fig:examples:pruning_result_pie_train} shows that out of 100 observations we got:
 \begin{itemize}
@@ -86,21 +86,21 @@ The MNIST dataset from \citep{lecun:mnist} was included in order to present the 
 We also performed an alalysis of how many synapses we need to produce a particular classification accuracy - see \cref{fig:examples:mnist_pruning_vs_req_acc}. For example, a network with $ 38 $ synapses is able to reach a test classification accuracy of $ 50\% $ using only $ 20 $ features (see \cref{fig:examples:pruned_net_mnist_05}). The feature selection procedure was then also done for every digit (class) separately (\cref{fig:examples:fs_mnist}).
 
 \subsection*{Classification of Phonemes}
-Regarding the speech data, the first task was to determine optimal parameters, which led to maximal trainability of the dataset. Then we showed how the classified samples look like (\cref{fig:examples:speech_example_sample_cs0}).
+Regarding the speech data, the first task was to determine optimal parameters, which led to the maximal trainability of the dataset. Then we showed how the classified samples look like (\cref{fig:examples:speech_example_sample_cs0}).
 
 Next, we trained a network with a 2D-bottleneck layer and plotted this layer's activity for several phonemes (see \cref{fig:examples:speech_bottleneck_result}). Interestingly, phonetically similar phonemes (e.g. \texttt{"a"} and \texttt{"A"} or \texttt{"s"} and \texttt{"c"}) took places close together. 
 
 Then, we trained a "classical" (\texttt{[280, 100, 50, 40]}) network and performed the pruning process (\cref{fig:examples:speech_pruning_process}). Finally, we computed feature energies (see \cref{eq:feature_energy}) based on \textit{pathing} in the pruned network. Results for all phonemes are given in Figures \ref{fig:examples:speech_fe_set1}, \ref{fig:app:speech_fe_set2} and \ref{fig:app:speech_fe_set3}.
 
 \section{Comparison to Other Pruning Methods} \label{sec:comparison_of_pruning_methods}
-The key part of the network pruning rests in identification of unimportant synapses. In \cref{sec:state_of_the_art}, we summarized three studies using similar measures to ours. In the following, we compare them in terms of left synapses and used features after pruning. Additionally, we add two more measures to the comparison:
+The key part of the network pruning rests in identification of unimportant synapses. In \cref{sec:state_of_the_art}, we summarized three studies using similar measures to ours. In the following, we compare them in terms of left synapses and active features after pruning. Additionally, we add two more measures to the comparison:
 
 \begin{itemize}
 \item \textit{random} : the synapses to prune are chosen randomly
 \item \textit{magnitude} : weights close to zero are considered less important than those with greater magnitude
 \end{itemize}
 
-All methods included in comparison are listed in \cref{tab:discussion:pruning_methods}.
+All known pruning measures are listed in \cref{tab:discussion:pruning_methods}.
 
 \begin{table}[H]
 \centering
@@ -123,9 +123,9 @@ The experiment was performed on the MNIST dataset. The initial network's structu
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{pa_comparison_retraining5.eps}
+\includegraphics[width=0.85\textwidth]{pa_comparison_retraining5.eps}
 \caption{Comparison of different pruning methods, req\_acc = 0.95, retraining: 5 epochs}
 \label{fig:discussion:pa_comparison_retraining5}
 \end{figure}
 
-We can see that using our measure (\texttt{WSF}) led to deletion of even more synapses than all the others, even thought the formula is least demanding in terms of computation time (excluding \textit{random} and \textit{magnitude}).
+We can see that using our measure (\texttt{WSF}) led to deletion of even more synapses than using \textit{sensitivity} or \textit{saliency}, even though the formula is less demanding in terms of computation time.

@@ -38,7 +38,8 @@ class FeedForwardNet(object):
                     'tailoring': Tailoring(net=self)}
         self.dw_container = None                            # Karnin
         self.dw_i = 0
-        self.saliency = None                                # OBD       #TODO
+        self.saliency = None                                # Lecun: OBD
+        self.relevance = None                               # Mozer: skeletonization
 
     def init_(self, n, x, y, x_val, y_val):
         self.labels = sorted(unique(y))
@@ -72,8 +73,8 @@ class FeedForwardNet(object):
         return [(self.labels[i[0]], i[1][0]) for i in sorted(enumerate(self.forward(a=x)), key=lambda x:x[1], reverse=True)]
 
     def fit(self, x, y, x_val=None, y_val=None, learning_rate=0.03, batch_size=1, n_epoch=int(1e10), c_stable=inf,
-            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, nd_der=False, dw_container=False, dump_name=None,
-            verbose=True):
+            momentum=1.0, req_acc=inf, req_err=-inf, strict_termination=False, nd_der=False, dw_container=False,
+            dump_name=None, compute_relevance=False, verbose=True):
         self.init_(n=len(x[0]), x=x, y=y, x_val=x_val, y_val=y_val)
         self.learning = Backpropagation(locals())
         self.learning.learn_()
@@ -147,6 +148,7 @@ class FeedForwardNet(object):
         self.dw_container = [[dw.copy() for dw in dw_l] for dw_l in from_net.dw_container]
         self.dw_i = from_net.dw_i
         self.saliency = [s_i.copy() for s_i in from_net.saliency]
+        self.relevance = [s_i.copy() for s_i in from_net.relevance]
         self.structure = from_net.structure[:]
         self.t_data = zip(array([x[0].copy() for x in from_net.t_data]), array([x[1].copy() for x in from_net.t_data]))
         self.v_data = zip(array([x[0].copy() for x in from_net.v_data]), array([x[1].copy() for x in from_net.v_data]))

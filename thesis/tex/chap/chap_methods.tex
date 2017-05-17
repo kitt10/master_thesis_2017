@@ -91,7 +91,7 @@ Feedforward networks are trained by the common \textit{Backpropagation} method i
 
 In case of feedforward neural networks, the goal is to find optimal values for two groups of parameters - \textit{weights} ($ W $) and \textit{biases} ($ B $). The key idea lies in the optimization method called \textit{Gradient Descent Algorithm (GDA)}.
 
-At first, a batch of samples $ X $ is (forward) propagated through a network to get the network's prediciton $ Y $.
+At first, a batch of samples $ X $ is (forward) propagated through a network to get the network's prediction $ Y $.
 
 \begin{align}
 Z^{(1)} &= W^{(1)} \cdot X + B^{(1)} \\
@@ -113,7 +113,7 @@ Now it is time to use \textit{GDA} to find such $ W $ and $ B $ that make $ E $ 
 \begin{align} \label{eq:transfer_function_der}
 f'(z) = f(z) \cdot (1-f(z))
 \end{align}
-\item \textit{backpropagate the prediction error throught the network;}
+\item \textit{backpropagate the prediction error through the network;}
 \begin{align} \label{eq:error_backprop}
 \Delta^{(q+1)} &= (U-Y) \times f'[Z^{(q+1)}] \\
 \Delta^{(i)} &= \left[\left[W^{(i+1)}\right]^T \cdot \Delta^{(i+1)}\right] \times f'[Z^{(i)}]
@@ -222,7 +222,7 @@ The required accuracy (\texttt{req\_acc}) is the second parameter. In some cases
 
 So far we gave a recipe of how to prune one synapse. Of course, we cannot check all the synapses one by one using the approach in \cref{fig:methods:network_pruning_flowchart}. Instead, we cut out multiple synapses at once before checking the accuracy drop. In fact, network pruning is an iterative procedure with some guessing. The first guess is the order in which we prune the synapses and the second guess is how many of them we should prune at once.
 
-The order of the synapses is dermined by the \texttt{WSF} (\cref{eq:weight_significance_factor}) - the key idea of our pruning algorithm. Each time before pruning, all the synapses are sorted by their \texttt{WSF} values.
+The order of the synapses is determined by the \texttt{WSF} (\cref{eq:weight_significance_factor}) - the key idea of our pruning algorithm. Each time before pruning, all the synapses are sorted by their \texttt{WSF} values.
 
 To estimate the number of synapses to cut at once we use percentiles - see \cref{fig:methods:network_pruning_proceeder}.
 
@@ -244,7 +244,7 @@ At this point we introduce another parameter of the pruning procedure called \te
 \end{itemize}
 
 \subsection*{Dimensionality Reduction}
-In practise, neural networks are usually represented by matrices ($ W $ and $ B $) and the learning and prediction are performed by matrix calculations. The pruning algorithm cuts out some synapses which leads to the reduction of matrix dimensions if we restructure the matrices after pruning.
+In practice, neural networks are usually represented by matrices ($ W $ and $ B $) and the learning and prediction are performed by matrix calculations. The pruning algorithm cuts out some synapses which leads to the reduction of matrix dimensions if we restructure the matrices after pruning.
 
 If a synapse is pruned, the corresponding weight in the $ W $ matrix takes zero value. Consider the following weight matrix $ W^{(i)} $, where the $ i^{th} $ layer consists of $ 3 $ neurons and the $ (i-1)^{th} $ layer has $ 4 $ neurons.
 \begin{align*}
@@ -364,7 +364,7 @@ The parameterization workflow is summarized by these steps:
 \begin{enumerate}
 \item \textit{splitting the signal into short frames};
 
-\cref{fig:methods:mfcc_framing} illustrates how a sound signal is splitted into short frames. The parameters are
+\cref{fig:methods:mfcc_framing} illustrates how a sound signal is divided into short frames. The parameters are
 \begin{align*}
 frame\_size &= 0.025 \,s \,= 32 \,ms \\
 frame\_shift &= 0.01 \,s \,= 10 \,ms
