@@ -159,7 +159,7 @@ In \cref{fig:examples:pruning_result_pie_unbfea} the first hypothesis is confirm
 
 In other words, with a probability of $ 92\% $ the algorithm is able to find the axis-parallel lines and reveals that each of the lines needs the information from corresponding feature only. In the remaining $ 8\% $ of the cases the pruning resulted with more than two input-hidden synapses.
 
-The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. The \texttt{WSF} was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see [PA]), the pruning method eliminates the synapses with low significance factors first, therefore the information coming from feature $ x_1 $ would live longer in the network than the $ x_2 $ information.
+The second hypothesis is confirmed in \cref{fig:examples:unbfea_synapse_weight_change}. The \texttt{WSF} was always (100 observations) greater for the synapse coming from feature $ x_1 $ than for the synapse connected to $ x_2 $. By definition (see \cref{sec:network_pruning}), the pruning method eliminates the synapses with low significance factors first, therefore the information coming from feature $ x_1 $ would live longer in the network than the $ x_2 $ information.
 
 Let's try to explain this result. Consider $ w_{r1} $ to be the weight of the synapse connecting the $ x_1 $ feature and $ r^{th} $ hidden neuron (with bias $ b_r$) and $ w_{s2} $ to be the weight of the synapse coming from feature $ x_2 $ to $ s^{th} $ hidden neuron (with bias $ b_s $), then by neuron definition \citep{rosenblatt:perceptron} we created two lines, perpendicular one to each other, as follows.
 \begin{align}

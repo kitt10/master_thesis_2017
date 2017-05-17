@@ -110,10 +110,10 @@ All known pruning measures are listed in \cref{tab:discussion:pruning_methods}.
 \textit{source} & \textit{measure name} & \textit{measure}    \\ \hline
 this study      & random                     &  N(0,1)           \\ \hline
 this study      & magnitude                     &  |w_k|  \\ \hline
+this study      & \texttt{WSF}                   & | w_k (t_f) - w_k (0) |                  \\ \hline
 \citep{mozer:skeletonization}           & relevance             &  - \left.\frac{\partial E^l}{\partial \alpha_k}\right\rvert_{\alpha_k = 1}                  \\ \hline
 \citep{lecun:obd}           & saliency              & \frac{\partial^2 E}{\partial w^2_k} \cdot \frac{w_k^2}{2}                  \\ \hline
 \citep{karnin:pa}          & sensitivity           & \displaystyle{\sum_{n=0}^{N-1} \left[\Delta w_k (n)\right]^2 \frac{w_k (t_f)}{\eta \cdot (w_k (t_f) - w_k (0))}}                  \\ \hline
-this study      & \texttt{WSF}                   & | w_k (t_f) - w_k (0) |                  \\ \hline
 \end{tabular}}
 \caption{Known measures of how important synapse corresponding to $ w_k $ is.}
 \label{tab:discussion:pruning_methods}
