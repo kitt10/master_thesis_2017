@@ -7,14 +7,14 @@ Well, we know that NNs can be trained to work very well for several tasks, howev
 
 When we deal with a real (not academical) problem, one often comes to a point when his or her network works well (let's say with the accuracy of $ 90\% $), but a customer asks for an accuracy of $ 98\% $ for example. Then we can either keep trying and spend months on tuning the black box mostly in a random manner, or, if we demystify the black box, we can suggest reasonable and targeted improvements.
 
-In this work, we focus on understanding the behaviour of a feedforward neural network when classifying particular data. We do it by optimizing the structure, specifically by pruning parts of network that are unimportant for classification. The hypothesis is that networks are often oversized and many synapses are redundant. We also think that we can find some rules or patterns in the network if it consists of important synapses only.
+In this work, we focus on understanding the behaviour of feedforward neural networks classifying particular data. We do it by optimizing the structure, specifically by pruning parts of network that are unimportant for classification. The hypothesis is that networks are often oversized and many synapses are redundant. We also think that we can find some rules or patterns in the network if it consists of important synapses only.
 
 This effort could possibly lead to a general knowledge of how to design networks and tailor them for the challenged problem. In effect, the dimensionality of the parameters is significantly reduced, which speeds up both learning and prediction.
 
 \section{State of the Art} \label{sec:state_of_the_art}
 Optimization is a term of a broad meaning. In \citep{orhan:symmetry}, they try to break symmetries in a network in order to improve its performance. They do it by adding so-called "skip connections", which can also be considered as a kind of optimization. From another point of view, the problem could rest in an optimization of the crucial network learning algorithm (GDA).
 
-In this study we rather focus on making networks small and simple. Having the smallest model that perfectly fits the classified data has two crucial advantages: 1) good generalization; 2) a good chance that we will understand how the classification works.
+In this study we rather focus on making networks small and simple. Having the smallest model that perfectly fits the classified data has two crucial advantages: 1) good generalization; 2) good chance that we will understand how the classification works.
 
 There are two ways of how to end up with a small model that fits the data:
 
@@ -28,8 +28,8 @@ The first approach is left out for the future work, and we focus on the second c
 \begin{enumerate}
 \item choose an oversized network architecture;
 \item train the network until a reasonable solution is obtained;
-\item delete a network part (synapse or neuron);
-\item if the classification error has not grown go to step 2), otherwise finish.
+\item delete a part of network (usually a synapse);
+\item if the classification error has not grown, go to step 2), otherwise finish.
 \end{enumerate}
 
 The key question is how to identify the parts that can be deleted without an increase of the error. A good survey of published pruning methods is provided in \citep{reed:pa_survey}. The author starts with hypothetical calculations of what would happen if we use a brute force and remove the elements one by one. It ends up with a complexity of $ O(MW^3) $, where $ M $ is the number of samples and $ W $ is the number of network elements - slow for large networks. 
@@ -109,9 +109,9 @@ where $ w^f $ is the final value of the weight after training and $ w^i $ its ra
 The $ \Delta w $ values are calculated by backpropagation, hence, each weight has an estimated sensitivity after training. The lowest sensitivity weights are then deleted.
 
 \subsection*{Contribution of This Work} \label{ssec:contribution_of_this_work}
-We introduce own measure for the determination of how important individual synapses are. It is believed to work equally well or better than the others, while the principle is based on a nice and simple idea. It leads to a better performance in terms of computational demands, which is discussed and compared the other listed methods in \cref{chap:discussion}.
+We introduce own measure for the determination of how important individual synapses are. It is believed to work equally well or better than the others, while the principle is based on a nice and simple idea. It leads to a better performance in terms of computational demands, which is discussed and compared to the other listed methods in \cref{chap:discussion}.
 
-Moreover, this study also suggests some ideas of how to take the advantages of pruned networks. We show on several examples, that the developed PA is capable of: 1) finding a minimal network structure for a given classification problem; 2) detection of feature importance; 3) preference of important samples to less important ones; 4) basic feature selection; 5) partial demystification of complicated networks.
+Moreover, this study also suggests some ideas of how to take the advantages of pruned networks. We show on several examples, that the developed PA is capable of: 1) finding a minimal network structure for a given classification problem; 2) detection of feature importance; 3) distinguishing important samples from less important ones; 4) basic feature selection; 5) partial demystification of complicated networks.
 
 \section{Master Thesis Objectives} \label{sec:thesis_objectives}
 The objectives of this study are:
