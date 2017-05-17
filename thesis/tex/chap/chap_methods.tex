@@ -1,7 +1,7 @@
 \chapter{Methods} \label{chap:methods}
 This chapter opens a collection of recipes of how the work in this study is done. Section \ref{sec:classification_method} describes the classification, learning and evaluation procedures. In \cref{sec:network_pruning} the developed network pruning algorithm is introduced and also the dimensionality reduction in pruned networks is shown. Section \ref{sec:insight_of_neural_network} comes with the feature selection method using a procedure called \textit{pathing} and, additionally, some ideas of how to use remaining weights in minimal structures are suggested. Finally, \cref{sec:speech_data_gathering} is devoted to the process of how the speech data was gathered.
 
-Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin:2016}, but the methods are further elaborated. Section \ref{sec:speech_data_gathering} is highly supported by \citep{smidl:pc}.
+Section \ref{sec:classification_method} moreless specifies a generally known approach. Sections \ref{sec:network_pruning} - \ref{sec:insight_of_neural_network} are partially based on \citep{bulin:2016}, but the methods are further elaborated.
 
 \section{Classification Method} \label{sec:classification_method}
 The classification in this study is performed by dense feedforward neural networks. An illustration of a general feedforward network structure is in \cref{fig:methods:ff_neural_net}. Note that the structure is fully connected, meaning that each neuron is connected to all neurons in the next layer.
@@ -85,7 +85,7 @@ Feedforward networks are trained by the common \textit{Backpropagation} method i
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{backpropagation.png}
-  \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error (\cref{eq:mse_}). If the error is reduced to be lower $ T_1 $, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after $ T_2 $ epochs, no matter how successful the training has been.}
+  \caption{Training process flowchart. $ T_1 $: Threshold for a terminating condition based on the prediction error (\cref{eq:mse_}). If the error is reduced to be lower than $ T_1 $, the learning process is stopped and the model is considered trained. $ T_2 $: Threshold for a terminating condition based on the number of epochs. The learning process is stopped after $ T_2 $ epochs, no matter how successful the training has been.}
   \label{fig:methods:backpropagation}
 \end{figure}
 
@@ -341,7 +341,7 @@ h  & h                & \textbf{h}ad              & r  & r                & \tex
 \label{tab:methods:phonetic_alphabet}
 \end{table}
 
-The generation of a speech dataset consists of the following steps, where the work done in steps $ 1-3 $ is taken over from \citep{smidl:pc}.
+The generation of a speech dataset consists of the following steps:
 
 \begin{enumerate}
 \item acquisition of real voice recordings;
@@ -352,7 +352,7 @@ The generation of a speech dataset consists of the following steps, where the wo
 \end{enumerate}
 
 \subsection*{Acquisition of Voice Recordings}
-The phoneme dataset is made of real speech recordings from a car interior environment, provided by (Škoda, ?? ref). We are talking about simple voice instructions for a mobile phone or a navigation system, many of them are names of people, streets or towns only. In total $ 14523 $ recordings (\texttt{.wav} files) of various length (and so number of phonemes) were obtained.
+The phoneme dataset is made of real speech recordings from a car interior environment, provided by \citep{online:skoda}. We are talking about simple voice instructions for a mobile phone or a navigation system, many of them are names of people, streets or towns only. In total $ 14523 $ recordings (\texttt{.wav} files) of various length (and so number of phonemes) were obtained.
 
 \subsection*{Parameterization}
 The goal of parameterization is to represent each recording by a vector of features. A commonly known procedure based on MFCCs is used. A nice detailed explanation of this method can be found e.g. in \citep{online:mfcc}. 
@@ -366,10 +366,10 @@ The parameterization workflow is summarized by these steps:
 
 \cref{fig:methods:mfcc_framing} illustrates how a sound signal is splitted into short frames. The parameters are
 \begin{align*}
-frame\_size &= 0.025 \,s \,= 25 \,ms \\
+frame\_size &= 0.025 \,s \,= 32 \,ms \\
 frame\_shift &= 0.01 \,s \,= 10 \,ms
 \end{align*}
-Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 200 $.
+Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 256 $.
 
 \begin{figure}[H]
 \centering
@@ -385,10 +385,10 @@ We assume each frame captures one possible shape of the human vocal tract and th
 The aim is to identify which frequencies are present. In order to do so, we apply the Hamming window and perform the discrete Fourier Transform (DFT; \cref{eq:dft}).
 
 \begin{equation} \label{eq:dft}
-S(k) = \displaystyle\sum_{n=0}^{N-1} s_n \cdot e^{-2 \pi i \frac{kn}{N}}, \qquad k = 0, ..., N-1
+S(k) = \displaystyle\sum_{n=0}^{N-1} s_n \cdot e^{-2 \pi i \frac{kn}{N}}, \qquad k = 0, ..., N-1, 
 \end{equation}
 
-, where $ N $ (in this case $ N = 200 $) is the signal length. Then we take the absolute value $ |S(k)| $.
+where $ N $ (in this case $ N = 256 $) is the signal length. Then we take the absolute value $ |S(k)| $.
 
 \item \textit{application of the mel filterbank to the power spectra, summation of the energy in each filter, taking a logarithm of the result};
 
@@ -410,14 +410,14 @@ recording\_params =
     f_{21} & f_{22} & f_{23} & \dots  & f_{2F} \\
     \vdots & \vdots & \vdots & \ddots & \vdots \\
     f_{W1} & f_{W2} & f_{W3} & \dots  & f_{WF}
-\end{bmatrix}
+\end{bmatrix}, 
 \end{equation}
 
-, where $ F = 40 $ is the number of filters and $ W $ is the number of frames (windows) depending on the duration of a recording. Value $ f_{12} $ then belongs to the feature computed with the second filter in the first frame.
+where $ F = 40 $ is the number of filters and $ W $ is the number of frames (windows) depending on the duration of a recording. Value $ f_{12} $ then belongs to the feature computed with the second filter in the first frame.
 \end{enumerate}
 
 \subsection*{Data Labeling}
-We perform a supervised learning method, hence the data must be labeled. To do so a speech recognition method based on Hidden Markov Models (HMMs) from \citep{smidl:pc} is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
+We perform a supervised learning method, hence the data must be labeled. To do so a speech recognition method based on Hidden Markov Models (HMMs) is used. It labels the frames of each recording as shown on an example in \cref{tab:methods:labeling_example}.
 
 \begin{table}[H]
 \centering
@@ -455,7 +455,7 @@ Moreover, in \cref{fig:methods:sample_forming_cs} parameter \texttt{context\text
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\textwidth]{sample_forming_cs}
+\includegraphics[width=0.8\textwidth]{sample_forming_cs}
 \caption{Forming a sample, illustration of parameter \texttt{context\textunderscore size (cs)}.}
 \label{fig:methods:sample_forming_cs}
 \end{figure}

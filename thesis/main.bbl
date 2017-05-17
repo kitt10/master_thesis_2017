@@ -95,33 +95,6 @@
   \field{year}{1977}
 \endentry
 
-\entry{sietsma:why_and_how}{inproceedings}{}
-  \name{author}{2}{}{%
-    {{}%
-     {Sietsma}{S.}%
-     {Jocelyn}{J.}%
-     {}{}%
-     {}{}}%
-    {{}%
-     {Dow}{D.}%
-     {Robert~JF}{R.~J.}%
-     {}{}%
-     {}{}}%
-  }
-  \list{organization}{1}{%
-    {IEEE San Diego}%
-  }
-  \strng{namehash}{SJDRJ1}
-  \strng{fullhash}{SJDRJ1}
-  \field{labelyear}{1988}
-  \field{sortinit}{1}
-  \field{booktitle}{IEEE International Conference on Neural Networks}
-  \field{pages}{325\bibrangedash 333}
-  \field{title}{Neural net pruning-why and how}
-  \field{volume}{1}
-  \field{year}{1988}
-\endentry
-
 \entry{mozer:skeletonization}{article}{}
   \name{author}{2}{}{%
     {{}%
@@ -463,6 +436,16 @@
   \field{title}{United States Census Bureau}
   \verb{url}
   \verb http://census.gov/
+  \endverb
+  \field{year}{2017}
+\endentry
+
+\entry{online:skoda}{online}{}
+  \field{labelyear}{2017}
+  \field{sortinit}{2}
+  \field{title}{Škoda auto}
+  \verb{url}
+  \verb http://skoda-auto.cz/
   \endverb
   \field{year}{2017}
 \endentry
