@@ -1,15 +1,15 @@
 \chapter{Introduction} \label{chap:introduction}
-The very first model of an artificial neuron is dated back to 1943, when two scientists, neurophysiologist Warren S. McCulloch and mathematician Walter Pitts, tried to imitate key features of biological neurons. The highly simplified model had been further elaborated, which led to the concept of a perceptron, published by Frank Rosenblatt in 1958, and over the time to teachable systems nowadays known as artificial neural networks.
+The very first model of an artificial neuron dates back to 1943, when two scientists, neurophysiologist Warren S. McCulloch and mathematician Walter Pitts, tried to imitate key features of biological neurons. The highly simplified model had been further elaborated, which led to the concept of a perceptron, published by Frank Rosenblatt in 1958, and over the time to teachable systems nowadays known as artificial neural networks.
 
-Many people think
+Some people hold the view that deep neural networks are close to produce the highly complex behaviour similar to what humans can do and solemnly call their conducts "artificial intelligence". In my opinion, today's AI designates a bunch of methods that have nothing to do with a general intelligence, but, yes, can produce a human-like behaviour when solving one particular problem. As one example speaking for all, we can come with Google translator, which started to use neural networks to increase fluency and accuracy when traslating longer sentences. Similarly, NNs are becoming the state-of-art classification method in many other domains and one must admit that the results are often fascinating.
 
-We know that state-of-the-art fully-connected networks can be trained to
-work very well for several tasks, however, hardly ever we know why they work
-so well.
+Well, we know that NNs can be trained to work very well for several tasks, however, the problem is that hardly ever we know why they work so well. The architectures are complicated and the number of parameters is enormous. In other words, we have a well-working black box.
 
-When we deal with a real problem (e.g. in industry), one often comes to the point when his or her network works well (let's say with accuracy of $ 90\% $), but a customer asks for a performance of $ 98\% $ for example. Then we encounter the problem when we need to know how the network works in order to be able to improve it.
+When we deal with a real (not academical) problem, one often comes to a point when his or her network works well (let's say with accuracy of $ 90\% $), but a customer asks for a performance of $ 98\% $ for example. Then we need to know how our method works in order to suggests improvements.
 
-In this work, we focus on the optimization of a feedforward neural network with a goal of understanding its overall functionality. This effort could possibly lead to a general knowledge of how to design networks and tailor them for a challenged problem.
+In this work, we focus on understanding the behaviour of a feedforward neural network in terms of rules when classifying particular data. We do it by optimizing the structure, specifically by pruning parts of network that are unimportant for classification. The hypothesis is that networks are often oversized and many parameters (synapses) are redundant. We also think that we can find some rules or patterns in the network if only important connections remain.
+
+This effort could possibly lead to a general knowledge of how to design networks and tailor them for a challenged problem. In effect, the dimensionality of the parameters is significantly reduced, which speeds up both learning and prediction.
 
 \newpage
 \section{State of the Art} \label{sec:state_of_the_art}
