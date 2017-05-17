@@ -5,9 +5,9 @@ Some people hold the view that deep neural networks are close to produce the hig
 
 Well, we know that NNs can be trained to work very well for several tasks, however, the problem is that hardly ever we know why they work so well. The architectures are complicated and the number of parameters is enormous. In other words, we usually have a well-working black box.
 
-When we deal with a real (not academical) problem, one often comes to a point when his or her network works well (let's say with the accuracy of $ 90\% $), but a customer asks for an accuracy of $ 98\% $ for example. Then we can either keep trying and spend months on tuning the black box mostly in a random manner, or, if we demystify the black box, we can suggest reasonable and targeted improvements.
+When we deal with a real (not academical) problem, one often comes to a point when his or her network works well (let's say with the accuracy of $ 90\% $), but a customer asks for an accuracy of $ 98\% $ for example. Then we can either keep trying and spend months on tuning the black box mostly in a random manner, or, if we demystify what is going on inside the network, we can suggest reasonable and targeted improvements.
 
-In this work, we focus on understanding the behaviour of feedforward neural networks classifying particular data. We do it by optimizing the structure, specifically by pruning parts of network that are unimportant for classification. The hypothesis is that networks are often oversized and many synapses are redundant. We also think that we can find some rules or patterns in the network if it consists of important synapses only.
+In this work, we focus on understanding the behaviour of feedforward neural networks classifying particular data. We do it by optimizing the structure, specifically by pruning parts of the network that are unimportant for classification. The hypothesis is that networks are often oversized and many synapses are redundant. We also think that we can find some rules or patterns in the network if it consists of important synapses only.
 
 This effort could possibly lead to a general knowledge of how to design networks and tailor them for the challenged problem. In effect, the dimensionality of the parameters is significantly reduced, which speeds up both learning and prediction.
 
