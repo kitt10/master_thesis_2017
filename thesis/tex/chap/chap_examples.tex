@@ -18,7 +18,7 @@ The standard Exclusive OR (XOR) function is defined by truth \cref{tab:examples:
 \label{tab:examples:xor_function}
 \end{table}
 
-This problem serves perfectly for a demonstration of network optimization methods, as two optimal architectural solutions producing the XOR function are already known (\cref{fig:examples:xor_solutions}) \footnote{The known (e.g. from \citep{online:xor_solution}) minimal network architectures producing the XOR function $ [2, 2, 1] $ and $ [2, 3, 1] $ are adjusted to $ [2, 2, 2] $ and $ [2, 3, 2] $ in \cref{fig:examples:xor_solutions} in order to comply with the conventions introduced in \cref{chap:methods}. The number of output neurons always equals the number of classes. The number of hidden-output synapses might not be optimized in this study.}. 
+This problem serves perfectly for a demonstration of network optimization methods, as two optimal architectural solutions producing the XOR function are already known (\cref{fig:examples:xor_solutions}) \footnote{The known (e.g. from \citep{online:xor_solution}) minimal network architectures producing the XOR function $ [2, 2, 1] $ and $ [2, 3, 1] $ are adjusted to $ [2, 2, 2] $ and $ [2, 3, 2] $ in \cref{fig:examples:xor_solutions} in order to comply with the conventions introduced in \cref{app:implementation}. The number of output neurons always equals the number of classes. The number of hidden-output synapses might not be optimized in this study.}. 
 
 \begin{figure}[H]
 \centering
@@ -68,7 +68,7 @@ transfer fcn          & sigmoid                & minibatch size                 
 \end{table}
 
 \subsection*{Results: XOR Function}
-\cref{fig:examples:pruning_process_xor} describes the pruning process. We can see the number of synapses, the network structure and the classification accuracy for single pruning steps (see [PA]). When the required accuracy ($ 1.0 $) was not reached, the corresponding steps are transparent in the figure, indicating they were forgotten.
+\cref{fig:examples:pruning_process_xor} describes the pruning process. We can see the number of synapses, the network structure and the classification accuracy for single pruning steps. When the required accuracy ($ 1.0 $) was not reached, the corresponding steps are transparent in the figure, indicating they were forgotten.
 
 \begin{figure}[H]
 \centering
@@ -186,13 +186,13 @@ Out of this we expect a weight magnitude to be greater for more important synaps
 \label{fig:examples:unbfea_synapse_weight_change}
 \end{figure}
 
-The weight magnitude seems to be a perfect measure to find feature significance factor. However, as we do not use a weight decay (see the learning approach in \cref{chap:methods}), in general the more epochs we learn the greater weight magnitudes we get. Therefore small initial weight values do not affect the result significantly and so we can state:
+The weight magnitude seems to be a perfect measure to find feature significance factor. However, as we do not use a weight decay (see the learning approach in \cref{sec:classification_method}), in general the more epochs we learn the greater weight magnitudes we get. Therefore small initial weight values do not affect the result significantly and so we can state:
 
 \begin{equation}
 |w_{ji}(t)| \approx |w_{ji}(t) - w_{ji}(0)|
 \end{equation}
 
-where $ w_{ji}(0) \in N(0,1) $ is the initial value of weight $ w_{ji} $ and $ t $ is time. Summing it up we can say that the \texttt{kitt} measure [ref] based on weight change is equally good as the magnitude measure assuming enough training epochs (e.g. 50).
+where $ w_{ji}(0) \in N(0,1) $ is the initial value of weight $ w_{ji} $ and $ t $ is time. Summing it up we can say that the \texttt{WSF} measure based on weight change is equally good as the magnitude measure for feature selection, assuming enough training epochs (e.g. 50).
 
 \section{Rule-plus-Exception} \label{sec:example_rpe}
 This four-dimensional problem is originally adopted from \citep{mozer:skeletonization} and is also used in \citep{karnin:pa}. The task is to learn another Boolean function: $ AB+\overline{A} \, \overline{B} \, \overline{C} \, \overline{D} $. A single function output should be on (i.e. equals 1) when both $ A $ and $ B $ are on, which is the \textit{rule}, and it should also be on when the \textit{exception} $ \overline{A} \, \overline{B} \, \overline{C} \, \overline{D} $ occurs.
@@ -253,7 +253,7 @@ transfer fcn          & sigmoid                & minibatch size                 
 \label{fig:examples:pruning_result_pie_rpe}
 \end{figure}
 
-The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows weight change in training (\texttt{kitt} significance factor) for all 8 input-hidden synapses. We can see that synapses connecting the \textit{rule} neuron with feature \textit{c} ($ s_{rc}) $ and feature \textit{d} ($ s_{rd} $) were suggested as least important (resulted in structures in \cref{fig:examples:rpe_hypos}).
+The same thing is confirmed by \cref{fig:examples:pruning_result_rpe}. It shows weight change in training (\texttt{WSF}) for all 8 input-hidden synapses. We can see that synapses connecting the \textit{rule} neuron with feature \textit{c} ($ s_{rc}) $ and feature \textit{d} ($ s_{rd} $) were suggested as least important (resulted in structures in \cref{fig:examples:rpe_hypos}).
 
 \begin{figure}[H]
 \centering
@@ -407,7 +407,7 @@ transfer fcn          & sigmoid                & minibatch size                 
 \label{tab:examples:mnist_settings}
 \end{table}
 
-The hypothesis is that the initial number of synapses in the network ($ 15800 $) is redundant, as well as the number of features ($ 784 $). In \cref{fig:examples:pruning_process_mnist} we can see a selected observation of the pruning process. The number of synapses was reduced to $ 1259 $ and the number of used features to $ 465 $, while the classification accuracy was kept on $ 97\% $. The pruning procedure finished in $ 424 $ pruning steps (explained in [PA]).
+The hypothesis is that the initial number of synapses in the network ($ 15800 $) is redundant, as well as the number of features ($ 784 $). In \cref{fig:examples:pruning_process_mnist} we can see a selected observation of the pruning process. The number of synapses was reduced to $ 1259 $ and the number of used features to $ 465 $, while the classification accuracy was kept on $ 97\% $. The pruning procedure finished in $ 424 $ pruning steps (explained in \cref{sec:network_pruning}).
 
 \begin{figure}[H]
 \centering
@@ -467,8 +467,6 @@ We can see that each of the features affects more than one class in this case. T
 \end{figure}
 
 Knowing all the remaining synapses are important for classification, we can track the paths from individual classes to features. This way we distinguish features connected to a selected class from those that do not affect that class. \cref{fig:examples:fs_mnist} shows important features for each class (digit) separately. Note that the \textit{at-least-once} subplot corresponds to the features shown in \cref{fig:examples:pruned_net_mnist_097}. It shows all features used by at least one class.
-
-Some more ideas about path tracking in pruned networks are further discussed in \cref{sec:future_work}.
 
 \section{Phonemes (Speech Data)} \label{sec:example_speech}
 The process of speech data gathering is described in \cref{sec:speech_data_gathering}. The dataset generation process has three parameters: \texttt{border\textunderscore size} ($ bs $), \texttt{context\textunderscore size} ($ cs $) and \texttt{n\textunderscore samples} ($ ns $).

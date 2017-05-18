@@ -164,7 +164,7 @@ We use two measures to evaluate the network training: error and accuracy.
 The error measure is based on the standard \textit{Mean Squared Error (MSE)} given by \cref{eq:mse}.
 
 \begin{equation} \label{eq:mse}
-MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{\xi=1} ||y_{\xi} - u_{\xi}||^2}
+MSE = \frac{1}{2 p} \displaystyle{\sum^{p}_{\xi=1} ||y_{\xi} - u_{\xi}||^2},
 \end{equation}
 
 where $ y_{\xi} $ is the prediction for sample $ \xi $ and $ u_{\xi} $ its corresponding (known) target. Both are vectors of length $ m $ (number of classes).
@@ -201,7 +201,7 @@ Pruning methods work with the hypothesis that some of the synapses in fully conn
 There are several ways of how to estimate the importance of synapses (see \cref{sec:state_of_the_art}). In this study we introduce a measure called \textit{weight significance factor} (\texttt{WSF}) given by \cref{eq:weight_significance_factor}.
 
 \begin{equation} \label{eq:weight_significance_factor}
-WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) |
+WSF(w_{k,l}^{(i)}) = | w_{k,l}^{(i)} (t_f) - w_{k,l}^{(i)} (0) | ,
 \end{equation}
 
 where $ w_{k,l}^{(i)} (t_f) $ is the weight of the synapse coming to $ k^{th} $ neuron in the $ i^{th} $ layer from $ l^{th} $ neuron in $ (i-1)^{th} $ layer after training ($ t_f $: time final). Analogically, $ w_{k,l}^{(i)} (0) $ is the initial weight of the same synapse before training. We compare these two values and get the change in weight over the training process. The key idea is that the redundant synapses do not change their weights over the training. Therefore, those synapses with low \texttt{WSF} are considered less important than those with high \texttt{WSF}.
@@ -272,7 +272,7 @@ W_{pruned}^{(i)} =
 \end{align*}
 We know that each row of the matrix corresponds to inputs of one neuron in the $ i^{th} $ layer and each column maps the outputs of one neuron in the $ (i-1)^{th} $ layer. Therefore, if we find a row of zeros, we can safely remove the corresponding ($ 2^{nd} $) neuron from the network, as it has no inputs. Moreover, we can (better said we must) also remove the $ 2^{nd} $ column in the weight matrix $ W^{(i+1)} $ responsible for the outputs of the removed neuron.
 
-Analogically, if the $ 3^{rd} $ neuron in the $ (i-1)^{th} $ layer has no outputs ($ 3^{rd} $ column of zeros in $ W^{(i)} $), it is useless for classification. Hence we can also delete this column in $ W^{(i)} $ and must remove corresponding inputs of the removed neuron, which is the $ 3^{rd} $ row of the weight matrix $ W^{(i-1)} $. We call the process \textit{the network shrinking}.
+Analogically, if the $ 3^{rd} $ neuron in the $ (i-1)^{th} $ layer has no outputs ($ 3^{rd} $ column of zeros in $ W^{(i)} $), it is useless for classification. Hence we can also delete this column in $ W^{(i)} $ and must remove corresponding inputs of the removed neuron, which is the $ 3^{rd} $ row of the weight matrix $ W^{(i-1)} $. We call the process \textit{network shrinking}.
 \begin{align*}
 W_{shrinked}^{(i)} = 
 \begin{bmatrix}
@@ -366,7 +366,7 @@ The parameterization workflow is summarized by these steps:
 
 \cref{fig:methods:mfcc_framing} illustrates how a sound signal is divided into short frames. The parameters are
 \begin{align*}
-frame\_size &= 0.025 \,s \,= 32 \,ms \\
+frame\_size &= 0.032 \,s \,= 32 \,ms \\
 frame\_shift &= 0.01 \,s \,= 10 \,ms
 \end{align*}
 Using the sampling frequency $ f_s = 8 kHz $, we get frames of length $ 256 $.
@@ -435,7 +435,7 @@ We perform a supervised learning method, hence the data must be labeled. To do s
 \label{tab:methods:labeling_example}
 \end{table}
 
-It says that features extracted from this recording consist of $ 9 $ fourty-dimensional vectors representing phoneme \texttt{"a"}, $ 7 $ vectors of phoneme \texttt{"n"}, etc.
+It says that features extracted from this recording consist of $ 16 $ fourty-dimensional vectors representing a silence, then $ 9 $ fourty-dimensional vectors representing phoneme \texttt{"a"}, $ 7 $ vectors of phoneme \texttt{"n"}, etc.
 
 \subsection*{Forming a Sample}
 The $ 40 $ phonemes listed in \cref{tab:methods:phonetic_alphabet} are naturally labels of classes, so we have a fourty-class classification problem. Having the information from previous section, one can match the extracted features with corresponding phonemes (classes). Now the task is to define the form of one sample.
@@ -476,13 +476,13 @@ The last parameter of the speech dataset generation is the number of samples per
 To summarize this section, we end up with three parameters of the speech dataset generation process:
 
 \begin{itemize}
-\item \texttt{border\textunderscore size} (see \cref{fig:methods:sample_forming_bs})
-\item \texttt{context\textunderscore size} (see \cref{fig:methods:sample_forming_cs})
-\item \texttt{n\textunderscore samples} per class
+\item \texttt{border\textunderscore size} (\texttt{bs}), see \cref{fig:methods:sample_forming_bs}
+\item \texttt{context\textunderscore size} (\texttt{cs}), see \cref{fig:methods:sample_forming_cs}
+\item \texttt{n\textunderscore samples} per class (\texttt{ns})
 \end{itemize}
 
 \subsection*{Splitting data into three disjunctive sets}
-\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all classification problems in this work. The training data is used to set up model parameters. The development data is then used for testing during the training process, in order to adjust some learning parameters based on the test results. Finally, a trained model is tested on never-seen testing data. We use splitting: $ 80\% $ training set; $ 10\% $ development set; $ 10\% $ testing set.
+\cref{fig:methods:three_sets} shows a general approach of data splitting in machine learning. It is used for all classification problems in this work. The training data is used to set up model parameters. The development data is then used for testing during the training process, in order to adjust some learning parameters based on the test results. Finally, a trained model is tested on never-seen testing data. By default, we use splitting: $ 80\% $ training set; $ 10\% $ development set; $ 10\% $ testing set.
 
 \begin{figure}[H]
 \centering
